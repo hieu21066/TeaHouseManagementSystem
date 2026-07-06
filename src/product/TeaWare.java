@@ -1,12 +1,11 @@
 package product;
 
 public class TeaWare extends Product {
-    private String wareType;   // Ấm, Chén chủ, Chén quân, Khải, Tống...
-    private String clayType;   // Đất tử sa, Tử nê, Đoàn nê, Đại hồng bào... (Nếu là ấm)
-    private String design;     // Thạch biều, Tây Thi, Lục Phương, Truyền Lô... (Nếu là ấm)
-    private int capacity;      // Dung tích: 80ml, 100ml, 200ml...
+    private String wareType;   
+    private String clayType;   
+    private String design;     
+    private int capacity;      
 
-    // Constructor tổng quát cho Trà Cụ
     public TeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
         super(id, name, price);
         this.wareType = wareType;
@@ -15,7 +14,6 @@ public class TeaWare extends Product {
         this.capacity = capacity;
     }
 
-    // Constructor rút gọn cho dụng cụ không làm từ đất/không có dáng ấm (ví dụ: Chén, Tống thủy tinh)
     public TeaWare(String id, String name, double price, String wareType, int capacity) {
         super(id, name, price);
         this.wareType = wareType;
@@ -23,6 +21,19 @@ public class TeaWare extends Product {
         this.design = "N/A";
         this.capacity = capacity;
     }
+
+    // --- GETTER & SETTER ---
+    public String getWareType() { return wareType; }
+    public void setWareType(String wareType) { this.wareType = wareType; }
+
+    public String getClayType() { return clayType; }
+    public void setClayType(String clayType) { this.clayType = clayType; }
+
+    public String getDesign() { return design; }
+    public void setDesign(String design) { this.design = design; }
+
+    public int getCapacity() { return capacity; }
+    public void setCapacity(int capacity) { this.capacity = capacity; }
 
     @Override
     public String toString() {

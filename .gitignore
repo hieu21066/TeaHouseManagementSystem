@@ -1,0 +1,12 @@
+# Các file đã biên dịch
+*.class
+/target/
+/build/
+
+# Cấu hình của các IDE thông dụng
+.idea/
+*.iml
+.vscode/
+.project
+.classpath
+.settings/

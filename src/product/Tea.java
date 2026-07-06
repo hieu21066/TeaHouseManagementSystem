@@ -1,13 +1,17 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package product;
 
-/**
- *
- * @author MINH HIEU
- */
-public class Tea {
-    
+public class Tea extends Product {
+    private String teaType; // Lục trà, Hồng trà, Bạch trà, Phổ nhĩ,...
+
+    public Tea(String id, String name, double price, String teaType) {
+        super(id, name, price);
+        this.teaType = teaType;
+    }
+
+    public String getTeaType() { return teaType; }
+
+    @Override
+    public String toString() {
+        return super.toString() + " | Loại trà: " + teaType;
+    }
 }

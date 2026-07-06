@@ -1,13 +1,38 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package employee;
 
-/**
- *
- * @author MINH HIEU
- */
-public class WarehouseStaff {
-    
+public class WarehouseStaff extends Employee {
+
+    // Constructor mặc định
+    public WarehouseStaff() {
+        super();
+    }
+
+    // Constructor đầy đủ
+    public WarehouseStaff(String employeeId,
+                          String fullName,
+                          String gender,
+                          int age,
+                          String phone,
+                          String address,
+                          double salary,
+                          String shift,
+                          String status,
+                          String hireDate) {
+
+        super(employeeId,
+              fullName,
+              gender,
+              age,
+              phone,
+              address,
+              salary,
+              shift,
+              status,
+              hireDate);
+    }
+
+    @Override
+    public String getRole() {
+        return "WarehouseStaff";
+    }
 }

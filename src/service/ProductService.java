@@ -1,6 +1,14 @@
-package product;
+package service;
 
 import java.util.ArrayList;
+import product.Accessory;
+import product.Accessory;
+import product.Product;
+import product.Product;
+import product.Tea;
+import product.Tea;
+import product.TeaWare;
+import product.TeaWare;
 
 
 public class ProductService {

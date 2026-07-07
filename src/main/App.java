@@ -196,18 +196,119 @@ public class App {
         } while (choose != 0);
 
     }
-
-    //========================================================
-
     public static void productMenu() {
+        int choose;
+        do {
+            System.out.println("\n====== PRODUCT MANAGEMENT ======");
+            System.out.println("1. Add Product");
+            System.out.println("2. Delete Product");
+            System.out.println("3. Search Product By ID");
+            System.out.println("4. Display All Products");
+            System.out.println("5. Filter Products By Category");
+            System.out.println("0. Back");
+            System.out.print("Choose: ");
+            
+            try {
+                choose = Integer.parseInt(sc.nextLine());
+            } catch (NumberFormatException e) {
+                System.out.println("❌ Lỗi: Vui lòng nhập một số nguyên!");
+                choose = -1;
+                continue;
+            }
 
-        System.out.println("PRODUCT MANAGEMENT");
+            switch (choose) {
+                case 1:
+    System.out.println("\n--- Select Product Type To Add ---");
+    System.out.println("1. Tea (Trà)");
+    System.out.println("2. TeaWare (Trà cụ)");
+    System.out.println("3. Accessory (Phụ kiện)");
+    System.out.print("Choose type (1-3): ");
+    int type = Integer.parseInt(sc.nextLine());
 
-        // gọi ProductService
+    System.out.print("Enter ID: ");
+    String id = sc.nextLine();
+    System.out.print("Enter Name: ");
+    String name = sc.nextLine();
+    System.out.print("Enter Price: ");
+    double price = Double.parseDouble(sc.nextLine());
 
+    if (type == 1) {
+        System.out.print("Enter Tea Type: ");
+        String teaType = sc.nextLine();
+        
+        // 🌟 GỌI SERVICE Ở ĐÂY ĐỂ LƯU DỮ LIỆU
+        productService.addTea(id, name, price, teaType); 
+
+    } else if (type == 2) {
+        System.out.print("Enter Ware Type (e.g., Ấm trà): ");
+        String wareType = sc.nextLine();
+        System.out.print("Enter Clay Type: ");
+        String clayType = sc.nextLine();
+        System.out.print("Enter Design: ");
+        String design = sc.nextLine();
+        System.out.print("Enter Capacity (ml): ");
+        int capacity = Integer.parseInt(sc.nextLine());
+        
+        // 🌟 GỌI SERVICE Ở ĐÂY ĐỂ LƯU DỮ LIỆU
+        productService.addTeaWare(id, name, price, wareType, clayType, design, capacity);
+
+    } else if (type == 3) {
+        System.out.print("Enter Accessory Type: ");
+        String accessoryType = sc.nextLine();
+        
+        // 🌟 GỌI SERVICE Ở ĐÂY ĐỂ LƯU DỮ LIỆU
+        productService.addAccessory(id, name, price, accessoryType);
+    } else {
+        System.out.println("❌ Loại sản phẩm không hợp lệ!");
+    }
+    break;
+
+                case 2:
+                    System.out.print("Enter ID to delete: ");
+                    String idDelete = sc.nextLine();
+                    productService.deleteProductById(idDelete);
+                    break;
+
+                case 3:
+                    System.out.print("Enter ID to search: ");
+                    String idSearch = sc.nextLine();
+                    // In trực tiếp kết quả trả về, nếu tìm thấy tự gọi toString(), nếu null sẽ hiện chữ null
+                    System.out.println(productService.findProductById(idSearch));
+                    break;
+
+                case 4:
+                    productService.printAllProducts();
+                    break;
+
+                case 5:
+                    System.out.println("\n--- Filter Category ---");
+                    System.out.println("1. Show Only Teas (Trà)");
+                    System.out.println("2. Show Only TeaWares (Trà cụ)");
+                    System.out.println("3. Show Only Accessories (Phụ kiện)");
+                    System.out.print("Choose filter (1-3): ");
+                    int filterChoose = Integer.parseInt(sc.nextLine());
+                    
+                    if (filterChoose == 1) {
+                        System.out.println(productService.getOnlyTeas()); 
+                    } else if (filterChoose == 2) {
+                        System.out.println(productService.getOnlyTeaWares());
+                    } else if (filterChoose == 3) {
+                        System.out.println(productService.getOnlyAccessories());
+                    } else {
+                        System.out.println("❌ Lựa chọn lọc không hợp lệ!");
+                    }
+                    break;
+                    
+                case 0:
+                    System.out.println("Returning to main menu...");
+                    break;
+            }
+        } while (choose != 0);
     }
 
     //========================================================
+
+  
 
     public static void comboMenu() {
 

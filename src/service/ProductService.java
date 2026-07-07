@@ -1,14 +1,7 @@
 package service;
 
 import java.util.ArrayList;
-import product.Accessory;
-import product.Accessory;
-import product.Product;
-import product.Product;
-import product.Tea;
-import product.Tea;
-import product.TeaWare;
-import product.TeaWare;
+import product.*;
 
 
 public class ProductService {
@@ -65,10 +58,10 @@ public class ProductService {
         Product found = findProductById(id);
         if (found != null) {
             productList.remove(found);
-            System.out.println("✅ Đã xóa sản phẩm có mã: " + id);
+            System.out.println("Đã xóa sản phẩm có mã: " + id);
             return true;
         }
-        System.out.println("❌ Không tìm thấy sản phẩm có mã " + id + " để xóa.");
+        System.out.println("Không tìm thấy sản phẩm có mã " + id + " để xóa.");
         return false;
     }
 
@@ -106,4 +99,18 @@ public class ProductService {
         }
         return accessories;
     }
+    public void addTea(String id, String name, double price, String teaType) {
+    this.productList.add(new Tea(id, name, price, teaType));
+    System.out.println("✨ Thêm trà thành công!");
+}
+
+public void addTeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
+    this.productList.add(new TeaWare(id, name, price, wareType, clayType, design, capacity));
+    System.out.println("✨ Thêm trà cụ thành công!");
+}
+
+public void addAccessory(String id, String name, double price, String accessoryType) {
+    this.productList.add(new Accessory(id, name, price, accessoryType));
+    System.out.println("✨ Thêm phụ kiện thành công!");
+}
 }

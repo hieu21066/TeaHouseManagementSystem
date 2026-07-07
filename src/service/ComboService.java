@@ -1,22 +1,17 @@
 package service;
 
 import combo.Combo;
+import file.ComboFile;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class ComboService {
 
-    //==================== Attribute ====================
-
     private ArrayList<Combo> comboList;
 
-    //==================== Constructor ====================
-
     public ComboService() {
-        comboList = new ArrayList<>();
+        comboList = ComboFile.load();
     }
-
-    //==================== Getter & Setter ====================
 
     public ArrayList<Combo> getComboList() {
         return comboList;
@@ -27,57 +22,55 @@ public class ComboService {
     }
 
     //==================== ADD ====================
-
     public boolean addCombo(Combo combo) {
 
-        if (isExist(combo.getComboId())) {
+        if (isExist(combo.getComboId()))
             return false;
-        }
 
         comboList.add(combo);
+        ComboFile.save(comboList);
+
         return true;
     }
 
     //==================== DELETE ====================
-
     public boolean deleteCombo(String comboId) {
 
         Combo combo = searchById(comboId);
 
-        if (combo == null) {
+        if (combo == null)
             return false;
-        }
 
         comboList.remove(combo);
+        ComboFile.save(comboList);
+
         return true;
     }
 
     //==================== UPDATE ====================
-
     public boolean updateCombo(Combo newCombo) {
 
         Combo oldCombo = searchById(newCombo.getComboId());
 
-        if (oldCombo == null) {
+        if (oldCombo == null)
             return false;
-        }
 
         oldCombo.setComboName(newCombo.getComboName());
         oldCombo.setPrice(newCombo.getPrice());
         oldCombo.setDescription(newCombo.getDescription());
 
+        ComboFile.save(comboList);
+
         return true;
     }
 
     //==================== SEARCH BY ID ====================
-
     public Combo searchById(String comboId) {
 
         for (Combo combo : comboList) {
 
-            if (combo.getComboId().equalsIgnoreCase(comboId)) {
+            if (combo.getComboId().equalsIgnoreCase(comboId))
                 return combo;
-            }
 
         }
 
@@ -85,27 +78,21 @@ public class ComboService {
     }
 
     //==================== SEARCH BY NAME ====================
-
     public ArrayList<Combo> searchByName(String comboName) {
 
         ArrayList<Combo> result = new ArrayList<>();
 
         for (Combo combo : comboList) {
 
-            if (combo.getComboName()
-                    .toLowerCase()
-                    .contains(comboName.toLowerCase())) {
-
+            if (combo.getComboName().toLowerCase().contains(comboName.toLowerCase()))
                 result.add(combo);
-            }
 
         }
 
         return result;
     }
 
-    //==================== DISPLAY ALL ====================
-
+    //==================== DISPLAY ====================
     public void displayAll() {
 
         if (comboList.isEmpty()) {
@@ -115,12 +102,9 @@ public class ComboService {
 
         Combo.displayHeader();
 
-        for (Combo combo : comboList) {
+        for (Combo combo : comboList)
             combo.display();
-        }
     }
-
-    //==================== DISPLAY ONE ====================
 
     public void displayById(String comboId) {
 
@@ -135,52 +119,42 @@ public class ComboService {
         combo.display();
     }
 
-    //==================== SORT PRICE ASC ====================
-
+    //==================== SORT ====================
     public void sortByPriceAscending() {
 
-        comboList.sort(
-                Comparator.comparingDouble(Combo::getPrice)
-        );
-    }
+        comboList.sort(Comparator.comparingDouble(Combo::getPrice));
+        ComboFile.save(comboList);
 
-    //==================== SORT PRICE DESC ====================
+    }
 
     public void sortByPriceDescending() {
 
-        comboList.sort(
-                (c1, c2) -> Double.compare(c2.getPrice(), c1.getPrice())
-        );
-    }
+        comboList.sort((c1, c2) -> Double.compare(c2.getPrice(), c1.getPrice()));
+        ComboFile.save(comboList);
 
-    //==================== SORT NAME ====================
+    }
 
     public void sortByName() {
 
-        comboList.sort(
-                Comparator.comparing(Combo::getComboName)
-        );
+        comboList.sort(Comparator.comparing(Combo::getComboName));
+        ComboFile.save(comboList);
+
     }
 
-    //==================== CHECK EXIST ====================
-
+    //==================== CHECK ====================
     public boolean isExist(String comboId) {
-
         return searchById(comboId) != null;
     }
 
     //==================== COUNT ====================
-
     public int countCombo() {
-
         return comboList.size();
     }
 
     //==================== CLEAR ====================
-
     public void clearAll() {
-
         comboList.clear();
+        ComboFile.save(comboList);
     }
 
 }

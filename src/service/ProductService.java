@@ -101,16 +101,16 @@ public class ProductService {
     }
     public void addTea(String id, String name, double price, String teaType) {
     this.productList.add(new Tea(id, name, price, teaType));
-    System.out.println("✨ Thêm trà thành công!");
+    System.out.println("Successfully added tea!");
 }
 
 public void addTeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
     this.productList.add(new TeaWare(id, name, price, wareType, clayType, design, capacity));
-    System.out.println("✨ Thêm trà cụ thành công!");
+    System.out.println("Successfully added teaware");
 }
 
 public void addAccessory(String id, String name, double price, String accessoryType) {
     this.productList.add(new Accessory(id, name, price, accessoryType));
-    System.out.println("✨ Thêm phụ kiện thành công!");
+    System.out.println("Successfully added tea pet!");
 }
 }

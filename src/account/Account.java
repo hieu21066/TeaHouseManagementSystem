@@ -1,6 +1,6 @@
 package account;
 
-public class account {
+public class Account {
 
     //==================== Attributes ====================
 
@@ -9,10 +9,10 @@ public class account {
 
     //==================== Constructor ====================
 
-    public account() {
+    public Account() {
     }
 
-    public account(String username, String password) {
+    public Account(String username, String password) {
         this.username = username;
         this.password = password;
     }

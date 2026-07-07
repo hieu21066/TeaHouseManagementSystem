@@ -6,12 +6,12 @@ import service.ReservationService;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class ReservationViewer {
+public class ReservationView {
 
     private ReservationService reservationService;
     private Scanner sc;
 
-    public ReservationViewer(ReservationService reservationService) {
+    public ReservationView(ReservationService reservationService) {
         this.reservationService = reservationService;
         sc = new Scanner(System.in);
     }

@@ -5,7 +5,7 @@ public class TeaWare extends Product {
     private String clayType;   
     private String design;     
     private int capacity;      
-
+    
     public TeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
         super(id, name, price);
         this.wareType = wareType;

@@ -36,7 +36,7 @@ public class ProductFile {
                 if (data.length < 4) continue;
 
                 String id = data[0];
-                String type = data[1]; // Dùng để nhận biết loại sản phẩm: tea, teaware, accessory
+                String type = data[1]; // Dùng để nhận biết loại sản phẩm: tea, teaware, accessory, teapet
                 String name = data[2];
                 double price = Double.parseDouble(data[3]);
 
@@ -52,12 +52,11 @@ public class ProductFile {
                         break;
 
                     case "teaware":
-                        if (data.length >= 10) {
+                        if (data.length >= 8) { // Cập nhật lại độ dài tối thiểu khớp với 8 thuộc tính khởi tạo
                             String wareType = data[4];
                             String clayType = data[5];
                             String design = data[6];
                             int capacity = Integer.parseInt(data[7]);
-                            // Nếu các lớp con có thêm thuộc tính thì bạn gán tiếp vào data[8], data[9]...
                             product = new TeaWare(id, name, price, wareType, clayType, design, capacity);
                         }
                         break;
@@ -66,6 +65,15 @@ public class ProductFile {
                         if (data.length >= 5) {
                             String accessoryType = data[4];
                             product = new Accessory(id, name, price, accessoryType);
+                        }
+                        break;
+
+                    case "teapet":
+                        if (data.length >= 7) {
+                            String petType = data[4];
+                            String clayType = data[5];
+                            String status = data[6];
+                            product = new TeaPet(id, name, price, petType, clayType, status);
                         }
                         break;
                 }
@@ -78,7 +86,6 @@ public class ProductFile {
 
         } catch (Exception e) {
             System.out.println("Load Product.txt failed!");
-            // e.printStackTrace(); // Bỏ comment dòng này nếu bạn muốn debug lỗi chi tiết
         }
 
         return list;

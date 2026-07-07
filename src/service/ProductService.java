@@ -3,7 +3,6 @@ package service;
 import java.util.ArrayList;
 import product.*;
 
-
 public class ProductService {
     // ArrayList dùng để quản lý toàn bộ sản phẩm trong hệ thống (Tính đa hình)
     private ArrayList<Product> productList;
@@ -13,7 +12,7 @@ public class ProductService {
         this.productList = new ArrayList<>();
     }
 
-    // 1. THÊM SẢN PHẨM MỚI (Thêm được cả Tea, TeaWare, Accessory)
+    // 1. THÊM SẢN PHẨM MỚI (Thêm được cả Tea, TeaWare, Accessory, TeaPet)
     public void addProduct(Product product) {
         // Kiểm tra xem mã sản phẩm (ID) đã tồn tại chưa để tránh trùng lặp
         for (Product p : productList) {
@@ -89,28 +88,45 @@ public class ProductService {
         return teaWares;
     }
 
-    // 6c. Chỉ lấy các loại Phụ kiện / Trà sủng (Accessory)
+    // 6c. Chỉ lấy các loại Phụ kiện bàn trà (Accessory)
     public ArrayList<Accessory> getOnlyAccessories() {
         ArrayList<Accessory> accessories = new ArrayList<>();
         for (Product p : productList) {
-            if (p instanceof Accessory) {
+            if (p instanceof Accessory && !(p instanceof TeaPet)) {
                 accessories.add((Accessory) p); // Ép kiểu từ Product về Accessory
             }
         }
         return accessories;
     }
+
+    // 6d. Chỉ lấy các loại Trà sủng (TeaPet)
+    public ArrayList<TeaPet> getOnlyTeaPets() {
+        ArrayList<TeaPet> teaPets = new ArrayList<>();
+        for (Product p : productList) {
+            if (p instanceof TeaPet) {
+                teaPets.add((TeaPet) p); // Ép kiểu từ Product về TeaPet
+            }
+        }
+        return teaPets;
+    }
+
     public void addTea(String id, String name, double price, String teaType) {
-    this.productList.add(new Tea(id, name, price, teaType));
-    System.out.println("Successfully added tea!");
-}
+        this.productList.add(new Tea(id, name, price, teaType));
+        System.out.println("Successfully added tea!");
+    }
 
-public void addTeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
-    this.productList.add(new TeaWare(id, name, price, wareType, clayType, design, capacity));
-    System.out.println("Successfully added teaware");
-}
+    public void addTeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
+        this.productList.add(new TeaWare(id, name, price, wareType, clayType, design, capacity));
+        System.out.println("Successfully added teaware");
+    }
 
-public void addAccessory(String id, String name, double price, String accessoryType) {
-    this.productList.add(new Accessory(id, name, price, accessoryType));
-    System.out.println("Successfully added tea pet!");
-}
+    public void addAccessory(String id, String name, double price, String accessoryType) {
+        this.productList.add(new Accessory(id, name, price, accessoryType));
+        System.out.println("Successfully added tea accessory!");
+    }
+
+    public void addTeaPet(String id, String name, double price, String petType, String clayType, String status) {
+        this.productList.add(new TeaPet(id, name, price, petType, clayType, status));
+        System.out.println("Successfully added tea pet!");
+    }
 }

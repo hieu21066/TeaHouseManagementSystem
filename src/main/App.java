@@ -259,7 +259,7 @@ public class App {
         // 🌟 GỌI SERVICE Ở ĐÂY ĐỂ LƯU DỮ LIỆU
         productService.addAccessory(id, name, price, accessoryType);
     } else {
-        System.out.println("❌ Loại sản phẩm không hợp lệ!");
+        System.out.println("Invalid type!");
     }
     break;
 

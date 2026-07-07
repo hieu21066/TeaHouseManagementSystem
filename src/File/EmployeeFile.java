@@ -59,28 +59,28 @@ public class EmployeeFile {
                                 status, hireDate);
                         break;
 
-                    case "tea master":
+                    case "teamaster":
                         employee = new TeaMaster(id, name, gender, age,
                                 phone, address,
                                 salary, shift,
                                 status, hireDate);
                         break;
 
-                    case "tea lady":
+                    case "tealady":
                         employee = new TeaLady(id, name, gender, age,
                                 phone, address,
                                 salary, shift,
                                 status, hireDate);
                         break;
 
-                    case "tea servant":
+                    case "teaservant":
                         employee = new TeaServant(id, name, gender, age,
                                 phone, address,
                                 salary, shift,
                                 status, hireDate);
                         break;
 
-                    case "warehouse staff":
+                    case "warehousestaff":
                         employee = new WarehouseStaff(id, name, gender, age,
                                 phone, address,
                                 salary, shift,

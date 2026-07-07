@@ -125,5 +125,29 @@ public class EmployeeService {
         });
 
     }
+public void displayByType(Class<?> type) {
 
+    if (employeeList.isEmpty()) {
+        System.out.println("Employee list is empty!");
+        return;
+    }
+
+    boolean found = false;
+
+    Employee.displayHeader();
+
+    for (Employee e : employeeList) {
+
+        if (type.isInstance(e)) {
+            e.display();
+            found = true;
+        }
+
+    }
+
+    if (!found) {
+        System.out.println("No employee found!");
+    }
+
+}
 }

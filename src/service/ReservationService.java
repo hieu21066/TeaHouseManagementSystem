@@ -1,23 +1,21 @@
 package service;
 
 import reservation.Reservation;
+import file.ReservationFile;
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class ReservationService {
 
     //==================== Attribute ====================
-
     private ArrayList<Reservation> reservationList;
 
     //==================== Constructor ====================
-
     public ReservationService() {
-        reservationList = new ArrayList<>();
+        reservationList = ReservationFile.load();
     }
 
     //==================== Getter & Setter ====================
-
     public ArrayList<Reservation> getReservationList() {
         return reservationList;
     }
@@ -27,40 +25,38 @@ public class ReservationService {
     }
 
     //==================== ADD ====================
-
     public boolean addReservation(Reservation reservation) {
 
-        if (isExist(reservation.getReservationId())) {
+        if (isExist(reservation.getReservationId()))
             return false;
-        }
 
         reservationList.add(reservation);
+        ReservationFile.save(reservationList);
+
         return true;
     }
 
     //==================== DELETE ====================
-
     public boolean deleteReservation(String reservationId) {
 
         Reservation reservation = searchById(reservationId);
 
-        if (reservation == null) {
+        if (reservation == null)
             return false;
-        }
 
         reservationList.remove(reservation);
+        ReservationFile.save(reservationList);
+
         return true;
     }
 
     //==================== UPDATE ====================
-
     public boolean updateReservation(Reservation newReservation) {
 
         Reservation oldReservation = searchById(newReservation.getReservationId());
 
-        if (oldReservation == null) {
+        if (oldReservation == null)
             return false;
-        }
 
         oldReservation.setCustomerName(newReservation.getCustomerName());
         oldReservation.setPhoneNumber(newReservation.getPhoneNumber());
@@ -68,18 +64,18 @@ public class ReservationService {
         oldReservation.setTableNumber(newReservation.getTableNumber());
         oldReservation.setStatus(newReservation.getStatus());
 
+        ReservationFile.save(reservationList);
+
         return true;
     }
 
     //==================== SEARCH ====================
-
     public Reservation searchById(String reservationId) {
 
         for (Reservation reservation : reservationList) {
 
-            if (reservation.getReservationId().equalsIgnoreCase(reservationId)) {
+            if (reservation.getReservationId().equalsIgnoreCase(reservationId))
                 return reservation;
-            }
 
         }
 
@@ -92,12 +88,8 @@ public class ReservationService {
 
         for (Reservation reservation : reservationList) {
 
-            if (reservation.getCustomerName()
-                    .toLowerCase()
-                    .contains(name.toLowerCase())) {
-
+            if (reservation.getCustomerName().toLowerCase().contains(name.toLowerCase()))
                 result.add(reservation);
-            }
 
         }
 
@@ -110,9 +102,8 @@ public class ReservationService {
 
         for (Reservation reservation : reservationList) {
 
-            if (reservation.getPhoneNumber().contains(phone)) {
+            if (reservation.getPhoneNumber().contains(phone))
                 result.add(reservation);
-            }
 
         }
 
@@ -120,7 +111,6 @@ public class ReservationService {
     }
 
     //==================== DISPLAY ====================
-
     public void displayAll() {
 
         if (reservationList.isEmpty()) {
@@ -149,12 +139,13 @@ public class ReservationService {
     }
 
     //==================== SORT ====================
-
     public void sortByCustomerName() {
 
         reservationList.sort(
                 Comparator.comparing(Reservation::getCustomerName)
         );
+
+        ReservationFile.save(reservationList);
     }
 
     public void sortByTableNumber() {
@@ -162,19 +153,21 @@ public class ReservationService {
         reservationList.sort(
                 Comparator.comparingInt(Reservation::getTableNumber)
         );
+
+        ReservationFile.save(reservationList);
     }
 
     //==================== STATUS ====================
-
     public boolean confirmReservation(String reservationId) {
 
         Reservation reservation = searchById(reservationId);
 
-        if (reservation == null) {
+        if (reservation == null)
             return false;
-        }
 
         reservation.setStatus("Confirmed");
+        ReservationFile.save(reservationList);
+
         return true;
     }
 
@@ -182,28 +175,28 @@ public class ReservationService {
 
         Reservation reservation = searchById(reservationId);
 
-        if (reservation == null) {
+        if (reservation == null)
             return false;
-        }
 
         reservation.setStatus("Cancelled");
+        ReservationFile.save(reservationList);
+
         return true;
     }
 
     //==================== CHECK ====================
-
     public boolean isExist(String reservationId) {
-
         return searchById(reservationId) != null;
     }
 
     public int countReservation() {
-
         return reservationList.size();
     }
 
+    //==================== CLEAR ====================
     public void clearAll() {
-
         reservationList.clear();
+        ReservationFile.save(reservationList);
     }
+
 }

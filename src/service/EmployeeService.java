@@ -1,6 +1,7 @@
 package service;
 
 import employee.*;
+import file.EmployeeFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -10,7 +11,7 @@ public class EmployeeService {
     private ArrayList<Employee> employeeList;
 
     public EmployeeService() {
-        employeeList = new ArrayList<>();
+        employeeList = EmployeeFile.load();
     }
 
     public ArrayList<Employee> getEmployeeList() {
@@ -23,7 +24,11 @@ public class EmployeeService {
 
     //================== ADD ==================
     public void addEmployee(Employee employee) {
+
         employeeList.add(employee);
+
+        EmployeeFile.save(employeeList);
+
     }
 
     //================== DELETE ==================
@@ -32,7 +37,11 @@ public class EmployeeService {
         Employee employee = searchById(employeeId);
 
         if (employee != null) {
+
             employeeList.remove(employee);
+
+            EmployeeFile.save(employeeList);
+
             return true;
         }
 
@@ -72,6 +81,8 @@ public class EmployeeService {
         oldEmployee.setStatus(newEmployee.getStatus());
         oldEmployee.setHireDate(newEmployee.getHireDate());
 
+        EmployeeFile.save(employeeList);
+
         return true;
     }
 
@@ -101,7 +112,7 @@ public class EmployeeService {
 
     }
 
-    //================== SORT BY SALARY ==================
+    //================== SORT ==================
     public void sortBySalary() {
 
         Collections.sort(employeeList, new Comparator<Employee>() {

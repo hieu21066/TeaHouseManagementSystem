@@ -1,23 +1,13 @@
 package product;
 
-import java.util.Scanner;
-
 public class TeaAccessories extends Product {
-    private String accessoryType; // Gaiwan, Pitcher, Cha He, Tea Pet...
+    private String accessoryType; 
 
     public TeaAccessories() { super(); }
 
-    public TeaAccessories(String productId, String productName, double price, int quantity, String description, String accessoryType) {
-        super(productId, productName, price, quantity, description);
+    public TeaAccessories(String id, String name, double price, int quantity, String description, String accessoryType) {
+        super(id, name, price, quantity, description);
         this.accessoryType = accessoryType;
-    }
-
-    @Override
-    public void input() {
-        super.input();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter Accessory Type (Gaiwan/Pitcher/Cha He/Tea Pet): ");
-        this.accessoryType = sc.nextLine();
     }
 
     @Override
@@ -28,11 +18,18 @@ public class TeaAccessories extends Product {
 
     @Override
     public String toString() {
+        // Sử dụng các hàm getter public từ lớp cha Product
         return String.format("%s|TeaAccessories|TeaAccessories|%s|%.2f|%s|%s", 
-                productId, productName, price, description, accessoryType);
+                getId(), getName(), getPrice(), getDescription(), this.accessoryType);
     }
 
-    // Getter và Setter
-    public String getAccessoryType() { return accessoryType; }
-    public void setAccessoryType(String accessoryType) { this.accessoryType = accessoryType; }
+    // Getter & Setter...
+
+    public String getAccessoryType() {
+        return accessoryType;
+    }
+
+    public void setAccessoryType(String accessoryType) {
+        this.accessoryType = accessoryType;
+    }
 }

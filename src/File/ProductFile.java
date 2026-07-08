@@ -1,117 +1,108 @@
 package file;
 
 import product.*;
-
 import java.io.*;
 import java.util.ArrayList;
 
 public class ProductFile {
+    private static final String CATALOG_FILE = "DATA/ProductCatalog.txt";
+    private static final String STORAGE_FILE = "DATA/ProductStorage.txt";
 
-    private static final String FILE_NAME = "Product.txt";
-
-    //================ LOAD =================
-
-    public static ArrayList<Teapot> load() {
-
-        ArrayList<Teapot> list = new ArrayList<>();
-
-        File file = new File(FILE_NAME);
-
+    // 1. Đọc danh mục sản phẩm chuẩn từ Catalog (Mặc định quantity = 0)
+    public static ArrayList<Product> loadCatalog() {
+        ArrayList<Product> catalogList = new ArrayList<>();
+        File file = new File(CATALOG_FILE);
         if (!file.exists()) {
-            return list;
+            System.out.println("❌ Catalog file not found at: " + CATALOG_FILE);
+            return catalogList;
         }
 
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-
             String line;
-
             while ((line = br.readLine()) != null) {
-
-                // Bỏ qua dòng trống nếu có
                 if (line.trim().isEmpty()) continue;
-
                 String[] data = line.split("\\|");
+                
+                String id = data[0].trim();
+                String className = data[1].trim();
+                String category = data[2].trim();
+                String name = data[3].trim();
+                double price = Double.parseDouble(data[4].trim());
+                String desc = data[5].trim();
 
-                // Kiểm tra tối thiểu phải có 4 thuộc tính cơ bản (id, type, name, price)
-                if (data.length < 4) continue;
-
-                String id = data[0];
-                String type = data[1]; // Dùng để nhận biết loại sản phẩm: tea, teaware, accessory, teapet
-                String name = data[2];
-                double price = Double.parseDouble(data[3]);
-
-                Teapot product = null;
-
-                switch (type.toLowerCase()) {
-
-                    case "tea":
-                        if (data.length >= 5) {
-                            String teaType = data[4];
-                            product = new TeaCup(id, name, price, teaType);
-                        }
+                Product p = null;
+                // Khởi tạo đối tượng trực tiếp bằng ID lấy từ file, quantity mặc định gán bằng 0
+                switch (className) {
+                    case "Tea":
+                        int weight = Integer.parseInt(data[6].trim());
+                        p = new Tea(id, name, price, 0, desc, category, weight);
                         break;
-
-                    case "teaware":
-                        if (data.length >= 8) { // Cập nhật lại độ dài tối thiểu khớp với 8 thuộc tính khởi tạo
-                            String wareType = data[4];
-                            String clayType = data[5];
-                            String design = data[6];
-                            int capacity = Integer.parseInt(data[7]);
-                            product = new TeaAccessories(id, name, price, wareType, clayType, design, capacity);
-                        }
+                    case "Teapot":
+                        String clay = data[6].trim();
+                        String shape = data[7].trim();
+                        int capPot = Integer.parseInt(data[8].trim());
+                        p = new Teapot(id, name, price, 0, desc, clay, shape, capPot);
                         break;
-
-                    case "accessory":
-                        if (data.length >= 5) {
-                            String accessoryType = data[4];
-                            product = new Tea(id, name, price, accessoryType);
-                        }
+                    case "TeaCup":
+                        String role = data[6].trim();
+                        int capCup = Integer.parseInt(data[7].trim());
+                        p = new TeaCup(id, name, price, 0, desc, role, capCup);
                         break;
-
-                    case "teapet":
-                        if (data.length >= 7) {
-                            String petType = data[4];
-                            String clayType = data[5];
-                            String status = data[6];
-                            product = new TeaPet(id, name, price, petType, clayType, status);
-                        }
+                    case "TeaAccessories":
+                        String accType = data[6].trim();
+                        p = new TeaAccessories(id, name, price, 0, desc, accType);
                         break;
                 }
-
-                if (product != null) {
-                    list.add(product);
+                if (p != null) {
+                    catalogList.add(p);
                 }
-
             }
-
         } catch (Exception e) {
-            System.out.println("Load Product.txt failed!");
+            System.out.println("❌ Error reading catalog file: " + e.getMessage());
         }
-
-        return list;
-
+        return catalogList;
     }
 
-    //================ SAVE =================
+    // 2. Nạp số lượng/số gram tồn kho thực tế từ file Storage (Khắc phục hoàn toàn lỗi gạch đỏ)
+    public static void loadStorage(ArrayList<Product> activeList) {
+        File file = new File(STORAGE_FILE);
+        if (!file.exists()) return; // Nếu lần đầu chạy chưa có kho thực tế thì bỏ qua
 
-    public static void save(ArrayList<Teapot> list) {
+        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                if (line.trim().isEmpty()) continue;
+                String[] data = line.split("\\|");
+                String id = data[0].trim();
+                int qty = Integer.parseInt(data[1].trim());
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+                // Tìm sản phẩm khớp ID để cập nhật số lượng tồn kho
+                for (Product p : activeList) {
+                    if (p.getId().equalsIgnoreCase(id)) {
+                        p.setQuantity(qty);
+                        break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("❌ Error reading storage file: " + e.getMessage());
+        }
+    }
 
-            for (Teapot product : list) {
+    // 3. Ghi dữ liệu số lượng thực tế trong kho vào file Storage (Chỉ lưu ID|Số_lượng)
+    public static void saveStorage(ArrayList<Product> activeList) {
+        File file = new File(STORAGE_FILE);
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs(); // Tự tạo thư mục DATA nếu chưa có
+        }
 
-                bw.write(product.toString());
-
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            for (Product p : activeList) {
+                bw.write(p.getId() + "|" + p.getQuantity());
                 bw.newLine();
-
             }
-
         } catch (Exception e) {
-
-            System.out.println("Save Product.txt failed!");
-
+            System.out.println("❌ Error saving storage file: " + e.getMessage());
         }
-
     }
-
 }

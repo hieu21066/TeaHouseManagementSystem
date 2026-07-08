@@ -1,44 +1,45 @@
 package product;
 
-import java.util.Scanner;
-
-public class TeaCup extends Teapot {
-    private String teaType; // Green Tea, Oolong, White Tea, Black Tea, Yellow Tea, Raw Pu-erh, Ripe Pu-erh
-    private int sampleWeightGrams; // Quy cách đóng gói mẫu (g) từ file Catalog (ví dụ: 100, 357)
+public class TeaCup extends Product {
+    private String cupRole;   
+    private int capacityMl;   
 
     public TeaCup() { super(); }
 
-    public TeaCup(String productId, String productName, double price, int quantity, String description, String teaType, int sampleWeightGrams) {
-        super(productId, productName, price, quantity, description);
-        this.teaType = teaType;
-        this.sampleWeightGrams = sampleWeightGrams;
-    }
-
-    @Override
-    public void input() {
-        super.input();
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter Tea Type: ");
-        this.teaType = sc.nextLine();
-        System.out.print("Enter Sample Weight (grams): ");
-        this.sampleWeightGrams = Integer.parseInt(sc.nextLine());
+    public TeaCup(String id, String name, double price, int quantity, String description, String cupRole, int capacityMl) {
+        super(id, name, price, quantity, description);
+        this.cupRole = cupRole;
+        this.capacityMl = capacityMl;
     }
 
     @Override
     public void display() {
         super.display();
-        System.out.printf("Tea Type: %s, Packing: %dg\n", teaType, sampleWeightGrams);
+        System.out.printf("Role: %s, Capacity: %dml\n", cupRole, capacityMl);
     }
 
-    @Override
+   @Override
     public String toString() {
-        return String.format("%s|Tea|%s|%s|%.2f|%s|%d", 
-                productId, teaType, productName, price, description, sampleWeightGrams);
+        // Sử dụng các hàm getter public từ lớp cha Product
+        return String.format("%s|TeaCup|TeaCup|%s|%.2f|%s|%s|%d", 
+                getId(), getName(), getPrice(), getDescription(), this.cupRole, this.capacityMl);
     }
 
-    // Getter và Setter
-    public String getTeaType() { return teaType; }
-    public void setTeaType(String teaType) { this.teaType = teaType; }
-    public int getSampleWeightGrams() { return sampleWeightGrams; }
-    public void setSampleWeightGrams(int sampleWeightGrams) { this.sampleWeightGrams = sampleWeightGrams; }
+    // Getter & Setter...
+
+    public String getCupRole() {
+        return cupRole;
+    }
+
+    public void setCupRole(String cupRole) {
+        this.cupRole = cupRole;
+    }
+
+    public int getCapacityMl() {
+        return capacityMl;
+    }
+
+    public void setCapacityMl(int capacityMl) {
+        this.capacityMl = capacityMl;
+    }
 }

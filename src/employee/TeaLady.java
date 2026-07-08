@@ -2,30 +2,27 @@ package employee;
 
 public class TeaLady extends Employee {
 
-    // Constructor mặc định
     public TeaLady() {
         super();
     }
 
-    // Constructor đầy đủ
-    public TeaLady(String employeeId,
-                   String fullName,
-                   String gender,
-                   int age,
-                   String phone,
-                   String address,
-                   double salary,
-                   String shift,
-                   String status,
-                   String hireDate) {
-
-        super(employeeId, fullName, gender, age,
-              phone, address, salary,
-              shift, status, hireDate);
+    public TeaLady(String employeeId, String fullName, String gender, int age, 
+                   String phone, double salary, String shift, String status, String hireDate) {
+        super(employeeId, fullName, gender, age, phone, salary, shift, status, hireDate);
     }
 
     @Override
     public String getRole() {
-        return "TeaLady";
+        return "TeaLady"; // 2 từ -> Lớp cha tự cắt chữ cái đầu thành "TL"
+    }
+
+    @Override
+    public void input() {
+        super.input();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

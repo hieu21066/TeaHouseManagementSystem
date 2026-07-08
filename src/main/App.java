@@ -1,5 +1,6 @@
 package main;
 
+import java.io.File; // Thêm thư viện này để làm việc với File
 import java.util.Scanner;
 import service.*;
 import view.*;
@@ -10,7 +11,6 @@ public class App {
 
         Scanner sc = new Scanner(System.in);
 
-        AccountService accountService = new AccountService();
         EmployeeService employeeService = new EmployeeService();
         ProductService productService = new ProductService();
         ComboService comboService = new ComboService();
@@ -21,7 +21,6 @@ public class App {
         int choose = -1;
 
         do {
-
             System.out.println("\n=================================");
             System.out.println(" TEA HOUSE MANAGEMENT SYSTEM");
             System.out.println("=================================");
@@ -41,17 +40,48 @@ public class App {
 
                 //================ ADMIN =================
                 case 1:
-
                     System.out.println("\n========== LOGIN ==========");
 
                     System.out.print("Username: ");
-                    String username = sc.nextLine();
+                    String inputUsername = sc.nextLine();
 
                     System.out.print("Password: ");
-                    String password = sc.nextLine();
+                    String inputPassword = sc.nextLine();
 
-                    if (!accountService.login(username, password)) {
-                        System.out.println("Login Failed!");
+                    // --- ĐOẠN XỬ LÝ ĐỌC FILE TXT THAY CHO ACCOUNTSERVICE ---
+                    boolean isLoginSuccess = false;
+                    try {
+                        // Tạo đối tượng file trỏ đến file admin.txt (Bạn có thể đổi tên file tùy ý)
+                        File file = new File("admin.txt"); 
+                        
+                        if (file.exists()) {
+                            Scanner fileReader = new Scanner(file);
+                            
+                            if (fileReader.hasNextLine()) {
+                                String correctUsername = fileReader.nextLine().trim(); // Dòng 1: Tài khoản gốc
+                                if (fileReader.hasNextLine()) {
+                                    String correctPassword = fileReader.nextLine().trim(); // Dòng 2: Mật khẩu gốc
+                                    
+                                    // So sánh tài khoản/mật khẩu nhập vào với file txt
+                                    if (inputUsername.equals(correctUsername) && inputPassword.equals(correctPassword)) {
+                                        isLoginSuccess = true;
+                                    }
+                                }
+                            }
+                            fileReader.close(); // Đóng scanner đọc file
+                        } else {
+                            System.out.println("[Lỗi] Không tìm thấy file hệ thống admin.txt!");
+                            break;
+                        }
+                    } catch (Exception e) {
+                        System.out.println("[Lỗi] Đã xảy ra lỗi khi đọc file tài khoản!");
+                        break;
+                    }
+                    // --------------------------------------------------------
+
+                    // Kiểm tra kết quả flag login
+                    if (!isLoginSuccess) {
+                        System.out.println("Login Failed! Sai tài khoản hoặc mật khẩu.");
                         break;
                     }
 
@@ -69,10 +99,8 @@ public class App {
 
                 //================ ORDER =================
                 case 2:
-
                     System.out.println("\n====== ORDER MODE ======");
                     OrderView.orderMenu(sc, orderService);
-
                     break;
 
                 case 0:
@@ -101,7 +129,6 @@ public class App {
         int menu = -1;
 
         do {
-
             System.out.println("\n============= ADMIN MENU =============");
             System.out.println("1. Employee Management");
             System.out.println("2. Product Management");
@@ -120,35 +147,27 @@ public class App {
             }
 
             switch (menu) {
-
                 case 1:
                     new EmployeeView(employeeService).run();
                     break;
-
                 case 2:
                     new ProductView(productService).run();
                     break;
-
                 case 3:
                     ComboView.comboMenu(sc, comboService);
                     break;
-
                 case 4:
                     new ReservationView(reservationService).menu();
                     break;
-
                 case 5:
                     OrderView.orderMenu(sc, orderService);
                     break;
-
                 case 6:
                     FinanceView.displayFinancialReport(sc, financeService);
                     break;
-
                 case 0:
                     System.out.println("Logout Successfully!");
                     break;
-
                 default:
                     System.out.println("Invalid Choice!");
             }

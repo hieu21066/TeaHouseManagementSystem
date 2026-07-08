@@ -3,20 +3,26 @@ package employee;
 public class Cashier extends Employee {
 
     public Cashier() {
+        super();
     }
 
-    public Cashier(String employeeId, String fullName, String gender,
-                   int age, String phone, String address,
-                   double salary, String shift,
-                   String status, String hireDate) {
-
-        super(employeeId, fullName, gender, age,
-                phone, address, salary,
-                shift, status, hireDate);
+    public Cashier(String employeeId, String fullName, String gender, int age, 
+                   String phone, double salary, String shift, String status, String hireDate) {
+        super(employeeId, fullName, gender, age, phone, salary, shift, status, hireDate);
     }
 
     @Override
     public String getRole() {
-        return "Cashier";
+        return "Cashier"; // 1 từ -> Lớp cha tự cắt ra chữ "CA"
+    }
+
+    @Override
+    public void input() {
+        super.input();
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
     }
 }

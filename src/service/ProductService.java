@@ -1,132 +1,109 @@
-package service;
+package product;
 
+import file.ProductFile;
 import java.util.ArrayList;
-import product.*;
+import java.util.Scanner;
 
 public class ProductService {
-    // ArrayList dùng để quản lý toàn bộ sản phẩm trong hệ thống (Tính đa hình)
-    private ArrayList<Product> productList;
+    // Chứa dữ liệu mẫu chỉ đọc để đối chiếu ID
+    private ArrayList<Product> catalogList;
+    // Chứa dữ liệu kho đang chạy thực tế của quán (Biến động số lượng)
+    private ArrayList<Product> activeProductList;
 
-    // Constructor khởi tạo danh sách
     public ProductService() {
-        this.productList = new ArrayList<>();
+        // Tải danh mục gốc làm chuẩn so sánh
+        this.catalogList = ProductFile.loadCatalog();
+        
+        // Tạo danh sách chạy thực tế bằng cách nhân bản từ danh mục mẫu sang
+        this.activeProductList = ProductFile.loadCatalog();
+        
+        // Nạp đè số lượng thực tế từ file kho lên danh sách đang chạy
+        ProductFile.loadStorage(this.activeProductList);
     }
 
-    // 1. THÊM SẢN PHẨM MỚI (Thêm được cả Tea, TeaWare, Accessory, TeaPet)
-    public void addProduct(Product product) {
-        // Kiểm tra xem mã sản phẩm (ID) đã tồn tại chưa để tránh trùng lặp
-        for (Product p : productList) {
-            if (p.getId().equalsIgnoreCase(product.getId())) {
-                System.out.println("❌ Lỗi: Mã sản phẩm " + product.getId() + " đã tồn tại!");
-                return;
-            }
-        }
-        productList.add(product);
-        System.out.println("✅ Thêm sản phẩm thành công: " + product.getName());
-    }
-
-    // 2. LẤY TOÀN BỘ DANH SÁCH SẢN PHẨM
-    public ArrayList<Product> getAllProducts() {
-        return this.productList;
-    }
-
-    // 3. HIỂN THỊ TẤT CẢ SẢN PHẨM RA MÀN HÌNH
-    public void printAllProducts() {
-        if (productList.isEmpty()) {
-            System.out.println("📭 Danh sách sản phẩm hiện tại đang trống.");
+    // Chức năng hiển thị danh sách kho hàng thực tế của quán trà
+    public void displayAllProducts() {
+        if (activeProductList.isEmpty()) {
+            System.out.println("No products available in the system.");
             return;
         }
-        System.out.println("\n--- DANH SÁCH TẤT CẢ SẢN PHẨM ---");
-        for (Product p : productList) {
-            System.out.println(p); // Tự động gọi hàm toString() của từng lớp con
+        Product.displayHeader();
+        for (Product p : activeProductList) {
+            p.display();
         }
     }
 
-    // 4. TÌM KIẾM SẢN PHẨM THEO MÃ (ID)
+    // Chức năng NHẬP HÀNG (Import) chuẩn tư duy: Chỉ nhập ID có sẵn -> Tìm thông tin -> Nạp số lượng
+    public void importProduct() {
+        Scanner sc = new Scanner(System.in);
+        System.out.print("Enter Product ID to import (e.g., TE001, TP001): ");
+        String inputId = sc.nextLine().trim().toUpperCase();
+
+        // 1. Kiểm tra xem ID nhập vào có nằm trong Danh mục gốc (Catalog) không
+        Product catalogItem = null;
+        for (Product p : catalogList) {
+            if (p.getId().equalsIgnoreCase(inputId)) {
+                catalogItem = p;
+                break;
+            }
+        }
+
+        if (catalogItem == null) {
+            System.out.println("❌ Error: Product ID [" + inputId + "] does not exist in the master catalog!");
+            return;
+        }
+
+        // 2. Định vị sản phẩm đó trong Kho thực tế để chuẩn bị cộng dồn số lượng
+        Product activeItem = null;
+        for (Product p : activeProductList) {
+            if (p.getId().equalsIgnoreCase(inputId)) {
+                activeItem = p;
+                break;
+            }
+        }
+
+        // 3. In thông tin thô của sản phẩm ra màn hình để nhân viên xác nhận trước khi nhập số lượng
+        System.out.println("\n=== PRODUCT VALIDATED ===");
+        System.out.println("» Name: " + catalogItem.getName());
+        System.out.println("» Price: " + catalogItem.getPrice() + " USD");
+        System.out.println("» Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
+        
+        // Tự động nhận diện đơn vị tính: Trà tính bằng gram, các thứ khác tính bằng chiếc (pieces)
+        String unit = (catalogItem instanceof Tea) ? "grams" : "pieces";
+        System.out.print("Enter quantity to add (" + unit + "): ");
+        
+        try {
+            int amount = Integer.parseInt(sc.nextLine());
+            if (amount <= 0) {
+                System.out.println("❌ Quantity must be greater than 0. Import canceled.");
+                return;
+            }
+
+            // 4. Tiến hành cộng dồn vào kho thực tế và lưu file ngay lập tức
+            if (activeItem != null) {
+                activeItem.setQuantity(activeItem.getQuantity() + amount);
+                
+                // Lưu lại file kho thực tế Storage.txt
+                ProductFile.saveStorage(activeProductList);
+                System.out.println("✅ Successfully imported " + amount + " " + unit + " for [" + catalogItem.getName() + "].");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Invalid number format. Import canceled.");
+        }
+    }
+
+    // Tìm kiếm nhanh một sản phẩm trong kho phục vụ cho module Order bán hàng
     public Product findProductById(String id) {
-        for (Product p : productList) {
+        for (Product p : activeProductList) {
             if (p.getId().equalsIgnoreCase(id)) {
                 return p;
             }
         }
-        return null; // Trả về null nếu không tìm thấy
+        return null;
     }
 
-    // 5. XÓA SẢN PHẨM THEO MÃ (ID)
-    public boolean deleteProductById(String id) {
-        Product found = findProductById(id);
-        if (found != null) {
-            productList.remove(found);
-            System.out.println("Đã xóa sản phẩm có mã: " + id);
-            return true;
-        }
-        System.out.println("Không tìm thấy sản phẩm có mã " + id + " để xóa.");
-        return false;
-    }
-
-    // 6. LỌC SẢN PHẨM THEO TỪNG LOẠI CỤ THỂ (Sử dụng instanceof)
-    
-    // 6a. Chỉ lấy các loại Trà (Tea)
-    public ArrayList<Tea> getOnlyTeas() {
-        ArrayList<Tea> teas = new ArrayList<>();
-        for (Product p : productList) {
-            if (p instanceof Tea) {
-                teas.add((Tea) p); // Ép kiểu từ Product về Tea
-            }
-        }
-        return teas;
-    }
-
-    // 6b. Chỉ lấy các loại Trà Cụ (TeaWare)
-    public ArrayList<TeaWare> getOnlyTeaWares() {
-        ArrayList<TeaWare> teaWares = new ArrayList<>();
-        for (Product p : productList) {
-            if (p instanceof TeaWare) {
-                teaWares.add((TeaWare) p); // Ép kiểu từ Product về TeaWare
-            }
-        }
-        return teaWares;
-    }
-
-    // 6c. Chỉ lấy các loại Phụ kiện bàn trà (Accessory)
-    public ArrayList<Accessory> getOnlyAccessories() {
-        ArrayList<Accessory> accessories = new ArrayList<>();
-        for (Product p : productList) {
-            if (p instanceof Accessory && !(p instanceof TeaPet)) {
-                accessories.add((Accessory) p); // Ép kiểu từ Product về Accessory
-            }
-        }
-        return accessories;
-    }
-
-    // 6d. Chỉ lấy các loại Trà sủng (TeaPet)
-    public ArrayList<TeaPet> getOnlyTeaPets() {
-        ArrayList<TeaPet> teaPets = new ArrayList<>();
-        for (Product p : productList) {
-            if (p instanceof TeaPet) {
-                teaPets.add((TeaPet) p); // Ép kiểu từ Product về TeaPet
-            }
-        }
-        return teaPets;
-    }
-
-    public void addTea(String id, String name, double price, String teaType) {
-        this.productList.add(new Tea(id, name, price, teaType));
-        System.out.println("Successfully added tea!");
-    }
-
-    public void addTeaWare(String id, String name, double price, String wareType, String clayType, String design, int capacity) {
-        this.productList.add(new TeaWare(id, name, price, wareType, clayType, design, capacity));
-        System.out.println("Successfully added teaware");
-    }
-
-    public void addAccessory(String id, String name, double price, String accessoryType) {
-        this.productList.add(new Accessory(id, name, price, accessoryType));
-        System.out.println("Successfully added tea accessory!");
-    }
-
-    public void addTeaPet(String id, String name, double price, String petType, String clayType, String status) {
-        this.productList.add(new TeaPet(id, name, price, petType, clayType, status));
-        System.out.println("Successfully added tea pet!");
+    // Ép hệ thống lưu file Storage từ bên ngoài khi có biến động (như khi Order trừ kho)
+    public void saveStorageFile() {
+        ProductFile.saveStorage(activeProductList);
     }
 }

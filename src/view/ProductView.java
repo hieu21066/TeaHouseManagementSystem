@@ -196,7 +196,7 @@ public class ProductView {
         System.out.print("Enter Product ID: ");
         String id = sc.nextLine();
 
-        Product found = productService.findProductById(id);
+        Teapot found = productService.findProductById(id);
         if (found == null) {
             System.out.println("Product Not Found!");
         } else {
@@ -207,21 +207,21 @@ public class ProductView {
 
     // ==========================================================
     private void displayTeas() {
-        ArrayList<Tea> list = productService.getOnlyTeas();
+        ArrayList<TeaCup> list = productService.getOnlyTeas();
         System.out.println("\n--- TEA LIST ---");
         if (list.isEmpty()) System.out.println("No products found.");
         else list.forEach(System.out::println);
     }
 
     private void displayTeaWares() {
-        ArrayList<TeaWare> list = productService.getOnlyTeaWares();
+        ArrayList<TeaAccessories> list = productService.getOnlyTeaWares();
         System.out.println("\n--- TEAWARE LIST ---");
         if (list.isEmpty()) System.out.println("No products found.");
         else list.forEach(System.out::println);
     }
 
     private void displayAccessories() {
-        ArrayList<Accessory> list = productService.getOnlyAccessories();
+        ArrayList<Tea> list = productService.getOnlyAccessories();
         System.out.println("\n--- ACCESSORY LIST ---");
         if (list.isEmpty()) System.out.println("No products found.");
         else list.forEach(System.out::println);
@@ -235,7 +235,7 @@ public class ProductView {
     }
 
     // ========================== HELPERS ==========================
-    private void printSingleProduct(Product p) {
+    private void printSingleProduct(Teapot p) {
         if (p instanceof TeaPet) {
             TeaPet pet = (TeaPet) p;
             System.out.printf("Mã: %s | Tên: %s | Giá: %,.0f đ | Tượng: %s | Chất đất: %s | Trạng thái: %s\n",
@@ -245,13 +245,13 @@ public class ProductView {
         }
     }
 
-    private void printCustomAllProducts(ArrayList<Product> list) {
+    private void printCustomAllProducts(ArrayList<Teapot> list) {
         if (list.isEmpty()) {
             System.out.println("📭 Product list is currently empty.");
             return;
         }
         System.out.println("\n--- ALL PRODUCTS LIST ---");
-        for (Product p : list) {
+        for (Teapot p : list) {
             printSingleProduct(p);
         }
     }

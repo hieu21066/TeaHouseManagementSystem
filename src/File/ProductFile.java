@@ -11,9 +11,9 @@ public class ProductFile {
 
     //================ LOAD =================
 
-    public static ArrayList<Product> load() {
+    public static ArrayList<Teapot> load() {
 
-        ArrayList<Product> list = new ArrayList<>();
+        ArrayList<Teapot> list = new ArrayList<>();
 
         File file = new File(FILE_NAME);
 
@@ -40,14 +40,14 @@ public class ProductFile {
                 String name = data[2];
                 double price = Double.parseDouble(data[3]);
 
-                Product product = null;
+                Teapot product = null;
 
                 switch (type.toLowerCase()) {
 
                     case "tea":
                         if (data.length >= 5) {
                             String teaType = data[4];
-                            product = new Tea(id, name, price, teaType);
+                            product = new TeaCup(id, name, price, teaType);
                         }
                         break;
 
@@ -57,14 +57,14 @@ public class ProductFile {
                             String clayType = data[5];
                             String design = data[6];
                             int capacity = Integer.parseInt(data[7]);
-                            product = new TeaWare(id, name, price, wareType, clayType, design, capacity);
+                            product = new TeaAccessories(id, name, price, wareType, clayType, design, capacity);
                         }
                         break;
 
                     case "accessory":
                         if (data.length >= 5) {
                             String accessoryType = data[4];
-                            product = new Accessory(id, name, price, accessoryType);
+                            product = new Tea(id, name, price, accessoryType);
                         }
                         break;
 
@@ -94,11 +94,11 @@ public class ProductFile {
 
     //================ SAVE =================
 
-    public static void save(ArrayList<Product> list) {
+    public static void save(ArrayList<Teapot> list) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
 
-            for (Product product : list) {
+            for (Teapot product : list) {
 
                 bw.write(product.toString());
 

@@ -1,6 +1,8 @@
 package service;
 
 import finance.Finance;
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.util.ArrayList;
 
 public class FinanceService {
@@ -106,14 +108,15 @@ public class FinanceService {
         return searchById(financeId) != null;
     }
 
-    // ==================== TỰ ĐỘNG TÍNH TOÁN LẤY TỪ 3 FILE HỆ THỐNG ====================
+    // ==================== TỰ ĐỘNG TÍNH TOÁN LẤY TỪ CÁC FILE HỆ THỐNG ====================
+    // ==================== TỰ ĐỘNG TÍNH TOÁN LẤY TỪ CÁC FILE HỆ THỐNG ====================
     public boolean autoCalculateFinance(String financeId, OrderService orderService, ProductService productService, ComboService comboService) {
         Finance finance = searchById(financeId);
         if (finance == null) {
             return false;
         }
 
-        // 1. Tự động tính Doanh thu từ file Invoice bán hàng lẻ (OrderService)
+        // 1. Tự động tính Doanh thu từ danh sách Invoice bán hàng lẻ (OrderService)
         double totalRevenue = 0.0;
         if (orderService.getInvoiceList() != null) {
             for (order.Invoice invoice : orderService.getInvoiceList()) {
@@ -121,24 +124,40 @@ public class FinanceService {
             }
         }
 
-        // 2. Tự động tính Chi phí vốn từ Kho hàng (Product) và Danh mục Combo
+        // 2. Tự động tính Chi phí vốn từ Kho hàng và Danh mục Combo
         double totalExpense = 0.0;
 
-        // a. Quét từ file kho hàng thực tế (ProductStorage / activeProductList)
-        if (productService.getActiveProductList() != null) {
-            for (product.Product p : productService.getActiveProductList()) {
-                // p.getPrice() lấy giá bán từ file catalog gốc, nhân 0.6 để ước tính ra giá nhập vốn
-                double estimatedImportPrice = p.getPrice() * 0.6;
-                totalExpense += p.getQuantity() * estimatedImportPrice;
+        // a. Đọc trực tiếp từ file dữ liệu ProductStorage.txt để lấy thông tin tồn kho chuẩn xác
+        try (BufferedReader br = new BufferedReader(new FileReader("ProductStorage.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] pData = line.split("\\|");
+                if (pData.length >= 3) {
+                    try {
+                        double quantity = Double.parseDouble(pData[2].trim());
+                        
+                        // Tìm giá gốc từ Catalog để tính chi phí vốn ước tính (60%)
+                        String[] matchedCatalog = orderService.findCatalogProduct(pData[0].trim());
+                        if (matchedCatalog != null && matchedCatalog.length >= 5) {
+                            double price = Double.parseDouble(matchedCatalog[4].trim());
+                            double estimatedImportPrice = price * 0.6;
+                            totalExpense += quantity * estimatedImportPrice;
+                        }
+                    } catch (NumberFormatException nfe) {
+                        // Bỏ qua dòng tiêu đề hoặc dòng lỗi định dạng số
+                    }
+                }
             }
+        } catch (Exception e) {
+            // Nếu không tìm thấy file, thông báo lỗi ra màn hình thay vì gọi hàm lỗi
+            System.out.println("⚠️ Cảnh báo: Không thể đọc file ProductStorage.txt để tính chi phí kho!");
         }
 
         // b. Quét chi phí vốn ước tính từ danh mục các gói Combo (ComboFile)
         if (comboService.getComboList() != null) {
             for (combo.Combo combo : comboService.getComboList()) {
                 // Ước tính giá gốc cấu thành Combo bằng 60% giá niêm yết combo đó
-                double estimatedComboCost = combo.getPrice() * 0.6;
-                totalExpense += estimatedComboCost;
+                totalExpense += combo.getPrice() * 0.6;
             }
         }
 

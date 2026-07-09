@@ -3,13 +3,15 @@ package view;
 import order.Invoice;
 import order.OrderItem;
 import service.OrderService;
+import service.ReservationService; // Thêm import này
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
 public class OrderView {
 
-    public static void orderMenu(Scanner sc, OrderService orderService) {
+    // Thêm tham số ReservationService vào hàm nhận diện
+    public static void orderMenu(Scanner sc, OrderService orderService, ReservationService reservationService) {
         int choose;
         do {
             System.out.println("\n====== ORDER MANAGEMENT ======");
@@ -19,6 +21,7 @@ public class OrderView {
             System.out.println("4. Delete Invoice");
             System.out.println("5. Search Invoice By ID");
             System.out.println("6. Sort Invoices By Total Amount");
+            System.out.println("7. Reservation Management (Đặt bàn)"); // Chuyển chức năng sang đây
             System.out.println("0. Back");
             System.out.println("==============================");
             System.out.print("Choose: ");
@@ -65,6 +68,11 @@ public class OrderView {
                     orderService.sortByTotalAmount();
                     System.out.println("✅ Đã sắp xếp hóa đơn theo tổng tiền tăng dần!");
                     break;
+                case 7:
+                    // Gọi trực tiếp hàm hiển thị menu quản lý đặt bàn tại đây
+                    System.out.println("\n--- CHUYỂN ĐẾN QUẢN LÝ ĐẶT BÀN ---");
+                    new ReservationView(reservationService).menu();
+                    break;
                 case 0:
                     System.out.println("Returning to main menu...");
                     break;
@@ -76,6 +84,18 @@ public class OrderView {
 
     private static void handleCreateInvoice(Scanner sc, OrderService service) {
         System.out.println("\n--- CREATE NEW INVOICE ---");
+<<<<<<< HEAD
+        
+        String autoInvoiceId = service.generateNextInvoiceId();
+        System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
+
+        System.out.print("Enter Employee Name (Tên người lập đơn): ");
+        String empName = sc.nextLine().trim();
+        System.out.print("Enter Employee ID (Mã nhân viên): ");
+        String empId = sc.nextLine().trim();
+
+        String fullEmployeeInfo = empName + " - " + empId;
+=======
         String autoInvoiceId = service.generateNextInvoiceId();
         System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
 
@@ -90,6 +110,7 @@ public class OrderView {
             }
         }
         System.out.println("-> Nhân viên lập đơn: " + matchedEmpName);
+>>>>>>> 839dba663e1c76077746319548372ddf26b606ec
 
         String fullEmployeeInfo = matchedEmpName + " - " + empId;
         Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
@@ -106,11 +127,20 @@ public class OrderView {
                 while ((line = br.readLine()) != null) {
                     String[] catData = line.split("\\|");
                     String id = catData[0];
+<<<<<<< HEAD
+                    double currentGrams = service.getStorageQuantityInGrams(id, catData);
+
+                    if (currentGrams > 0) {
+                        String unitStr = catData[1].equalsIgnoreCase("Tea") ? " g" : " Cái";
+                        System.out.printf("%-10s | %-20s | %-12s | %-12s\n", 
+                                id, catData[3], catData[4] + " VND", (int)currentGrams + unitStr);
+=======
                     if (catData[1].equalsIgnoreCase("Tea") && service.getStorageQuantityInGrams(id) > 0) {
                         // FIX: Nhân 1,000, ép kiểu int và đổi thành định dạng %,d
                         int catalogPriceVND = (int) (Double.parseDouble(catData[4]) * 1000);
                         System.out.printf("%-10s | %-20s | %,d VND     | %-12s\n", 
                                 id, catData[3], catalogPriceVND, service.getStorageQuantityInGrams(id) + " g");
+>>>>>>> 839dba663e1c76077746319548372ddf26b606ec
                         availableCount++;
                     }
                 }
@@ -123,7 +153,11 @@ public class OrderView {
                 break;
             }
 
+<<<<<<< HEAD
+            System.out.print("\nNhập ID sản phẩm muốn chọn (gõ '0' để chốt đơn): ");
+=======
             System.out.print("\nNhập ID sản phẩm trà muốn chọn: ");
+>>>>>>> 839dba663e1c76077746319548372ddf26b606ec
             String prodId = sc.nextLine().trim();
 
             String[] matchedCatalog = service.findCatalogProduct(prodId);

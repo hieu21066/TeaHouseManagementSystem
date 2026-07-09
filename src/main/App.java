@@ -70,9 +70,7 @@ public class App {
                         System.out.println("[Lỗi] Đã xảy ra lỗi khi đọc file tài khoản!");
                         break;
                     }
-                    // --------------------------------------------------------
 
-                    // Kiểm tra kết quả flag login
                     if (!isLoginSuccess) {
                         System.out.println("Login Failed! Wrong Username or Password.");
                         break;
@@ -84,7 +82,7 @@ public class App {
                             employeeService,
                             productService,
                             comboService,
-                            reservationService,
+                            reservationService, // Vẫn truyền vào để chuyển tiếp sang OrderView nếu cần
                             orderService,
                             financeService);
 
@@ -93,7 +91,8 @@ public class App {
                 //================ ORDER =================
                 case 2:
                     System.out.println("\n====== ORDER MODE ======");
-                    OrderView.orderMenu(sc, orderService);
+                    // Đã bổ sung thêm reservationService vào đây
+                    OrderView.orderMenu(sc, orderService, reservationService); 
                     break;
 
                 case 0:
@@ -126,9 +125,8 @@ public class App {
             System.out.println("1. Employee Management");
             System.out.println("2. Product Management");
             System.out.println("3. Combo Management");
-            System.out.println("4. Reservation Management");
-            System.out.println("5. Order Management");
-            System.out.println("6. Finance Management");
+            System.out.println("4. Order Management"); // Đôn lên vị trí số 4
+            System.out.println("5. Finance Management"); // Đôn lên vị trí số 5
             System.out.println("0. Logout");
             System.out.print("Choose: ");
 
@@ -150,12 +148,10 @@ public class App {
                     ComboView.comboMenu(sc, comboService);
                     break;
                 case 4:
-                    new ReservationView(reservationService).menu();
+                    // Đã bổ sung thêm reservationService khi gọi Order từ Admin
+                    OrderView.orderMenu(sc, orderService, reservationService); 
                     break;
                 case 5:
-                    OrderView.orderMenu(sc, orderService);
-                    break;
-                case 6:
                     FinanceView.displayFinancialReport(sc, financeService, orderService, productService, comboService);
                     break;
                 case 0:

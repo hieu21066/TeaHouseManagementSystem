@@ -16,7 +16,7 @@ public class TeaAccessories extends Product {
     public void display() {
         super.display();
         System.out.printf("Accessory Type: %s\n", accessoryType);
-    }
+    } 
 
     @Override
     public String toString() {

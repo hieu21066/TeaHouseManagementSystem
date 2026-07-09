@@ -59,7 +59,7 @@ public class ProductFile {
             }
         } catch (Exception e) {
             System.out.println("❌ Error reading catalog file: " + e.getMessage());
-        }
+        } 
         return catalogList;
     }
 

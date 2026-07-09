@@ -7,13 +7,13 @@ public class TeaServant extends Employee {
     }
 
     public TeaServant(String employeeId, String fullName, String gender, int age, 
-                      String phone, double salary, String shift, String status, String hireDate) {
-        super(employeeId, fullName, gender, age, phone, salary, shift, status, hireDate);
+                      String phone, double salary, String shift, String hireDate) {
+        super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
     }
 
     @Override
     public String getRole() {
-        return "TeaServant"; // 2 từ -> Lớp cha tự cắt chữ cái đầu thành "TS"
+        return "TeaServant"; 
     }
 
     @Override

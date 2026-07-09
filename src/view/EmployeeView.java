@@ -40,30 +40,31 @@ public class EmployeeView {
                     searchEmployee();
                     break;
                 case 5:
-                    employeeService.displayAll();
+                    employeeService.displayAllWithRealtimeStatus(sc);
                     break;
                 case 6:
-                    employeeService.displayByType(Admin.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(Admin.class);
                     break;
                 case 7:
-                    employeeService.displayByType(Cashier.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(Cashier.class);
                     break;
                 case 8:
-                    employeeService.displayByType(TeaMaster.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaMaster.class);
                     break;
                 case 9:
-                    employeeService.displayByType(TeaLady.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaLady.class);
                     break;
                 case 10:
-                    employeeService.displayByType(TeaServant.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaServant.class);
                     break;
                 case 11:
-                    employeeService.displayByType(WarehouseStaff.class);
+                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(WarehouseStaff.class);
                     break;
                 case 12:
                     employeeService.sortBySalary();
                     System.out.println("Sorted Successfully!");
-                    employeeService.displayAll();
+                    // In danh sách sau khi sắp xếp kèm theo trạng thái động
+                    employeeService.displayAllWithRealtimeStatus(sc);
                     break;
                 case 0:
                     System.out.println("Back...");
@@ -80,7 +81,7 @@ public class EmployeeView {
         System.out.println("2. Delete Employee");
         System.out.println("3. Update Employee");
         System.out.println("4. Search Employee");
-        System.out.println("5. Display All");
+        System.out.println("5. Display All (With Realtime Status)");
         System.out.println("-----------------------------------------");
         System.out.println("6. Display Admin");
         System.out.println("7. Display Cashier");
@@ -94,7 +95,30 @@ public class EmployeeView {
         System.out.println("=========================================");
     }
 
-    // ================== CẬP NHẬT: ADD EMPLOYEE ==================
+    // ================== BỔ SUNG: Hàm phụ trợ hỗ trợ cập nhật trạng thái trước khi hiển thị nhóm nhân viên ==================
+    private boolean updateRealtimeStatusBeforeDisplay() {
+        if (employeeService.getEmployeeList().isEmpty()) {
+            return true; // Để mặc cho hàm displayByType thông báo danh sách trống
+        }
+        System.out.print("Enter current hour to check status (0-23): ");
+        try {
+            int hour = Integer.parseInt(sc.nextLine());
+            if (hour < 0 || hour > 23) {
+                System.out.println("Invalid hour! Must be between 0 and 23.");
+                return false;
+            }
+            // Duyệt nhanh qua danh sách để update trạng thái đồng loạt mốc giờ này
+            for (Employee employee : employeeService.getEmployeeList()) {
+                employee.updateStatusBasedOnHour(hour);
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println("Please enter an integer number!");
+            return false;
+        }
+    }
+
+    // ================== ADD EMPLOYEE ==================
     private void addEmployee() {
         System.out.println("\n----- Select Employee Type -----");
         System.out.println("1. Admin");
@@ -117,7 +141,6 @@ public class EmployeeView {
             return;
         }
 
-        // Khởi tạo đối tượng trống tương ứng với vai trò đã chọn
         Employee newEmp = null;
         switch (type) {
             case 1: newEmp = new Admin(); break;
@@ -129,39 +152,28 @@ public class EmployeeView {
         }
 
         if (newEmp != null) {
-            // 1. Gọi hàm nhập dữ liệu từ bàn phím
             newEmp.input(); 
 
-            // 2. TÌM SỐ THỨ TỰ LỚN NHẤT CỦA RIÊNG ROLE NÀY
             int maxOrder = 0;
-            String currentRole = newEmp.getRole(); // Ví dụ: "Admin" hoặc "Cashier"
+            String currentRole = newEmp.getRole(); 
             
             for (Employee e : employeeService.getEmployeeList()) {
-                // Chỉ xét những nhân viên có cùng Role với nhân viên đang chuẩn bị add
                 if (e.getRole().equalsIgnoreCase(currentRole)) {
-                    String oldId = e.getEmployeeId(); // Ví dụ: "AD001" hoặc "TL001"
-                    
+                    String oldId = e.getEmployeeId(); 
                     try {
-                        // Lấy 3 ký tự cuối cùng của ID (luôn là phần số, ví dụ: "001" -> 1)
                         String numberPart = oldId.substring(oldId.length() - 3);
                         int order = Integer.parseInt(numberPart);
-                        
                         if (order > maxOrder) {
                             maxOrder = order;
                         }
                     } catch (Exception ex) {
-                        // Phòng trường hợp ID cũ bị lỗi định dạng không cắt được
+                        // Bỏ qua ID lỗi định dạng
                     }
                 }
             }
             
-            // Số thứ tự của Role này sẽ bằng số lớn nhất hiện tại + 1
             int nextOrder = maxOrder + 1;
-
-            // 3. Truyền số thứ tự riêng biệt vào để sinh mã ID tương ứng
             newEmp.generateId(nextOrder);
-
-            // 4. Lưu vào hệ thống
             employeeService.addEmployee(newEmp);
             System.out.println("Add Employee Successfully! ID generated: " + newEmp.getEmployeeId());
         }
@@ -178,7 +190,7 @@ public class EmployeeView {
             System.out.println("Employee Not Found!");
     }
 
-    // ================== CẬP NHẬT: UPDATE EMPLOYEE ==================
+    // ================== UPDATE EMPLOYEE ==================
     private void updateEmployee() {
         System.out.print("Enter Employee ID to update: ");
         String id = sc.nextLine().trim();
@@ -191,7 +203,6 @@ public class EmployeeView {
 
         System.out.println("\n--- Enter New Information for Employee: " + oldEmp.getFullName() + " (" + oldEmp.getRole() + ") ---");
         
-        // Tạo một đối tượng sao chép tạm thời cùng loại với oldEmp để hứng thông tin mới nhập vào
         Employee tempEmp = null;
         if (oldEmp instanceof Admin) tempEmp = new Admin();
         else if (oldEmp instanceof Cashier) tempEmp = new Cashier();
@@ -201,13 +212,9 @@ public class EmployeeView {
         else if (oldEmp instanceof WarehouseStaff) tempEmp = new WarehouseStaff();
 
         if (tempEmp != null) {
-            // Giữ nguyên mã ID cũ cho đối tượng tạm
             tempEmp.setEmployeeId(oldEmp.getEmployeeId());
-            
-            // Gọi hàm input() để nhập đè thông tin mới
             tempEmp.input();
 
-            // Truyền đối tượng chứa dữ liệu mới sang Service xử lý cập nhật gốc
             if (employeeService.updateEmployee(tempEmp)) {
                 System.out.println("Update Employee Successfully!");
             } else {
@@ -225,6 +232,17 @@ public class EmployeeView {
         if (employee == null) {
             System.out.println("Employee Not Found!");
         } else {
+            // Khi tìm đích danh 1 nhân viên, hỏi giờ để hiển thị trạng thái chính xác
+            System.out.print("Enter current hour to check this employee's status (0-23): ");
+            try {
+                int hour = Integer.parseInt(sc.nextLine());
+                if (hour >= 0 && hour <= 23) {
+                    employee.updateStatusBasedOnHour(hour);
+                }
+            } catch (Exception e) {
+                // Nếu nhập sai giờ thì mặc định giữ nguyên status cũ của object
+            }
+            
             Employee.displayHeader();
             employee.display();
         }

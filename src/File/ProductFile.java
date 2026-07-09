@@ -5,8 +5,8 @@ import java.io.*;
 import java.util.ArrayList;
 
 public class ProductFile {
-    private static final String CATALOG_FILE = "DATA/ProductCatalog.txt";
-    private static final String STORAGE_FILE = "DATA/ProductStorage.txt";
+    private static final String CATALOG_FILE = "ProductCatalog.txt";
+    private static final String STORAGE_FILE = "ProductStorage.txt";
 
     // 1. Đọc danh mục sản phẩm chuẩn từ Catalog (Mặc định quantity = 0)
     public static ArrayList<Product> loadCatalog() {

@@ -14,11 +14,10 @@ public class TeaMaster extends Employee {
     }
 
     public TeaMaster(String employeeId, String fullName, String gender, int age, 
-                     String phone, double salary, String shift, String status, 
+                     String phone, double salary, String shift, 
                      String hireDate, int yearsOfExperience) {
-        super(employeeId, fullName, gender, age, phone, salary, shift, status, hireDate);
+        super(employeeId, fullName, gender, age, phone, salary, shift,hireDate);
         this.yearsOfExperience = yearsOfExperience;
-        // Tự động gán chức danh dựa vào số năm kinh nghiệm khi khởi tạo có tham số
         this.title = determineTitle(yearsOfExperience);
     }
 
@@ -29,14 +28,13 @@ public class TeaMaster extends Employee {
 
     public void setYearsOfExperience(int yearsOfExperience) {
         this.yearsOfExperience = yearsOfExperience;
-        this.title = determineTitle(yearsOfExperience); // Cập nhật lại chức danh nếu số năm thay đổi
+        this.title = determineTitle(yearsOfExperience);
     }
 
     public String getTitle() {
         return title;
     }
 
-    // Hàm phụ trợ tự động tính toán chức danh (Helper Method)
     private String determineTitle(int years) {
         if (years < 2) {
             return "Beginner";
@@ -47,30 +45,23 @@ public class TeaMaster extends Employee {
         }
     }
 
-    //========================== Override Chức vụ ==========================
     @Override
     public String getRole() {
-        return "TeaMaster"; // Viết liền PascalCase -> Lớp cha tự cắt ra chữ "TM"
+        return "TeaMaster";
     }
 
-    //========================== Override Nhập liệu ==========================
     @Override
     public void input() {
-        super.input(); // Nhập các thông tin chung của Employee trước
-        
+        super.input();
         Scanner sc = new Scanner(System.in);
         System.out.print("Years of Experience: ");
         this.yearsOfExperience = sc.nextInt();
-        sc.nextLine(); // Clear bộ nhớ đệm
-        
-        // Tự động phân cấp chức danh dựa trên số năm kinh nghiệm vừa nhập
+        sc.nextLine();
         this.title = determineTitle(this.yearsOfExperience);
     }
 
-    //========================== Override Chi tiết ==========================
     @Override
     public String toString() {
-        // Kế thừa chuỗi thông tin của cha và nối thêm phần riêng biệt
         return super.toString() + "|" + yearsOfExperience + "|" + title;
     }
 }

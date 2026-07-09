@@ -1,7 +1,7 @@
-package service; // Chuẩn package service của bạn
+package service;
 
 import file.ProductFile;
-import product.*; // Import tất cả các lớp Tea, Teapot, TeaCup... từ package product
+import product.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -35,14 +35,14 @@ public class ProductService {
 
         Product catalogItem = findInList(catalogList, inputId);
         if (catalogItem == null) {
-            System.out.println("❌ Error: Product ID [" + inputId + "] does not exist in the master catalog!");
+            System.out.println("Error: Product ID [" + inputId + "] does not exist in the master catalog!");
             return;
         }
 
         Product activeItem = findInList(activeProductList, inputId);
         System.out.println("\n--- Product Identified ---");
-        System.out.println("» Name: " + catalogItem.getName());
-        System.out.println("» Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
+        System.out.println("Name: " + catalogItem.getName());
+        System.out.println("Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
         
         String unit = (catalogItem instanceof Tea) ? "grams" : "pieces";
         System.out.print("Enter amount to add (" + unit + "): ");
@@ -50,7 +50,7 @@ public class ProductService {
         try {
             int amount = Integer.parseInt(sc.nextLine());
             if (amount <= 0) {
-                System.out.println("❌ Invalid amount.");
+                System.out.println("Invalid amount.");
                 return;
             }
 

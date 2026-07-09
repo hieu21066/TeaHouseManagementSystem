@@ -1,7 +1,6 @@
 package file;
 
 import employee.*;
-
 import java.io.*;
 import java.util.ArrayList;
 
@@ -24,52 +23,44 @@ public class EmployeeFile {
             while ((line = br.readLine()) != null) {
                 String[] data = line.split("\\|");
 
-                // Đọc các thuộc tính cơ bản chung (Đã bỏ hoàn toàn address)
+                // Đọc các thuộc tính cơ bản chung (ĐÃ BỎ STATUS - CÒN 9 CỘT CƠ BẢN)
                 String id = data[0];
                 String role = data[1];
                 String name = data[2];
                 String gender = data[3];
                 int age = Integer.parseInt(data[4]);
                 String phone = data[5];
-                double salary = Double.parseDouble(data[6]); // Chỉ số dịch lên 1 vì bỏ address
-                String shift = data[7];
-                String status = data[8];
-                String hireDate = data[9];
+                double salary = Double.parseDouble(data[6]); 
+                String shift = data[7];     // Dạng h-h (Ví dụ: 6-14)
+                String hireDate = data[8];  // Đẩy chỉ số lên do bỏ status
 
                 Employee employee = null;
 
                 switch (role.toLowerCase()) {
                     case "admin":
-                        employee = new Admin(id, name, gender, age, phone, 
-                                            salary, shift, status, hireDate);
+                        employee = new Admin(id, name, gender, age, phone, salary, shift, hireDate);
                         break;
 
                     case "cashier":
-                        employee = new Cashier(id, name, gender, age, phone, 
-                                              salary, shift, status, hireDate);
+                        employee = new Cashier(id, name, gender, age, phone, salary, shift, hireDate);
                         break;
 
                     case "teamaster":
-                        // Riêng TeaMaster đọc thêm chỉ số data[10] để lấy số năm kinh nghiệm
-                        int yearsOfExperience = Integer.parseInt(data[10]);
-                        employee = new TeaMaster(id, name, gender, age, phone, 
-                                                salary, shift, status, hireDate, 
-                                                yearsOfExperience);
+                        // TeaMaster lấy thêm số năm kinh nghiệm ở cột thứ 10 (chỉ số 9)
+                        int yearsOfExperience = Integer.parseInt(data[9]);
+                        employee = new TeaMaster(id, name, gender, age, phone, salary, shift, hireDate, yearsOfExperience);
                         break;
 
                     case "tealady":
-                        employee = new TeaLady(id, name, gender, age, phone, 
-                                              salary, shift, status, hireDate);
+                        employee = new TeaLady(id, name, gender, age, phone, salary, shift, hireDate);
                         break;
 
                     case "teaservant":
-                        employee = new TeaServant(id, name, gender, age, phone, 
-                                                 salary, shift, status, hireDate);
+                        employee = new TeaServant(id, name, gender, age, phone, salary, shift, hireDate);
                         break;
 
                     case "warehousestaff":
-                        employee = new WarehouseStaff(id, name, gender, age, phone, 
-                                                     salary, shift, status, hireDate);
+                        employee = new WarehouseStaff(id, name, gender, age, phone, salary, shift, hireDate);
                         break;
                 }
 
@@ -79,7 +70,7 @@ public class EmployeeFile {
             }
 
         } catch (Exception e) {
-            System.out.println("Load Employee.txt failed!");
+            System.out.println("Load " + FILE_NAME + " failed!");
         }
 
         return list;
@@ -89,7 +80,7 @@ public class EmployeeFile {
     public static void save(ArrayList<Employee> list) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Employee employee : list) {
-                // Đa hình tự động gọi đúng hàm toString() của từng lớp con (bao gồm cả dữ liệu thêm của TeaMaster)
+                // Tự động ghi chuỗi theo hàm toString() đã cấu hình
                 bw.write(employee.toString());
                 bw.newLine();
             }

@@ -4,7 +4,9 @@ public class TeaCup extends Product {
     private String cupRole;   
     private int capacityMl;   
 
-    public TeaCup() { super(); }
+    public TeaCup() {
+        super(); 
+    }
 
     public TeaCup(String id, String name, double price, int quantity, String description, String cupRole, int capacityMl) {
         super(id, name, price, quantity, description);
@@ -20,12 +22,9 @@ public class TeaCup extends Product {
 
    @Override
     public String toString() {
-        // Sử dụng các hàm getter public từ lớp cha Product
         return String.format("%s|TeaCup|TeaCup|%s|%.2f|%s|%s|%d", 
                 getId(), getName(), getPrice(), getDescription(), this.cupRole, this.capacityMl);
     }
-
-    // Getter & Setter...
 
     public String getCupRole() {
         return cupRole;

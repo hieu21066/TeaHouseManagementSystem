@@ -5,6 +5,7 @@ import file.EmployeeFile;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Scanner;
 
 public class EmployeeService {
 
@@ -57,31 +58,51 @@ public class EmployeeService {
             return false;
         }
 
-        // Cập nhật các thông tin cơ bản chung (Đã loại bỏ hoàn toàn oldEmployee.setAddress)
         oldEmployee.setFullName(updatedEmployee.getFullName());
         oldEmployee.setGender(updatedEmployee.getGender());
         oldEmployee.setAge(updatedEmployee.getAge());
         oldEmployee.setPhone(updatedEmployee.getPhone());
         oldEmployee.setSalary(updatedEmployee.getSalary());
         oldEmployee.setShift(updatedEmployee.getShift());
-        oldEmployee.setStatus(updatedEmployee.getStatus());
         oldEmployee.setHireDate(updatedEmployee.getHireDate());
 
-        // Xử lý riêng biệt nếu nhân viên cập nhật thuộc nhóm nghệ nhân TeaMaster
         if (oldEmployee instanceof TeaMaster && updatedEmployee instanceof TeaMaster) {
             TeaMaster oldTM = (TeaMaster) oldEmployee;
             TeaMaster updatedTM = (TeaMaster) updatedEmployee;
-            
-            // Cập nhật số năm kinh nghiệm (Hàm setter trong TeaMaster sẽ tự tính toán lại chức danh mới)
             oldTM.setYearsOfExperience(updatedTM.getYearsOfExperience());
         }
 
-        // Lưu lại danh sách cập nhật mới nhất vào cơ sở dữ liệu file txt
         EmployeeFile.save(employeeList);
         return true;
     }
 
-    //================== DISPLAY ALL ==================
+    //display real-time list of employee status
+    public void displayAllWithRealtimeStatus(Scanner sc) {
+        if (employeeList.isEmpty()) {
+            System.out.println("Employee list is empty!");
+            return;
+        }
+
+        System.out.print("Enter current hour to check status (0-23): ");
+        int hour = -1;
+        try {
+            hour = Integer.parseInt(sc.nextLine());
+            if (hour < 0 || hour > 23) {
+                System.out.println("Invalid hour!");
+                return;
+            }
+        } catch (Exception e) {
+            System.out.println("Please enter an integer number!");
+            return;
+        }
+
+        System.out.println("\n--- EMPLOYEE STATUS AT " + hour + "h ---");
+        Employee.displayHeader();
+        for (Employee employee : employeeList) {
+            employee.updateStatusBasedOnHour(hour); 
+            employee.display();
+        }
+    }
     public void displayAll() {
         Employee.displayHeader();
         for (Employee employee : employeeList) {
@@ -89,7 +110,6 @@ public class EmployeeService {
         }
     }
 
-    //================== DISPLAY BY ROLE ==================
     public void displayByRole(String role) {
         Employee.displayHeader();
         for (Employee employee : employeeList) {
@@ -99,7 +119,6 @@ public class EmployeeService {
         }
     }
 
-    //================== SORT ==================
     public void sortBySalary() {
         Collections.sort(employeeList, new Comparator<Employee>() {
             @Override
@@ -109,7 +128,6 @@ public class EmployeeService {
         });
     }
 
-    //================== DISPLAY BY TYPE (CLASS) ==================
     public void displayByType(Class<?> type) {
         if (employeeList.isEmpty()) {
             System.out.println("Employee list is empty!");

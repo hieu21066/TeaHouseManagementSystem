@@ -7,8 +7,8 @@ public class Cashier extends Employee {
     }
 
     public Cashier(String employeeId, String fullName, String gender, int age, 
-                   String phone, double salary, String shift, String status, String hireDate) {
-        super(employeeId, fullName, gender, age, phone, salary, shift, status, hireDate);
+                   String phone, double salary, String shift, String hireDate) {
+        super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
     }
 
     @Override

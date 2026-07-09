@@ -3,7 +3,9 @@ package product;
 public class TeaAccessories extends Product {
     private String accessoryType; 
 
-    public TeaAccessories() { super(); }
+    public TeaAccessories() { 
+        super(); 
+    }
 
     public TeaAccessories(String id, String name, double price, int quantity, String description, String accessoryType) {
         super(id, name, price, quantity, description);
@@ -22,8 +24,6 @@ public class TeaAccessories extends Product {
         return String.format("%s|TeaAccessories|TeaAccessories|%s|%.2f|%s|%s", 
                 getId(), getName(), getPrice(), getDescription(), this.accessoryType);
     }
-
-    // Getter & Setter...
 
     public String getAccessoryType() {
         return accessoryType;

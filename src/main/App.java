@@ -1,11 +1,13 @@
 package main;
 
-import java.io.File; // Thêm thư viện này để làm việc với File
+import java.io.File; 
 import java.util.Scanner;
 import service.*;
 import view.*;
 
 public class App {
+
+    private static final String FILE_NAME = "admin.txt"; 
 
     public static void main(String[] args) {
 
@@ -17,7 +19,7 @@ public class App {
         OrderService orderService = new OrderService();
         ReservationService reservationService = new ReservationService();
         FinanceService financeService = new FinanceService();
-
+         
         int choose = -1;
 
         do {
@@ -28,7 +30,7 @@ public class App {
             System.out.println("2. Order");
             System.out.println("0. Exit");
             System.out.print("Choose: ");
-
+            
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
@@ -37,40 +39,31 @@ public class App {
             }
 
             switch (choose) {
-
-                //================ ADMIN =================
+                //ADMIN
                 case 1:
                     System.out.println("\n========== LOGIN ==========");
-
                     System.out.print("Username: ");
                     String inputUsername = sc.nextLine();
-
                     System.out.print("Password: ");
                     String inputPassword = sc.nextLine();
-
-                    // --- ĐOẠN XỬ LÝ ĐỌC FILE TXT THAY CHO ACCOUNTSERVICE ---
+                    
                     boolean isLoginSuccess = false;
                     try {
-                        // Tạo đối tượng file trỏ đến file admin.txt (Bạn có thể đổi tên file tùy ý)
-                        File file = new File("admin.txt"); 
-                        
+                        File file = new File(FILE_NAME); 
                         if (file.exists()) {
                             Scanner fileReader = new Scanner(file);
-                            
                             if (fileReader.hasNextLine()) {
-                                String correctUsername = fileReader.nextLine().trim(); // Dòng 1: Tài khoản gốc
+                                String correctUsername = fileReader.nextLine().trim();
                                 if (fileReader.hasNextLine()) {
-                                    String correctPassword = fileReader.nextLine().trim(); // Dòng 2: Mật khẩu gốc
-                                    
-                                    // So sánh tài khoản/mật khẩu nhập vào với file txt
+                                    String correctPassword = fileReader.nextLine().trim();
                                     if (inputUsername.equals(correctUsername) && inputPassword.equals(correctPassword)) {
                                         isLoginSuccess = true;
                                     }
                                 }
                             }
-                            fileReader.close(); // Đóng scanner đọc file
+                            fileReader.close();
                         } else {
-                            System.out.println("[Lỗi] Không tìm thấy file hệ thống admin.txt!");
+                            System.out.println("Not found " + FILE_NAME);
                             break;
                         }
                     } catch (Exception e) {
@@ -81,7 +74,7 @@ public class App {
 
                     // Kiểm tra kết quả flag login
                     if (!isLoginSuccess) {
-                        System.out.println("Login Failed! Sai tài khoản hoặc mật khẩu.");
+                        System.out.println("Login Failed! Wrong Username or Password.");
                         break;
                     }
 

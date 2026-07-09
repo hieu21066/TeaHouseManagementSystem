@@ -20,8 +20,7 @@ public abstract class Employee {
     }
 
     public Employee(String employeeId, String fullName, String gender,
-                    int age, String phone, double salary, String shift,
-                    String status, String hireDate) {
+                    int age, String phone, double salary, String shift, String hireDate) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
@@ -29,11 +28,9 @@ public abstract class Employee {
         this.phone = phone;
         this.salary = salary;
         this.shift = shift;
-        this.status = status;
         this.hireDate = hireDate;
     }
 
-    //========================== Getter & Setter ==========================
     public String getEmployeeId() {
         return employeeId;
     }
@@ -108,12 +105,11 @@ public abstract class Employee {
 
     //========================== Abstract Methods ==========================
     public abstract String getRole();
-     public void generateId(int nextOrder) {
-        String role = getRole(); // Lấy tên Role từ lớp con (Ví dụ: "Admin" hoặc "TeaLady")
+
+    public void generateId(int nextOrder) {
+        String role = getRole(); 
         String prefix = "";
 
-        // Thuật toán tự động lấy 2 chữ cái viết tắt dựa theo tên Role
-        // Đếm số lượng chữ cái in hoa trong tên Role
         java.util.ArrayList<Character> upperCases = new java.util.ArrayList<>();
         for (int i = 0; i < role.length(); i++) {
             if (Character.isUpperCase(role.charAt(i))) {
@@ -122,19 +118,14 @@ public abstract class Employee {
         }
 
         if (upperCases.size() >= 2) {
-            // Trường hợp 2 từ trở lên (Ví dụ: TeaLady -> T và L)
             prefix = "" + upperCases.get(0) + upperCases.get(1);
         } else if (role.length() >= 2) {
-            // Trường hợp chỉ có 1 từ (Ví dụ: Admin -> Lấy AD)
             prefix = role.substring(0, 2).toUpperCase();
         } else {
             prefix = role.toUpperCase();
         }
 
-        // Định dạng số thứ tự thành 3 chữ số (Ví dụ: 1 -> 001)
         String formattedOrder = String.format("%03d", nextOrder);
-
-        // Gán mã ID hoàn chỉnh vào thuộc tính
         this.setEmployeeId(prefix + formattedOrder);
     }
 
@@ -149,74 +140,86 @@ public abstract class Employee {
         gender = sc.nextLine();
 
         System.out.print("Age: ");
-        age = sc.nextInt();
-        sc.nextLine(); // Clear bộ nhớ đệm
+        try {
+            age = Integer.parseInt(sc.nextLine());
+        } catch (Exception e) {
+            age = 0;
+        }
 
         System.out.print("Phone: ");
         phone = sc.nextLine();
 
         System.out.print("Salary: ");
-        salary = sc.nextDouble();
-        sc.nextLine(); // Clear bộ nhớ đệm
-
-        System.out.print("Shift (sang/chieu/toi): ");
-        shift = sc.nextLine().trim().toLowerCase();
-
-        // Tự động tính toán status dựa trên ca làm việc nhập vào
-        if (shift.equals("sang") || shift.equals("chieu") || shift.equals("toi")) {
-            status = "Working";
-        } else {
-            status = "Off";
+        try {
+            salary = Double.parseDouble(sc.nextLine());
+        } catch (Exception e) {
+            salary = 0;
         }
+
+        // CHỈNH SỬA: Nhập ca theo dạng hour-hour
+        System.out.print("Shift (h-h) ");
+        shift = sc.nextLine().trim();
+
+        status = "Unknown";
 
         System.out.print("Hire Date (dd/mm/yyyy): ");
         hireDate = sc.nextLine();
+    }
+    
+    public void updateStatusBasedOnHour(int currentHour) {
+        try {
+            String[] hours = this.shift.split("-");
+            if (hours.length == 2) {
+                int startHour = Integer.parseInt(hours[0].trim());
+                int endHour = Integer.parseInt(hours[1].trim());
 
+                if (startHour < endHour) {
+                    if (currentHour >= startHour && currentHour < endHour) {
+                        this.status = "Working";
+                    } else {
+                        this.status = "Off";
+                    }
+                } 
+                // Trường hợp ca làm qua đêm (Ví dụ: ca từ 22h đêm đến 6h sáng hôm sau)
+                else { 
+                    if (currentHour >= startHour || currentHour < endHour) {
+                        this.status = "Working";
+                    } else {
+                        this.status = "Off";
+                    }
+                }
+            } else {
+                this.status = "Invalid Shift";
+            }
+        } catch (Exception e) {
+            this.status = "Invalid Shift";
+        }
     }
 
     //========================== Save File ==========================
     @Override
-    public String toString() {
-        return employeeId + "|"
-                + getRole() + "|"
-                + fullName + "|"
-                + gender + "|"
-                + age + "|"
-                + phone + "|"
-                + salary + "|"
-                + shift + "|"
-                + status + "|"
-                + hireDate;
-    }
+public String toString() {
+    return employeeId + "|"
+            + getRole() + "|"
+            + fullName + "|"
+            + gender + "|"
+            + age + "|"
+            + phone + "|"
+            + salary + "|"
+            + shift + "|"
+            + hireDate;
+}
 
     //========================== Display ==========================
     public static void displayHeader() {
         System.out.println("======================================================================================================================");
         System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3s | %-12s | %-10s | %-10s | %-10s |%n",
-                "ID",
-                "Name",
-                "Role",
-                "Gender",
-                "Age",
-                "Phone",
-                "Salary",
-                "Shift",
-                "Status");
+                "ID", "Name", "Role", "Gender", "Age", "Phone", "Salary", "Shift", "Status");
         System.out.println("======================================================================================================================");
     }
 
     public void display() {
         System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3d | %-12s | %-10.0f | %-10s | %-10s |%n",
-                employeeId,
-                fullName,
-                getRole(),
-                gender,
-                age,
-                phone,
-                salary,
-                shift,
-                status);
+                employeeId, fullName, getRole(), gender, age, phone, salary, shift, status);
     }
-    // Thêm hàm này vào Employee.java thay cho hàm generateId cũ
-   
 }

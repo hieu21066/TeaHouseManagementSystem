@@ -2,13 +2,15 @@ package view;
 
 import order.Invoice;
 import service.OrderService;
+import service.ReservationService; // Thêm import này
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
 public class OrderView {
 
-    public static void orderMenu(Scanner sc, OrderService orderService) {
+    // Thêm tham số ReservationService vào hàm nhận diện
+    public static void orderMenu(Scanner sc, OrderService orderService, ReservationService reservationService) {
         int choose;
         do {
             System.out.println("\n====== ORDER MANAGEMENT ======");
@@ -18,6 +20,7 @@ public class OrderView {
             System.out.println("4. Delete Invoice");
             System.out.println("5. Search Invoice By ID");
             System.out.println("6. Sort Invoices By Total Amount");
+            System.out.println("7. Reservation Management (Đặt bàn)"); // Chuyển chức năng sang đây
             System.out.println("0. Back");
             System.out.println("==============================");
             System.out.print("Choose: ");
@@ -54,6 +57,11 @@ public class OrderView {
                     System.out.println("✅ Đã sắp xếp hóa đơn theo tổng tiền tăng dần!");
                     orderService.displayAll();
                     break;
+                case 7:
+                    // Gọi trực tiếp hàm hiển thị menu quản lý đặt bàn tại đây
+                    System.out.println("\n--- CHUYỂN ĐẾN QUẢN LÝ ĐẶT BÀN ---");
+                    new ReservationView(reservationService).menu();
+                    break;
                 case 0:
                     System.out.println("Returning to main menu...");
                     break;
@@ -66,7 +74,6 @@ public class OrderView {
     private static void handleCreateInvoice(Scanner sc, OrderService service) {
         System.out.println("\n--- CREATE NEW INVOICE ---");
         
-        // 1. Tự sinh mã hóa đơn tự động dạng ODxxx
         String autoInvoiceId = service.generateNextInvoiceId();
         System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
 
@@ -75,7 +82,6 @@ public class OrderView {
         System.out.print("Enter Employee ID (Mã nhân viên): ");
         String empId = sc.nextLine().trim();
 
-        // Định dạng ghép chuỗi theo yêu cầu: vu minh hieu - AD001
         String fullEmployeeInfo = empName + " - " + empId;
 
         Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
@@ -87,7 +93,6 @@ public class OrderView {
             System.out.println("----------------------------------------------------------------------");
 
             int availableCount = 0;
-            // Đọc trực tiếp cả 2 file txt lên màn hình để kiểm tra số lượng thực
             try (BufferedReader br = new BufferedReader(new FileReader("ProductCatalog.txt"))) {
                 String line;
                 while ((line = br.readLine()) != null) {
@@ -95,7 +100,6 @@ public class OrderView {
                     String id = catData[0];
                     double currentGrams = service.getStorageQuantityInGrams(id, catData);
 
-                    // Chỉ in sản phẩm có lượng tồn kho > 0
                     if (currentGrams > 0) {
                         String unitStr = catData[1].equalsIgnoreCase("Tea") ? " g" : " Cái";
                         System.out.printf("%-10s | %-20s | %-12s | %-12s\n", 
@@ -112,7 +116,6 @@ public class OrderView {
                 break;
             }
 
-            // 2. Nhập ID món hàng
             System.out.print("\nNhập ID sản phẩm muốn chọn (gõ '0' để chốt đơn): ");
             String prodId = sc.nextLine().trim();
             if (prodId.equals("0")) {
@@ -140,14 +143,12 @@ public class OrderView {
                 continue;
             }
 
-            // Đẩy sang dịch vụ xử lý giá và cập nhật trừ kho luôn
             if (service.takeOrderItem(invoice, prodId, quantity)) {
                 System.out.println("✅ Thêm thành công.");
                 hasItemBought = true;
             }
         }
 
-        // 3. Nếu khách có mua trà, tự động chèn thêm dòng phí dịch vụ cố định vào cuối hóa đơn
         if (hasItemBought) {
             invoice.addItem("Phí dịch vụ thưởng trà", service.getServiceFee(), 1);
             

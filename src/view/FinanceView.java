@@ -66,8 +66,7 @@ public class FinanceView {
         System.out.print("Enter Finance ID: ");
         String id = sc.nextLine().trim();
         System.out.print("Enter Revenue Amount: ");
-        try {
-            double amount = Double.parseDouble(sc.nextLine());
+        try {double amount = Double.parseDouble(sc.nextLine());
             if (financeService.addRevenue(id, amount)) {
                 System.out.println("✅ Cộng doanh thu thành công!");
                 file.FinanceFile.save(financeService.getFinanceList());

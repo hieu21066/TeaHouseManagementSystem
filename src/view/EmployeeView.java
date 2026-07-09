@@ -98,7 +98,7 @@ public class EmployeeView {
     // ================== BỔ SUNG: Hàm phụ trợ hỗ trợ cập nhật trạng thái trước khi hiển thị nhóm nhân viên ==================
     private boolean updateRealtimeStatusBeforeDisplay() {
         if (employeeService.getEmployeeList().isEmpty()) {
-            return true; // Để mặc cho hàm displayByType thông báo danh sách trống
+            return true; 
         }
         System.out.print("Enter current hour to check status (0-23): ");
         try {
@@ -107,7 +107,6 @@ public class EmployeeView {
                 System.out.println("Invalid hour! Must be between 0 and 23.");
                 return false;
             }
-            // Duyệt nhanh qua danh sách để update trạng thái đồng loạt mốc giờ này
             for (Employee employee : employeeService.getEmployeeList()) {
                 employee.updateStatusBasedOnHour(hour);
             }
@@ -167,7 +166,6 @@ public class EmployeeView {
                             maxOrder = order;
                         }
                     } catch (Exception ex) {
-                        // Bỏ qua ID lỗi định dạng
                     }
                 }
             }
@@ -232,7 +230,6 @@ public class EmployeeView {
         if (employee == null) {
             System.out.println("Employee Not Found!");
         } else {
-            // Khi tìm đích danh 1 nhân viên, hỏi giờ để hiển thị trạng thái chính xác
             System.out.print("Enter current hour to check this employee's status (0-23): ");
             try {
                 int hour = Integer.parseInt(sc.nextLine());
@@ -240,7 +237,6 @@ public class EmployeeView {
                     employee.updateStatusBasedOnHour(hour);
                 }
             } catch (Exception e) {
-                // Nếu nhập sai giờ thì mặc định giữ nguyên status cũ của object
             }
             
             Employee.displayHeader();

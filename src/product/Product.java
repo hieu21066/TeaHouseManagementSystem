@@ -22,7 +22,7 @@ public abstract class Product {
                 "ID", "Type", "Product Name", "Price", "Qty/Grams", "Description", "Specifications");
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------");
     }
-
+ 
     public void display() {
         String typeName = this.getClass().getSimpleName();
         System.out.printf("%-8s | %-15s | %-25s | %-12.2f | %-10d | %-40s | ", 

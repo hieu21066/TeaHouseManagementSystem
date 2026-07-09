@@ -82,7 +82,7 @@ public class Invoice {
             itemList.remove(index);
             updateTotalAmount();
         }
-    }
+    } 
 
     //==================== Display ====================
 

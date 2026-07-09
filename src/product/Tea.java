@@ -17,7 +17,7 @@ public class Tea extends Product {
         super.display();
         System.out.printf("Tea Type: %s, Packing: %dg\n", teaType, sampleWeightGrams);
     }
-
+ 
     @Override
     public String toString() {
         // Sử dụng các hàm getter public từ lớp cha Product

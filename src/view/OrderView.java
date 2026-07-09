@@ -159,7 +159,7 @@ public class OrderView {
             }
         } else {
             System.out.println("⚠️ Hóa đơn rỗng. Hủy thao tác.");
-        }
+        } 
     }
 
     // ==================== BẢNG IN HÓA ĐƠN HOÀN CHỈNH BỔ SUNG ID SẢN PHẨM ====================

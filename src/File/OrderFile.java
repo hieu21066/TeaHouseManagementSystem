@@ -42,7 +42,7 @@ public class OrderFile {
             System.out.println("❌ Load Order.txt thất bại!");
         }
         return list;
-    }
+    } 
 
     // ==================== HÀM SAVE (GHI FILE) ====================
     public static void save(ArrayList<Invoice> list) {

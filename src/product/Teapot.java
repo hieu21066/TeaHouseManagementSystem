@@ -18,7 +18,7 @@ public class Teapot extends Product {
     public void display() {
         super.display();
         System.out.printf("Clay: %s, Shape: %s, Capacity: %dml\n", clayType, shape, capacityMl);
-    }
+    } 
 
     @Override
     public String toString() {

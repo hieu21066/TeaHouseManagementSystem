@@ -198,7 +198,7 @@ public class EmployeeView {
             System.out.println("Employee Not Found!");
             return;
         }
-
+ 
         System.out.println("\n--- Enter New Information for Employee: " + oldEmp.getFullName() + " (" + oldEmp.getRole() + ") ---");
         
         Employee tempEmp = null;

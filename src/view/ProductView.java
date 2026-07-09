@@ -100,7 +100,7 @@ public class ProductView {
             Product.displayHeader();
             found.display();
         }
-    }
+    } 
 
     private void displayAllProducts() {
         System.out.println("\n--- ACTIVE INVENTORY STOCK ---");

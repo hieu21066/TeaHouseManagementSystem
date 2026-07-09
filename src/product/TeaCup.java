@@ -19,7 +19,7 @@ public class TeaCup extends Product {
         super.display();
         System.out.printf("Role: %s, Capacity: %dml\n", cupRole, capacityMl);
     }
-
+ 
    @Override
     public String toString() {
         return String.format("%s|TeaCup|TeaCup|%s|%.2f|%s|%s|%d", 

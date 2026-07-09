@@ -1,12 +1,12 @@
-TE001|Tea|Green Tea|Longjing Tea|150.0|Premium green tea with a fresh nutty aroma|100
-TE002|Tea|Oolong|Da Hong Pao|450.0|Wuyi cliff tea belonging to the Oolong family|100
-TE003|Tea|White Tea|Bai Hao Yin Zhen|300.0|Pure white tea consisting only of silver needles|50
-TE004|Tea|Black Tea|Dian Hong Gongfu|180.0|Rich black tea with a sweet and deep aftertaste|100
-TE005|Tea|Yellow Tea|Jun Shan Yin Zhen|250.0|Rare lightly fermented yellow tea|50
-TE006|Tea|Oolong|Oriental Beauty|350.0|Highly oxidized royal Oolong with honey notes|100
-TE007|Tea|Oolong|Tie Guan Yin|120.0|Semi-fermented Oolong tea with an orchid fragrance|150
-TE008|Tea|Raw Pu-erh|Ancient Raw Pu-erh|500.0|Naturally fermented vintage Pu-erh tea cake|357
-TE009|Tea|Ripe Pu-erh|Yunnan Ripe Pu-erh|280.0|Microbially fermented Pu-erh with a woody aroma|357
+TE001|Tea|Green Tea|Longjing Tea|200.0|Premium green tea with a fresh nutty aroma|100
+TE002|Tea|Oolong|Da Hong Pao|200.0|Wuyi cliff tea belonging to the Oolong family|100
+TE003|Tea|White Tea|Bai Hao Yin Zhen|200.0|Pure white tea consisting only of silver needles|100
+TE004|Tea|Black Tea|Dian Hong Gongfu|200.0|Rich black tea with a sweet and deep aftertaste|100
+TE005|Tea|Yellow Tea|Jun Shan Yin Zhen|200.0|Rare lightly fermented yellow tea|100
+TE006|Tea|Oolong|Oriental Beauty|200.0|Highly oxidized royal Oolong with honey notes|100
+TE007|Tea|Oolong|Tie Guan Yin|200.0|Semi-fermented Oolong tea with an orchid fragrance|100
+TE008|Tea|Raw Pu-erh|Ancient Raw Pu-erh|200.0|Naturally fermented vintage Pu-erh tea cake|100
+TE009|Tea|Ripe Pu-erh|Yunnan Ripe Pu-erh|200.0|Microbially fermented Pu-erh with a woody aroma|100
 TP001|Teapot|Teapot|Zisha Xishi Teapot|1200.0|Yixing clay teapot in classic Xishi shape|Zi Ne|Xishi|150
 TP002|Teapot|Teapot|Zisha Shipiao Teapot|1500.0|Yixing clay teapot in elegant Shipiao shape|Duan Ne|Shipiao|100
 TP003|Teapot|Teapot|Zisha Zhouqi Teapot|1800.0|Yixing clay teapot in traditional Zhouqi shape|Lu Ne|Zhouqi|200

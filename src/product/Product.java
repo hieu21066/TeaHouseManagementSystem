@@ -32,7 +32,6 @@ public abstract class Product {
     @Override
     public abstract String toString();
 
-    // --- GETTER & SETTER ---
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 

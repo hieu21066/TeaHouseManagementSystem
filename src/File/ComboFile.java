@@ -18,7 +18,7 @@ public class ComboFile {
             if (!file.exists()) {
 
                 file.createNewFile();
-                System.out.println("Combo.txt has been created.");
+                System.out.println("Create Combo.txt successfully!");
 
             }
 
@@ -44,22 +44,33 @@ public class ComboFile {
 
             while ((line = br.readLine()) != null) {
 
-                if (line.trim().isEmpty())
+                if (line.trim().isEmpty()) {
                     continue;
+                }
 
                 String[] data = line.split("\\|");
 
-                if (data.length != 4)
+                if (data.length != 5) {
                     continue;
+                }
 
                 try {
 
-                    String id = data[0];
-                    String name = data[1];
-                    double price = Double.parseDouble(data[2]);
-                    String description = data[3];
+                    String comboId = data[0];
+                    String teaType = data[1];
+                    String comboName = data[2];
+                    double price = Double.parseDouble(data[3]);
+                    String description = data[4];
 
-                    list.add(new Combo(id, name, price, description));
+                    Combo combo = new Combo(
+                            comboId,
+                            teaType,
+                            comboName,
+                            price,
+                            description
+                    );
+
+                    list.add(combo);
 
                 } catch (NumberFormatException e) {
 
@@ -77,6 +88,7 @@ public class ComboFile {
         }
 
         return list;
+
     }
 
     //==================== SAVE ====================

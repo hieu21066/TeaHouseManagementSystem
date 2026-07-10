@@ -11,10 +11,10 @@ public class ReservationView {
     private ReservationService reservationService;
     private Scanner sc;
 
-    public ReservationView(ReservationService reservationService) {
-        this.reservationService = reservationService;
-        sc = new Scanner(System.in);
-    }
+public ReservationView(Scanner sc, ReservationService reservationService) {
+    this.reservationService = reservationService;
+    this.sc = sc;
+}
 
     public void menu() {
         int choice;

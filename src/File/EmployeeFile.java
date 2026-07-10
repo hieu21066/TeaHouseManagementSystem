@@ -31,7 +31,6 @@ public class EmployeeFile {
 
                 String[] data = line.split("\\|");
 
-                // 2. CHỐNG CRASH: Kiểm tra nếu dòng không đủ ít nhất 9 cột cơ bản thì bỏ qua, tránh lỗi tràn mảng
                 if (data.length < 9) {
                     System.out.println("⚠️ Cảnh báo: Dòng " + lineNumber + " trong file Employee.txt bị thiếu cột dữ liệu! Bỏ qua.");
                     continue;

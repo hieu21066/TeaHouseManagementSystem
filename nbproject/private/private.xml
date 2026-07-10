@@ -10,7 +10,9 @@
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/service/ProductService.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/combo/Combo.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/service/FinanceService.java</file>
+            <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/view/ReservationView.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/employee/Employee.java</file>
+            <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/order/OrderItem.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/employee/TeaLady.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/product/TeaCup.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/employee/WarehouseStaff.java</file>
@@ -35,6 +37,7 @@
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/reservation/Reservation.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/File/ComboFile.java</file>
             <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/employee/TeaMaster.java</file>
+            <file>file:/C:/Users/MINH%20HIEU/Desktop/PRO192/java/TeaHouseManagementSystem/src/service/ReservationService.java</file>
         </group>
     </open-files>
 </project-private>

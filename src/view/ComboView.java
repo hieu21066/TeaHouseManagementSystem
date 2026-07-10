@@ -60,136 +60,359 @@ public class ComboView {
 
     // ==================== HÀM BỔ TRỢ NHẬP XUẤT (HELPER METHODS) ====================
 
-    private static void handleAddCombo(Scanner sc, ComboService service) {
-        System.out.println("\n--- ADD NEW COMBO ---");
-        System.out.print("Enter Combo ID: ");
-        String id = sc.nextLine();
+private static void handleAddCombo(Scanner sc, ComboService service) {
 
-        if (service.isExist(id)) {
-            System.out.println("❌ Lỗi: Mã Combo này đã tồn tại!");
-            return;
-        }
+    System.out.println("\n===== ADD NEW COMBO =====");
 
-        System.out.print("Enter Combo Name: ");
-        String name = sc.nextLine();
-        
-        double price;
+    String teaType = chooseTeaType(sc);
+
+    String id = service.generateComboId(teaType);
+
+    System.out.println("Generated ID : " + id);
+
+    System.out.print("Enter Combo Name: ");
+    String name = sc.nextLine();
+
+    double price;
+
+    while (true) {
+
         try {
+
             System.out.print("Enter Price: ");
             price = Double.parseDouble(sc.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Lỗi: Giá tiền phải là một số!");
-            return;
-        }
 
-        System.out.print("Enter Description: ");
-        String desc = sc.nextLine();
+            if (price < 0) {
 
-        Combo combo = new Combo(id, name, price, desc);
-        if (service.addCombo(combo)) {
-            System.out.println("✅ Thêm combo thành công!");
-        } else {
-            System.out.println("❌ Thêm combo thất bại!");
-        }
-    }
+                System.out.println("Price must be >= 0");
+                continue;
 
-    private static void handleUpdateCombo(Scanner sc, ComboService service) {
-        System.out.println("\n--- UPDATE COMBO ---");
-        System.out.print("Enter Combo ID to update: ");
-        String id = sc.nextLine();
-
-        if (!service.isExist(id)) {
-            System.out.println("❌ Không tìm thấy Combo cần sửa!");
-            return;
-        }
-
-        System.out.print("Enter New Combo Name: ");
-        String name = sc.nextLine();
-        
-        double price;
-        try {
-            System.out.print("Enter New Price: ");
-            price = Double.parseDouble(sc.nextLine());
-        } catch (NumberFormatException e) {
-            System.out.println("❌ Lỗi: Giá tiền phải là một số!");
-            return;
-        }
-
-        System.out.print("Enter New Description: ");
-        String desc = sc.nextLine();
-
-        Combo newCombo = new Combo(id, name, price, desc);
-        if (service.updateCombo(newCombo)) {
-            System.out.println("✅ Cập nhật combo thành công!");
-        } else {
-            System.out.println("❌ Cập nhật thất bại!");
-        }
-    }
-
-    private static void handleDeleteCombo(Scanner sc, ComboService service) {
-        System.out.print("\nEnter Combo ID to delete: ");
-        String id = sc.nextLine();
-        if (service.deleteCombo(id)) {
-            System.out.println("✅ Xóa combo thành công!");
-        } else {
-            System.out.println("❌ Không tìm thấy Combo này!");
-        }
-    }
-
-    private static void handleSearchCombo(Scanner sc, ComboService service) {
-        System.out.println("\n--- SEARCH COMBO ---");
-        System.out.println("1. Search by ID");
-        System.out.println("2. Search by Name (Chứa từ khóa)");
-        System.out.print("Choose: ");
-        int type = Integer.parseInt(sc.nextLine());
-
-        if (type == 1) {
-            System.out.print("Enter Combo ID: ");
-            String id = sc.nextLine();
-            service.displayById(id);
-        } else if (type == 2) {
-            System.out.print("Enter Name Keyword: ");
-            String name = sc.nextLine();
-            ArrayList<Combo> result = service.searchByName(name);
-            if (result.isEmpty()) {
-                System.out.println("❌ Không tìm thấy combo nào phù hợp!");
-            } else {
-                Combo.displayHeader();
-                for (Combo combo : result) {
-                    combo.display();
-                }
             }
-        } else {
-            System.out.println("❌ Lựa chọn không hợp lệ!");
+
+            break;
+
+        } catch (Exception e) {
+
+            System.out.println("Invalid Price!");
+
         }
+
     }
 
-    private static void handleSortCombo(Scanner sc, ComboService service) {
-        System.out.println("\n--- SORT OPTIONS ---");
-        System.out.println("1. Sort by Price Ascending (Giá tăng dần)");
-        System.out.println("2. Sort by Price Descending (Giá giảm dần)");
-        System.out.println("3. Sort by Name (A-Z)");
+    System.out.print("Enter Description: ");
+    String des = sc.nextLine();
+
+    Combo combo = new Combo(
+            id,
+            teaType,
+            name,
+            price,
+            des);
+
+    if (service.addCombo(combo)) {
+
+        System.out.println("Add successfully!");
+
+    } else {
+
+        System.out.println("Add failed!");
+
+    }
+
+}
+
+private static void handleUpdateCombo(Scanner sc, ComboService service) {
+
+    System.out.println("\n===== UPDATE COMBO =====");
+
+    System.out.print("Enter Combo ID: ");
+    String id = sc.nextLine().toUpperCase();
+
+    Combo oldCombo = service.searchById(id);
+
+    if (oldCombo == null) {
+
+        System.out.println("Combo not found!");
+
+        return;
+
+    }
+
+    System.out.print("New Combo Name: ");
+    String name = sc.nextLine();
+
+    double price;
+
+    while (true) {
+
+        try {
+
+            System.out.print("New Price: ");
+            price = Double.parseDouble(sc.nextLine());
+
+            if (price < 0) {
+
+                System.out.println("Price must be >=0");
+
+                continue;
+
+            }
+
+            break;
+
+        } catch (Exception e) {
+
+            System.out.println("Invalid Price!");
+
+        }
+
+    }
+
+    System.out.print("New Description: ");
+    String des = sc.nextLine();
+
+    Combo combo = new Combo(
+            id,
+            oldCombo.getTeaType(),
+            name,
+            price,
+            des);
+
+    if (service.updateCombo(combo)) {
+
+        System.out.println("Update successfully!");
+
+    } else {
+
+        System.out.println("Update failed!");
+
+    }
+
+}
+
+private static void handleDeleteCombo(Scanner sc, ComboService service) {
+
+    System.out.print("\nEnter Combo ID to delete: ");
+
+    String id = sc.nextLine().trim().toUpperCase();
+
+    if (service.deleteCombo(id)) {
+
+        System.out.println("Delete successfully!");
+
+    } else {
+
+        System.out.println("Combo not found!");
+
+    }
+
+}
+
+private static void handleSearchCombo(Scanner sc, ComboService service) {
+
+    System.out.println("\n===== SEARCH COMBO =====");
+    System.out.println("1. Search by ID");
+    System.out.println("2. Search by Name");
+    System.out.println("3. Search by Tea Type");
+    System.out.print("Choose: ");
+
+    int type;
+
+    try {
+
+        type = Integer.parseInt(sc.nextLine());
+
+    } catch (Exception e) {
+
+        System.out.println("Invalid choice!");
+        return;
+
+    }
+
+    switch (type) {
+
+        case 1:
+
+            System.out.print("Enter Combo ID: ");
+
+            String id = sc.nextLine().trim().toUpperCase();
+
+            service.displayById(id);
+
+            break;
+
+        case 2:
+
+            System.out.print("Enter Combo Name: ");
+
+            String name = sc.nextLine();
+
+            ArrayList<Combo> result = service.searchByName(name);
+
+            if (result.isEmpty()) {
+
+                System.out.println("No combo found!");
+
+            } else {
+
+                Combo.displayHeader();
+
+                for (Combo combo : result) {
+
+                    combo.display();
+
+                }
+
+            }
+
+            break;
+
+        case 3:
+
+            String teaType = chooseTeaType(sc);
+
+            result = service.searchByTeaType(teaType);
+
+            if (result.isEmpty()) {
+
+                System.out.println("No combo found!");
+
+            } else {
+
+                Combo.displayHeader();
+
+                for (Combo combo : result) {
+
+                    combo.display();
+
+                }
+
+            }
+
+            break;
+
+        default:
+
+            System.out.println("Invalid choice!");
+
+    }
+
+}
+
+private static void handleSortCombo(Scanner sc, ComboService service) {
+
+    System.out.println("\n===== SORT COMBO =====");
+    System.out.println("1. Sort by Price Ascending");
+    System.out.println("2. Sort by Price Descending");
+    System.out.println("3. Sort by Name");
+    System.out.print("Choose: ");
+
+    int sortType;
+
+    try {
+
+        sortType = Integer.parseInt(sc.nextLine());
+
+    } catch (Exception e) {
+
+        System.out.println("Invalid choice!");
+        return;
+
+    }
+
+    switch (sortType) {
+
+        case 1:
+
+            service.sortByPriceAscending();
+            service.save();
+
+            System.out.println("Sorted successfully!");
+
+            service.displayAll();
+
+            break;
+
+        case 2:
+
+            service.sortByPriceDescending();
+            service.save();
+
+            System.out.println("Sorted successfully!");
+
+            service.displayAll();
+
+            break;
+
+        case 3:
+
+            service.sortByName();
+            service.save();
+
+            System.out.println("Sorted successfully!");
+
+            service.displayAll();
+
+            break;
+
+        default:
+
+            System.out.println("Invalid choice!");
+
+    }
+
+}
+    private static String chooseTeaType(Scanner sc) {
+
+    while (true) {
+
+        System.out.println("\n====== CHOOSE TEA TYPE ======");
+        System.out.println("1. Green Tea");
+        System.out.println("2. Black Tea");
+        System.out.println("3. White Tea");
+        System.out.println("4. Yellow Tea");
+        System.out.println("5. Oolong Tea");
+        System.out.println("6. Oriental Beauty");
+        System.out.println("7. Tie Guan Yin");
+        System.out.println("8. Raw Pu-erh");
+        System.out.println("9. Ripe Pu-erh");
         System.out.print("Choose: ");
-        int sortType = Integer.parseInt(sc.nextLine());
 
-        switch (sortType) {
-            case 1:
-                service.sortByPriceAscending();
-                System.out.println("✅ Đã sắp xếp theo giá tăng dần!");
-                service.displayAll();
-                break;
-            case 2:
-                service.sortByPriceDescending();
-                System.out.println("✅ Đã sắp xếp theo giá giảm dần!");
-                service.displayAll();
-                break;
-            case 3:
-                service.sortByName();
-                System.out.println("✅ Đã sắp xếp theo tên từ A-Z!");
-                service.displayAll();
-                break;
+        switch (sc.nextLine()) {
+
+            case "1":
+                return "GT";
+
+            case "2":
+                return "RT";
+
+            case "3":
+                return "BT";
+
+            case "4":
+                return "YT";
+
+            case "5":
+                return "OT";
+
+            case "6":
+                return "OM";
+
+            case "7":
+                return "TQ";
+
+            case "8":
+                return "PS";
+
+            case "9":
+                return "PR";
+
             default:
-                System.out.println("❌ Lựa chọn sai!");
+                System.out.println("Invalid choice!");
+
         }
+
     }
+
+}
 }

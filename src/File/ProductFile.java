@@ -105,4 +105,18 @@ public class ProductFile {
             System.out.println("❌ Error saving storage file: " + e.getMessage());
         }
     }
+// 4. Ghi lịch sử nhập hàng vào file Import.txt (Định dạng: ID_Sản_Phẩm|Số_lượng_nhập|Tổng_tiền_vốn_thực_tế)
+    public static void saveImportLog(String productId, int amount, double realPrice) {
+        File file = new File("Import.txt");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
+            // TÍNH TỔNG TIỀN: Lấy giá thực tế (đã nhân 1000) nhân với số lượng nhập
+            double totalCost = realPrice * amount;
+            
+            // Ghi vào file: ID|SốLượng|TổngTiềnVốn (Ví dụ: TE001|10|2000000)
+            bw.write(String.format("%s|%d|%.0f", productId, amount, totalCost));
+            bw.newLine();
+        } catch (Exception e) {
+            System.out.println("❌ Không thể ghi lịch sử vào Import.txt: " + e.getMessage());
+        }
+    }
 }

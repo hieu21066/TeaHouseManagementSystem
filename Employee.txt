@@ -14,7 +14,7 @@ AD002|Admin|Phan Manh Kien|male|35|0903847291|24.5|6-14|19/07/2024
 CA003|Cashier|Tran Khanh Linh|female|22|0774839201|8.7|18-22|02/05/2025
 WS003|WarehouseStaff|Huynh Quang Long|male|33|0359201847|12.0|22-6|11/10/2024
 TM003|TeaMaster|Nguyen Thanh Thang|male|41|0918472930|21.4|18-22|15/01/2024|9
-TL003|Vo Mai Thao|female|27|0964729104|10.1|22-6|28/09/2025
+TL003|TeaLady|Vo Mai Thao|female|27|0964729104|10|22-6|28/09/2025
 TS004|TeaServant|Le Thi Hanh|female|20|0329481023|5.8|14-22|04/04/2026
 CA004|Cashier|Nguyen Phuong Lan|female|23|0971048293|8.9|22-6|12/11/2024
 WS004|WarehouseStaff|Dang Tuan Nam|male|27|0703948102|9.8|18-22|23/05/2025

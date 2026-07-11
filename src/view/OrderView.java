@@ -3,15 +3,13 @@ package view;
 import order.Invoice;
 import order.OrderItem;
 import service.OrderService;
-import service.ReservationService; // Thêm import này
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Scanner;
 
 public class OrderView {
 
-    // Thêm tham số ReservationService vào hàm nhận diện
-    public static void orderMenu(Scanner sc, OrderService orderService, ReservationService reservationService) {
+    public static void orderMenu(Scanner sc, OrderService orderService) {
         int choose;
         do {
             System.out.println("\n====== ORDER MANAGEMENT ======");
@@ -21,7 +19,6 @@ public class OrderView {
             System.out.println("4. Delete Invoice");
             System.out.println("5. Search Invoice By ID");
             System.out.println("6. Sort Invoices By Total Amount");
-            System.out.println("7. Reservation Management (Đặt bàn)"); // Chuyển chức năng sang đây
             System.out.println("0. Back");
             System.out.println("==============================");
             System.out.print("Choose: ");
@@ -29,7 +26,7 @@ public class OrderView {
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("❌ Lỗi: Vui lòng nhập một số nguyên!");
+                System.out.println("Lỗi: Vui lòng nhập một số nguyên!");
                 choose = -1;
                 continue;
             }
@@ -68,11 +65,6 @@ public class OrderView {
                     orderService.sortByTotalAmount();
                     System.out.println("✅ Đã sắp xếp hóa đơn theo tổng tiền tăng dần!");
                     break;
-                case 7:
-                    // Gọi trực tiếp hàm hiển thị menu quản lý đặt bàn tại đây
-                    System.out.println("\n--- CHUYỂN ĐẾN QUẢN LÝ ĐẶT BÀN ---");
-                    new ReservationView(reservationService).menu();
-                    break;
                 case 0:
                     System.out.println("Returning to main menu...");
                     break;
@@ -83,117 +75,100 @@ public class OrderView {
     }
 
     private static void handleCreateInvoice(Scanner sc, OrderService service) {
-        System.out.println("\n--- CREATE NEW INVOICE ---");
+    System.out.println("\n--- CREATE NEW INVOICE ---");
+    String autoInvoiceId = service.generateNextInvoiceId();
+    System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
 
-        
-        String autoInvoiceId = service.generateNextInvoiceId();
-        System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
-
-        System.out.print("Enter Employee Name (Tên người lập đơn): ");
-        String empName = sc.nextLine().trim();
+    String matchedEmpName = null;
+    String empId = "";
+    while (matchedEmpName == null) {
         System.out.print("Enter Employee ID (Mã nhân viên): ");
-        String empId = sc.nextLine().trim();
-
-        String fullEmployeeInfo = empName + " - " + empId;
-
-        String autoInvoiceId = service.generateNextInvoiceId();
-        System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
-
-        String matchedEmpName = null;
-        String empId = "";
-        while (matchedEmpName == null) {
-            System.out.print("Enter Employee ID (Mã nhân viên): ");
-            empId = sc.nextLine().trim();
-            matchedEmpName = service.findEmployeeNameById(empId);
-            if (matchedEmpName == null) {
-                System.out.println("❌ Không tìm thấy nhân viên ứng với ID này! Vui lòng nhập lại.");
-            }
+        empId = sc.nextLine().trim();
+        matchedEmpName = service.findEmployeeNameById(empId);
+        if (matchedEmpName == null) {
+            System.out.println("Không tìm thấy nhân viên ứng với ID này! Vui lòng nhập lại.");
         }
-        System.out.println("-> Nhân viên lập đơn: " + matchedEmpName);
-
-
-        String fullEmployeeInfo = matchedEmpName + " - " + empId;
-        Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
-        boolean hasItemBought = false;
-
-        while (true) {
-            System.out.println("\n--- DANH SÁCH SẢN PHẨM CÒN HÀNG TRONG KHO ---");
-            System.out.printf("%-10s | %-20s | %-15s | %-12s\n", "ID", "Tên Sản Phẩm", "Giá Catalog", "Tồn Kho Hiện Tại");
-            System.out.println("-------------------------------------------------------------------------");
-
-            int availableCount = 0;
-            try (BufferedReader br = new BufferedReader(new FileReader("ProductCatalog.txt"))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String[] catData = line.split("\\|");
-                    String id = catData[0];
-
-                    double currentGrams = service.getStorageQuantityInGrams(id, catData);
-
-                    if (currentGrams > 0) {
-                        String unitStr = catData[1].equalsIgnoreCase("Tea") ? " g" : " Cái";
-                        System.out.printf("%-10s | %-20s | %-12s | %-12s\n", 
-                                id, catData[3], catData[4] + " VND", (int)currentGrams + unitStr);
-
-                    if (catData[1].equalsIgnoreCase("Tea") && service.getStorageQuantityInGrams(id) > 0) {
-                        // FIX: Nhân 1,000, ép kiểu int và đổi thành định dạng %,d
-                        int catalogPriceVND = (int) (Double.parseDouble(catData[4]) * 1000);
-                        System.out.printf("%-10s | %-20s | %,d VND     | %-12s\n", 
-                                id, catData[3], catalogPriceVND, service.getStorageQuantityInGrams(id) + " g");
-
-                        availableCount++;
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println("❌ Lỗi hiển thị danh sách kho!");
-            }
-
-            if (availableCount == 0) {
-                System.out.println("⚠️ Hiện không còn loại trà nào trong kho!");
-                break;
-            }
-
-            System.out.print("\nNhập ID sản phẩm muốn chọn (gõ '0' để chốt đơn): ");
-
-            System.out.print("\nNhập ID sản phẩm trà muốn chọn: ");
-
-            String prodId = sc.nextLine().trim();
-
-            String[] matchedCatalog = service.findCatalogProduct(prodId);
-            if (matchedCatalog == null || !matchedCatalog[1].equalsIgnoreCase("Tea")) {
-                System.out.println("❌ Mã trà không hợp lệ!");
-                continue;
-            }
-
-            System.out.print("Nhập số lượng (Grams): ");
-            int quantity;
-            try {
-                quantity = Integer.parseInt(sc.nextLine());
-                if (quantity <= 0) continue;
-            } catch (Exception e) {
-                continue;
-            }
-
-            if (service.takeOrderItem(invoice, prodId, quantity)) {
-                System.out.println("✔️ Đã thêm trà vào đơn thành công.");
-                hasItemBought = true;
-            }
-
-            System.out.print("Bạn có muốn chọn thêm món không? (y/n): ");
-            if (sc.nextLine().trim().equalsIgnoreCase("n")) break;
-        }
-
-        if (hasItemBought) {
-            invoice.addItem("SERVICE_FEE|Phí dịch vụ thưởng trà", service.getServiceFee(), 1);
-
-            if (service.addInvoice(invoice)) {
-                System.out.println("\n✔️ Tạo hóa đơn thành công!");
-                printInvoiceTable(invoice, service.getServiceFee()); 
-            }
-        } else {
-            System.out.println("⚠️ Hóa đơn rỗng. Hủy thao tác.");
-        } 
     }
+    System.out.println("-> Nhân viên lập đơn: " + matchedEmpName);
+
+    String fullEmployeeInfo = matchedEmpName + " - " + empId;
+    Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
+    boolean hasItemBought = false;
+
+    while (true) {
+        System.out.println("\n--- DANH SÁCH SẢN PHẨM CÒN HÀNG TRONG KHO ---");
+        System.out.printf("%-10s | %-20s | %-15s | %-12s\n", "ID", "Tên Sản Phẩm", "Giá Bán (Đã có lãi)", "Tồn Kho Hiện Tại");
+        System.out.println("-------------------------------------------------------------------------");
+
+        int availableCount = 0;
+        try (BufferedReader br = new BufferedReader(new FileReader("ProductCatalog.txt"))) {
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] catData = line.split("\\|");
+                String id = catData[0];
+                if (catData[1].equalsIgnoreCase("Tea") && service.getStorageQuantityInGrams(id) > 0) {
+                    
+                    // ==================== THAY ĐỔI TẠI ĐÂY ====================
+                    // Lấy giá gốc từ file catalog
+                    // ĐỔI THÀNH CODE MỚI NÀY:
+double basePrice = Double.parseDouble(catData[4]);
+double sellingPrice = service.calculateSellingPrice(basePrice);
+// Nhân 10 và làm tròn để ra đúng 2,300 VND
+int catalogPriceVND = (int) Math.round(sellingPrice * 10);
+                    // =========================================================
+
+                    System.out.printf("%-10s | %-20s | %,d VND     | %-12s\n", 
+                            id, catData[3], catalogPriceVND, service.getStorageQuantityInGrams(id) + " g");
+                    availableCount++;
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Lỗi hiển thị danh sách kho!");
+        }
+
+        if (availableCount == 0) {
+            System.out.println("Hiện không còn loại trà nào trong kho!");
+            break;
+        }
+
+        System.out.print("\nNhập ID sản phẩm trà muốn chọn: ");
+        String prodId = sc.nextLine().trim();
+
+        String[] matchedCatalog = service.findCatalogProduct(prodId);
+        if (matchedCatalog == null || !matchedCatalog[1].equalsIgnoreCase("Tea")) {
+            System.out.println("Invalid Tea ID");
+            continue;
+        }
+
+        System.out.print("Nhập số lượng (Grams): ");
+        int quantity;
+        try {
+            quantity = Integer.parseInt(sc.nextLine());
+            if (quantity <= 0) continue;
+        } catch (Exception e) {
+            continue;
+        }
+
+        if (service.takeOrderItem(invoice, prodId, quantity)) {
+            System.out.println("Đã thêm trà vào đơn thành công.");
+            hasItemBought = true;
+        }
+
+        System.out.print("Bạn có muốn chọn thêm món không? (y/n): ");
+        if (sc.nextLine().trim().equalsIgnoreCase("n")) break;
+    }
+
+    if (hasItemBought) {
+        invoice.addItem("SERVICE_FEE|Phí dịch vụ thưởng trà", service.getServiceFee(), 1);
+
+        if (service.addInvoice(invoice)) {
+            System.out.println("\n✔️ Tạo hóa đơn thành công!");
+            printInvoiceTable(invoice, service.getServiceFee()); 
+        }
+    } else {
+        System.out.println("⚠️ Hóa đơn rỗng. Hủy thao tác.");
+    } 
+}
 
     // ==================== BẢNG IN HÓA ĐƠN HOÀN CHỈNH BỔ SUNG ID SẢN PHẨM ====================
     // ==================== BẢNG IN HÓA ĐƠN HOÀN CHỈNH BỔ SUNG ID SẢN PHẨM ====================
@@ -228,13 +203,13 @@ public class OrderView {
             
             // PHÂN LOẠI ĐỂ TÍNH GIÁ TIỀN HỢP LÝ:
             if (pId.startsWith("TE")) {
-                // Nếu là TRÀ: Đơn giá và thành tiền cần nhân 1,000 để ra đơn vị VND thực tế
-                itemPriceFinalVND = (int) (item.getPrice() * 1000);
-                rowTotalFinalVND = (int) (rowTotal * 1000);
-                
-                priceStr = String.format("%,d VND", itemPriceFinalVND);
-                qtyStr = item.getQuantity() + " g"; 
-            } else {
+    // Nhân 10 và làm tròn bằng Math.round để đồng bộ với danh sách kho
+    itemPriceFinalVND = (int) Math.round(item.getPrice() * 10);
+    rowTotalFinalVND = (int) Math.round(rowTotal * 10);
+    
+    priceStr = String.format("%,d VND", itemPriceFinalVND);
+    qtyStr = item.getQuantity() + " g"; 
+} else {
                 // Nếu là SERVICE_FEE hoặc các dịch vụ khác: Giữ nguyên giá trị gốc 
                 itemPriceFinalVND = (int) item.getPrice();
                 rowTotalFinalVND = (int) rowTotal;

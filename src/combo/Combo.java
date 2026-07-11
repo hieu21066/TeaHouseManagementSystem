@@ -5,7 +5,7 @@ public class Combo {
     //==================== Attributes ====================
 
     private String comboId;
-    private String teaType;       // GT, RT, BT...
+    private String teaType;
     private String comboName;
     private double price;
     private String description;
@@ -27,7 +27,6 @@ public class Combo {
         this.description = description;
     }
 
-    //==================== Getter & Setter ====================
 
     public String getComboId() {
         return comboId;

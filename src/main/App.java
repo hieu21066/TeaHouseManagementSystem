@@ -70,7 +70,9 @@ public class App {
                         System.out.println("[Lỗi] Đã xảy ra lỗi khi đọc file tài khoản!");
                         break;
                     }
+                    // --------------------------------------------------------
 
+                    // Kiểm tra kết quả flag login
                     if (!isLoginSuccess) {
                         System.out.println("Login Failed! Wrong Username or Password.");
                         break;
@@ -78,11 +80,12 @@ public class App {
 
                     System.out.println("Login Successfully!");
 
+                    
                     adminMenu(sc,
                             employeeService,
                             productService,
                             comboService,
-                            reservationService, // Vẫn truyền vào để chuyển tiếp sang OrderView nếu cần
+                            reservationService,
                             orderService,
                             financeService);
 
@@ -91,8 +94,29 @@ public class App {
                 //================ ORDER =================
                 case 2:
                     System.out.println("\n====== ORDER MODE ======");
-                    // Đã bổ sung thêm reservationService vào đây
-                    OrderView.orderMenu(sc, orderService, reservationService); 
+                    int choice = -1;
+                    do{
+                        System.out.println("1. Order");
+                        System.out.println("2. Order by combo");
+                        System.out.println("3. Reservation");
+                        System.out.println("0. Exit");
+                        System.out.print("Enter your choice:");
+                        choice = Integer.parseInt(sc.nextLine());
+                        switch(choice){
+                            case 1:
+                                OrderView.orderMenu(sc, orderService);
+                                break;
+                            case 2:
+                                ComboView.comboMenu(sc, comboService);
+                                break;
+                            case 3:
+                                new ReservationView(sc, reservationService).menu();
+                                break;
+                        }
+                        
+                    }
+                    while(choice!=0);
+                    
                     break;
 
                 case 0:
@@ -125,11 +149,12 @@ public class App {
             System.out.println("1. Employee Management");
             System.out.println("2. Product Management");
             System.out.println("3. Combo Management");
-            System.out.println("4. Order Management"); // Đôn lên vị trí số 4
-            System.out.println("5. Finance Management"); // Đôn lên vị trí số 5
+            System.out.println("4. Order Management");
+            System.out.println("5. Finance Management");
             System.out.println("0. Logout");
             System.out.print("Choose: ");
 
+            
             try {
                 menu = Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
@@ -148,11 +173,13 @@ public class App {
                     ComboView.comboMenu(sc, comboService);
                     break;
                 case 4:
-                    // Đã bổ sung thêm reservationService khi gọi Order từ Admin
-                    OrderView.orderMenu(sc, orderService, reservationService); 
+                    OrderView.orderMenu(sc, orderService);
                     break;
                 case 5:
-                    FinanceView.displayFinancialReport(sc, financeService, orderService, productService, comboService);
+                    FinanceView.displayFinancialReport(sc,financeService,orderService, 
+                                                       productService, 
+                                                       comboService
+                                                       );
                     break;
                 case 0:
                     System.out.println("Logout Successfully!");
@@ -164,3 +191,4 @@ public class App {
         } while (menu != 0);
     }
 }
+

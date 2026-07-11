@@ -24,7 +24,7 @@ public class ComboView {
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("❌ Lỗi: Vui lòng nhập một số nguyên!");
+                System.out.println("Vui lòng nhập một số nguyên!");
                 choose = -1;
                 continue;
             }

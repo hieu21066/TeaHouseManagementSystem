@@ -11,3 +11,4 @@
 .classpath
 .settings/
 /dist/
+/nbproject/private/

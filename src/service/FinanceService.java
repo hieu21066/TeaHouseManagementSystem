@@ -2,103 +2,183 @@ package service;
 
 import finance.Finance;
 import java.util.ArrayList;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class FinanceService {
 
+    // Danh sách lưu trữ các kỳ tài chính trên RAM (liên kết với File IO ở tầng View)
     private ArrayList<Finance> financeList;
 
+    // ==================== CONSTRUCTOR ====================
     public FinanceService() {
-        financeList = new ArrayList<>();
+        this.financeList = new ArrayList<>();
     }
 
-    public ArrayList<Finance> getFinanceList() { return financeList; }
-    public void setFinanceList(ArrayList<Finance> financeList) { this.financeList = financeList; }
-    public boolean addFinance(Finance finance) { if (isExist(finance.getFinanceId())) return false; financeList.add(finance); return true; }
-    public boolean deleteFinance(String financeId) { Finance finance = searchById(financeId); if (finance == null) return false; financeList.remove(finance); return true; }
-    public boolean updateFinance(Finance newFinance) { Finance oldFinance = searchById(newFinance.getFinanceId()); if (oldFinance == null) return false; oldFinance.setTotalRevenue(newFinance.getTotalRevenue()); oldFinance.setTotalExpense(newFinance.getTotalExpense()); return true; }
-    
-    public Finance searchById(String financeId) {
-        for (Finance finance : financeList) {
-            if (finance.getFinanceId().equalsIgnoreCase(financeId)) return finance;
+    // ==================== GETTER / SETTER ====================
+    public ArrayList<Finance> getFinanceList() {
+        return financeList;
+    }
+
+    public void setFinanceList(ArrayList<Finance> financeList) {
+        this.financeList = financeList;
+    }
+
+    // ==================== NGHIỆP VỤ CƠ BẢN (CRUD) ====================
+
+    /**
+     * Tìm kiếm một kỳ tài chính cụ thể dựa vào mã ID
+     */
+    public Finance searchById(String id) {
+        for (Finance f : financeList) {
+            if (f.getFinanceId().equalsIgnoreCase(id.trim())) {
+                return f;
+            }
         }
         return null;
     }
 
-    public void displayAll() {
-        if (financeList.isEmpty()) { System.out.println("Finance list is empty!"); return; }
-        Finance.displayHeader();
-        for (Finance finance : financeList) finance.display();
-    }
-    
-    public void displayById(String financeId) {
-        Finance finance = searchById(financeId);
-        if (finance == null) { System.out.println("Finance period not found!"); return; }
-        Finance.displayHeader();
-        finance.display();
+    /**
+     * Thêm mới một kỳ tài chính (Kiểm tra trùng lặp ID)
+     */
+    public boolean addFinance(Finance finance) {
+        if (searchById(finance.getFinanceId()) != null) {
+            return false; // ID đã tồn tại, không cho trùng
+        }
+        financeList.add(finance);
+        return true;
     }
 
-    public boolean addRevenue(String financeId, double amount) { Finance finance = searchById(financeId); if (finance == null) return false; finance.setTotalRevenue(finance.getTotalRevenue() + amount); return true; }
-    public boolean addExpense(String financeId, double amount) { Finance finance = searchById(financeId); if (finance == null) return false; finance.setTotalExpense(finance.getTotalExpense() + amount); return true; }
-    
-    public double calculateProfit(String financeId) {
-        Finance finance = searchById(financeId);
-        if (finance == null) return 0.0;
-        return finance.getTotalRevenue() - finance.getTotalExpense();
+    /**
+     * Cộng thêm doanh thu thủ công (Dành cho chức năng Case 3 trong View)
+     */
+    public boolean addRevenue(String id, double amount) {
+        Finance f = searchById(id);
+        if (f != null && amount >= 0) {
+            f.setTotalRevenue(f.getTotalRevenue() + amount);
+            return true;
+        }
+        return false;
     }
 
-    public boolean isExist(String financeId) { return searchById(financeId) != null; }
+    /**
+     * Cộng thêm chi phí thủ công (Dành cho chức năng Case 4 trong View)
+     */
+    public boolean addExpense(String id, double amount) {
+        Finance f = searchById(id);
+        if (f != null && amount >= 0) {
+            f.setTotalExpense(f.getTotalExpense() + amount);
+            return true;
+        }
+        return false;
+    }
 
-    // ==================== TỰ ĐỘNG TÍNH TOÁN LẤY TỪ 3 FILE HỆ THỐNG ====================
-    public boolean autoCalculateFinance(String financeId, OrderService orderService, ProductService productService, ComboService comboService) {
+    // ==================== ĐỒNG BỘ & TỰ ĐỘNG TÍNH TOÁN TỪ FILE ====================
+
+    /**
+     * Tự động đồng bộ số liệu: Quét hóa đơn lấy doanh thu, 
+     * Tự đọc file Import.txt lấy chi phí gốc nguyên vật liệu, và Quét lương nhân viên.
+     */
+    public boolean autoCalculateFinance(String financeId, 
+                                        service.OrderService orderService, 
+                                        service.ProductService productService, 
+                                        service.ComboService comboService, 
+                                        service.EmployeeService employeeService) {
+        
         Finance finance = searchById(financeId);
         if (finance == null) {
-            return false;
+            return false; // Không tìm thấy mã kỳ tài chính
         }
 
-        // 1. Tự động tính Doanh thu từ file Invoice bán hàng lẻ (OrderService)
+        // --- 1. TỰ ĐỘNG TÍNH TOÁN TỔNG DOANH THU THỰC TẾ ---
         double totalRevenue = 0.0;
-        if (orderService.getInvoiceList() != null) {
+        if (orderService != null && orderService.getInvoiceList() != null) {
             for (order.Invoice invoice : orderService.getInvoiceList()) {
                 totalRevenue += invoice.getTotalAmount();
             }
         }
 
-        // 2. Tự động tính Chi phí vốn từ Kho hàng và Danh mục Combo
-        double totalExpense = 0.0;
+        // --- 2. TỰ ĐỌC VÀ TÍNH CHI PHÍ NHẬP HÀNG TRỰC TIẾP TỪ FILE IMPORT.TXT ---
+        double totalCOGS = 0.0;
+        File importFile = new File("Import.txt"); // Đường dẫn tương đương vị trí lưu của ProductFile
         
-        // a. Quét từ file kho hàng thực tế (ProductCatalog + ProductService) mà không sửa ProductService
-        try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader("ProductCatalog.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                String[] catData = line.split("\\|");
-                String id = catData[0]; // Lấy ID sản phẩm từ file dữ liệu
-                
-                // Dùng hàm public tìm kiếm có sẵn của productService để định vị thực thể trong kho
-                product.Product p = productService.findProductById(id);
-                
-                // Nếu sản phẩm tồn tại trong kho và thực sự có hàng (số lượng > 0)
-                if (p != null && p.getQuantity() > 0) {
-                    // p.getPrice() lấy giá bán gốc từ catalog, nhân 0.6 ước tính giá vốn nhập hàng
-                    double estimatedImportPrice = p.getPrice() * 0.6; 
-                    totalExpense += p.getQuantity() * estimatedImportPrice;
+        if (importFile.exists()) {
+            try (BufferedReader br = new BufferedReader(new FileReader(importFile))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
+                    
+                    // Cắt chuỗi theo định dạng: ID|SốLượng|TổngTiềnVốn (Ví dụ: TE001|10|2000000)
+                    String[] data = line.split("\\|");
+                    if (data.length >= 3) {
+                        // Lấy trực tiếp giá trị Tổng tiền vốn ở cột thứ 3 (chỉ số index = 2)
+                        double cost = Double.parseDouble(data[2].trim());
+                        totalCOGS += cost;
+                    }
                 }
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Lỗi khi đọc file tính chi phí vốn kho hàng trong FinanceService!");
-        }
-        
-        // b. Quét chi phí vốn ước tính từ danh mục các gói Combo (ComboFile)
-        if (comboService.getComboList() != null) {
-            for (combo.Combo combo : comboService.getComboList()) {
-                // Ước tính giá gốc cấu thành Combo bằng 60% giá niêm yết combo đó
-                double estimatedComboCost = combo.getPrice() * 0.6;
-                totalExpense += estimatedComboCost; 
+            } catch (Exception e) {
+                System.out.println("⚠️ Lỗi đọc file dữ liệu Import ngay tại FinanceService: " + e.getMessage());
             }
         }
 
-        // 3. Cập nhật trực tiếp số liệu mới tính được vào đối tượng tài chính
+        // --- 3. TỰ ĐỘNG TÍNH CHI PHÍ LƯƠNG NHÂN VIÊN ---
+        double totalSalary = 0.0;
+        if (employeeService != null && employeeService.getEmployeeList() != null) {
+            for (employee.Employee emp : employeeService.getEmployeeList()) {
+                totalSalary += emp.getSalary();
+            }
+        }
+
+        // Tổng chi phí định kỳ = Chi phí vốn đầu vào (Import) + Chi phí lương nhân viên
+        double totalExpense = totalCOGS + totalSalary;
+
+        // --- 4. CẬP NHẬT DỮ LIỆU ĐÃ ĐỒNG BỘ VÀO ĐỐI TƯỢNG ---
         finance.setTotalRevenue(totalRevenue);
         finance.setTotalExpense(totalExpense);
+        
         return true;
+    }
+
+    // ==================== HIỂN THỊ DỮ LIỆU (VIEW INTERACTION) ====================
+
+    /**
+     * Hiển thị chi tiết báo cáo tài chính của 1 kỳ duy nhất (Case 5 sau khi sync)
+     */
+    public void displayById(String id) {
+        Finance f = searchById(id);
+        if (f != null) {
+            double profit = f.getTotalRevenue() - f.getTotalExpense();
+            System.out.println("+---------------------------------------------------+");
+            System.out.printf("| Mã Kỳ Tài Chính   : %-29s |\n", f.getFinanceId());
+            System.out.printf("| Tổng Doanh Thu    : %-26.0f VND |\n", f.getTotalRevenue());
+            System.out.printf("| Tổng Chi Phí      : %-26.0f VND |\n", f.getTotalExpense());
+            System.out.printf("| Lợi Nhuận Thuần   : %-26.0f VND |\n", profit);
+            System.out.println("+---------------------------------------------------+");
+        } else {
+            System.out.println("❌ Không tìm thấy thông tin cho mã kỳ: " + id);
+        }
+    }
+
+    /**
+     * Hiển thị danh sách tổng quan tất cả các kỳ tài chính (Case 1)
+     */
+    public void displayAll() {
+        if (financeList.isEmpty()) {
+            System.out.println("📭 Danh sách quản lý tài chính hiện đang trống.");
+            return;
+        }
+        System.out.println("=====================================================================");
+        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "ID Kỳ", "Doanh Thu", "Chi Phí", "Lợi Nhuận");
+        System.out.println("=====================================================================");
+        for (Finance f : financeList) {
+            double profit = f.getTotalRevenue() - f.getTotalExpense();
+            System.out.printf("| %-15s | %-15.0f | %-15.0f | %-13.0f |\n",
+                    f.getFinanceId(),
+                    f.getTotalRevenue(),
+                    f.getTotalExpense(),
+                    profit);
+        }
+        System.out.println("=====================================================================");
     }
 }

@@ -9,65 +9,95 @@ public class OrderFile {
 
     // ==================== HÀM LOAD (ĐỌC FILE) ====================
     public static ArrayList<Invoice> load() {
-        ArrayList<Invoice> list = new ArrayList<>();
-        File file = new File(FILE_NAME);
+    ArrayList<Invoice> list = new ArrayList<>();
+    File file = new File(FILE_NAME);
+    if (!file.exists()) return list;
 
-        if (!file.exists()) {
-            return list;
-        }
+    try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+        String line;
+        while ((line = br.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
+            
+            String[] data = line.split("\\|");
+            if (data.length >= 3) {
+                String invoiceId = data[0];
+                String empId = data[1];
+                Invoice invoice = new Invoice(invoiceId, empId);
 
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-                
-                // Tách dữ liệu bằng dấu gạch đứng |
-                String[] data = line.split("\\|");
-                if (data.length >= 3) {
-                    String invoiceId = data[0];
-                    String empId = data[1];
-                    double totalAmount = Double.parseDouble(data[2]);
+                // Đọc các item ở giữa (MãSP-SốLượng)
+                for (int i = 2; i < data.length - 1; i++) {
+                    String itemStr = data[i];
+                    if (!itemStr.contains("-")) continue;
 
-                    // Khởi tạo đối tượng hóa đơn mới
-                    Invoice invoice = new Invoice(invoiceId, empId);
-                    
-                    // FIX LỖI: Nạp số tiền doanh thu tích lũy vào hóa đơn bằng cách add một item giả lập,
-                    // Giúp hệ thống vẫn nhận đủ tổng tiền mà bạn không cần tạo hàm setTotalAmount trong class Invoice.
-                    invoice.addItem("SERVICE_FEE|Doanh thu tích lũy", totalAmount, 1);
-                    
-                    list.add(invoice);
+                    String[] itemParts = itemStr.split("-");
+                    String pId = itemParts[0];
+                    int quantity = Integer.parseInt(itemParts[1]);
+
+                    if (pId.startsWith("TE")) {
+                        String pName = "Tea (Gram)";
+                        double price = 200.0;
+                        // Quét file catalog lấy tên và giá gốc
+                        try (BufferedReader catBr = new BufferedReader(new FileReader("ProductCatalog.txt"))) {
+                            String catLine;
+                            while ((catLine = catBr.readLine()) != null) {
+                                String[] catData = catLine.split("\\|");
+                                if (catData[0].equalsIgnoreCase(pId)) {
+                                    pName = catData[3] + " (Gram)";
+                                    price = Double.parseDouble(catData[4]) * 1.15;
+                                    break;
+                                }
+                            }
+                        } catch (Exception e) {}
+                        invoice.addItem(pId + "|" + pName, price, quantity);
+                    } else if (pId.equals("SERVICE_FEE")) {
+                        invoice.addItem("SERVICE_FEE|Phí dịch vụ thưởng trà", 30000.0, quantity);
+                    }
                 }
+                list.add(invoice);
             }
-        } catch (Exception e) {
-            System.out.println("❌ Load Order.txt thất bại!");
         }
-        return list;
-    } 
+    } catch (Exception e) {
+        System.out.println("❌ Load Order.txt thất bại!");
+    }
+    return list;
+}
 
     // ==================== HÀM SAVE (GHI FILE) ====================
     public static void save(ArrayList<Invoice> list) {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
-            for (Invoice invoice : list) {
-                // Tách lấy Mã nhân viên (ID) từ chuỗi thông tin (nếu chuỗi có dạng "Tên - ID")
-                String empInfo = invoice.getEmployeeName(); 
-                String empId = empInfo;
-                if (empInfo.contains(" - ")) {
-                    empId = empInfo.substring(empInfo.lastIndexOf(" - ") + 3).trim();
-                }
-
-                // Ghi dữ liệu xuống file theo định dạng: ID_Order|ID_Nhân_Viên|Tổng_Tiền
-                // Số tiền được làm tròn về số nguyên để nhìn file lưu trữ sạch sẽ hơn
-                // Sửa dòng ghi record thành thế này:
-String record = String.format("%s|%s|%.0f", 
-        invoice.getInvoiceId(), 
-        empId, 
-        invoice.getTotalAmount()); // Sẽ tự động ghi thẳng số 53000 vào file!
-                
-                bw.write(record);
-                bw.newLine();
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
+        for (Invoice invoice : list) {
+            // Lấy ID nhân viên
+            String empInfo = invoice.getEmployeeName(); 
+            String empId = empInfo;
+            if (empInfo.contains(" - ")) {
+                empId = empInfo.substring(empInfo.lastIndexOf(" - ") + 3).trim();
             }
-        } catch (Exception e) {
-            System.out.println("❌ Save Order.txt thất bại!");
+
+            // Tiến hành xây dựng chuỗi các sản phẩm: MãSP-SốLượng
+            StringBuilder itemsBuilder = new StringBuilder();
+            for (order.OrderItem item : invoice.getItemList()) {
+                String rawName = item.getProductName();
+                String pId = rawName;
+                if (rawName.contains("|")) {
+                    pId = rawName.split("\\|")[0]; // Tách lấy mã (VD: TE001 hoặc SERVICE_FEE)
+                }
+                
+                // Nối chuỗi, ngăn cách các món bằng dấu gạch đứng |
+                itemsBuilder.append(pId).append("-").append(item.getQuantity()).append("|");
+            }
+
+            // Ghi dữ liệu theo cấu trúc: MãHD|MãNV|MãSP1-SL1|MãSP2-SL2|...|TổngTiền
+            String record = String.format("%s|%s|%s%.0f", 
+                    invoice.getInvoiceId(), 
+                    empId, 
+                    itemsBuilder.toString(), // Chuỗi các món đã có sẵn dấu | ở cuối
+                    invoice.getTotalAmount());
+            
+            bw.write(record);
+            bw.newLine();
         }
+    } catch (Exception e) {
+        System.out.println("❌ Save Order.txt thất bại!");
     }
+}
 }

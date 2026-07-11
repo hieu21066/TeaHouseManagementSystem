@@ -80,6 +80,7 @@ public class App {
 
                     System.out.println("Login Successfully!");
 
+                    
                     adminMenu(sc,
                             employeeService,
                             productService,
@@ -153,6 +154,7 @@ public class App {
             System.out.println("0. Logout");
             System.out.print("Choose: ");
 
+            
             try {
                 menu = Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
@@ -189,3 +191,4 @@ public class App {
         } while (menu != 0);
     }
 }
+

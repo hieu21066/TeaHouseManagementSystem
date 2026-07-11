@@ -14,7 +14,7 @@ public class EmployeeFile {
         File file = new File(FILE_NAME);
 
         if (!file.exists()) {
-            System.out.println("⚠️ File " + FILE_NAME + " không tồn tại!");
+            System.out.println("File " + FILE_NAME + " không tồn tại!");
             return list;
         }
 
@@ -32,7 +32,7 @@ public class EmployeeFile {
                 String[] data = line.split("\\|");
 
                 if (data.length < 9) {
-                    System.out.println("⚠️ Cảnh báo: Dòng " + lineNumber + " trong file Employee.txt bị thiếu cột dữ liệu! Bỏ qua.");
+                    System.out.println("Cảnh báo: Dòng " + lineNumber + " trong file "+ FILE_NAME +" bị thiếu cột dữ liệu! Bỏ qua.");
                     continue;
                 }
 
@@ -65,7 +65,7 @@ public class EmployeeFile {
                                 int yearsOfExperience = Integer.parseInt(data[9].trim());
                                 employee = new TeaMaster(id, name, gender, age, phone, salary, shift, hireDate, yearsOfExperience);
                             } else {
-                                System.out.println("⚠️ TeaMaster tại dòng " + lineNumber + " thiếu cột số năm kinh nghiệm!");
+                                System.out.println("TeaMaster tại dòng " + lineNumber + " thiếu cột số năm kinh nghiệm!");
                             }
                             break;
 
@@ -82,7 +82,7 @@ public class EmployeeFile {
                             break;
                         
                         default:
-                            System.out.println("⚠️ Không nhận diện được chức vụ: " + role + " tại dòng " + lineNumber);
+                            System.out.println("Không nhận diện được chức vụ: " + role + " tại dòng " + lineNumber);
                     }
 
                     if (employee != null) {
@@ -90,14 +90,14 @@ public class EmployeeFile {
                     }
                 } catch (Exception e) {
                     // In ra chi tiết lỗi của riêng dòng đó để dễ debug mà không làm sập toàn bộ quá trình đọc file
-                    System.out.println("❌ Lỗi định dạng dữ liệu dòng " + lineNumber + ": " + e.getMessage());
+                    System.out.println("Lỗi định dạng dữ liệu dòng " + lineNumber + ": " + e.getMessage());
                 }
             }
             System.out.println("✅ Load " + FILE_NAME + " thành công! Số lượng: " + list.size());
 
         } catch (Exception e) {
             // Lỗi hệ thống nghiêm trọng (như lỗi phần cứng, khóa file...)
-            System.out.println("Load " + FILE_NAME + " failed! Chi tiết: " + e.toString());
+            System.out.println("Load " + FILE_NAME + " failed! Detail: " + e.toString());
         }
 
         return list;
@@ -110,9 +110,9 @@ public class EmployeeFile {
                 bw.write(employee.toString());
                 bw.newLine();
             }
-            System.out.println("✅ Lưu dữ liệu vào " + FILE_NAME + " thành công!");
+            System.out.println("Saved data into " + FILE_NAME + " successfully!");
         } catch (Exception e) {
-            System.out.println("Save Employee.txt failed! Chi tiết: " + e.getMessage());
+            System.out.println("Save Employee.txt failed! Detail: " + e.getMessage());
         }
     }
 } 

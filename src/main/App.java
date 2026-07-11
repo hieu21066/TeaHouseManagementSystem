@@ -100,7 +100,7 @@ public class App {
                         System.out.println("3. Reservation");
                         System.out.println("0. Exit");
                         System.out.print("Enter your choice:");
-                        choice = sc.nextInt();
+                        choice = Integer.parseInt(sc.nextLine());
                         switch(choice){
                             case 1:
                                 OrderView.orderMenu(sc, orderService);

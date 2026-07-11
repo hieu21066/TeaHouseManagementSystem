@@ -227,9 +227,9 @@ int catalogPriceVND = (int) Math.round(sellingPrice * 10);
             System.out.printf("%-10s | %-30s | %-18s | %-10s | %-15s\n", 
                     pId, pName, priceStr, qtyStr, String.format("%,d VND", rowTotalFinalVND));
         }
-        System.out.println("-----------------------------------------------------------------------------------------");
-        System.out.printf("TOTAL : %,d VND\n", finalTotalInvoiceVND);
-        System.out.println("=========================================================================================");
+System.out.println("-----------------------------------------------------------------------------------------");
+System.out.printf("TOTAL : %,d VND\n", (int) invoice.getTotalAmount()); // Gọi trực tiếp từ object
+System.out.println("=========================================================================================");
     }
 
     private static void handleUpdateInvoice(Scanner sc, OrderService service) {

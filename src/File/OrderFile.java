@@ -57,10 +57,11 @@ public class OrderFile {
 
                 // Ghi dữ liệu xuống file theo định dạng: ID_Order|ID_Nhân_Viên|Tổng_Tiền
                 // Số tiền được làm tròn về số nguyên để nhìn file lưu trữ sạch sẽ hơn
-                String record = String.format("%s|%s|%.0f", 
-                        invoice.getInvoiceId(), 
-                        empId, 
-                        invoice.getTotalAmount());
+                // Sửa dòng ghi record thành thế này:
+String record = String.format("%s|%s|%.0f", 
+        invoice.getInvoiceId(), 
+        empId, 
+        invoice.getTotalAmount()); // Sẽ tự động ghi thẳng số 53000 vào file!
                 
                 bw.write(record);
                 bw.newLine();

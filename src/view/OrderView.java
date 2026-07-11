@@ -84,7 +84,7 @@ public class OrderView {
 
     private static void handleCreateInvoice(Scanner sc, OrderService service) {
         System.out.println("\n--- CREATE NEW INVOICE ---");
-<<<<<<< HEAD
+
         
         String autoInvoiceId = service.generateNextInvoiceId();
         System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
@@ -95,7 +95,7 @@ public class OrderView {
         String empId = sc.nextLine().trim();
 
         String fullEmployeeInfo = empName + " - " + empId;
-=======
+
         String autoInvoiceId = service.generateNextInvoiceId();
         System.out.println("Invoice ID (Auto Generated): " + autoInvoiceId);
 
@@ -110,7 +110,7 @@ public class OrderView {
             }
         }
         System.out.println("-> Nhân viên lập đơn: " + matchedEmpName);
->>>>>>> 839dba663e1c76077746319548372ddf26b606ec
+
 
         String fullEmployeeInfo = matchedEmpName + " - " + empId;
         Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
@@ -127,20 +127,20 @@ public class OrderView {
                 while ((line = br.readLine()) != null) {
                     String[] catData = line.split("\\|");
                     String id = catData[0];
-<<<<<<< HEAD
+
                     double currentGrams = service.getStorageQuantityInGrams(id, catData);
 
                     if (currentGrams > 0) {
                         String unitStr = catData[1].equalsIgnoreCase("Tea") ? " g" : " Cái";
                         System.out.printf("%-10s | %-20s | %-12s | %-12s\n", 
                                 id, catData[3], catData[4] + " VND", (int)currentGrams + unitStr);
-=======
+
                     if (catData[1].equalsIgnoreCase("Tea") && service.getStorageQuantityInGrams(id) > 0) {
                         // FIX: Nhân 1,000, ép kiểu int và đổi thành định dạng %,d
                         int catalogPriceVND = (int) (Double.parseDouble(catData[4]) * 1000);
                         System.out.printf("%-10s | %-20s | %,d VND     | %-12s\n", 
                                 id, catData[3], catalogPriceVND, service.getStorageQuantityInGrams(id) + " g");
->>>>>>> 839dba663e1c76077746319548372ddf26b606ec
+
                         availableCount++;
                     }
                 }
@@ -153,11 +153,10 @@ public class OrderView {
                 break;
             }
 
-<<<<<<< HEAD
             System.out.print("\nNhập ID sản phẩm muốn chọn (gõ '0' để chốt đơn): ");
-=======
+
             System.out.print("\nNhập ID sản phẩm trà muốn chọn: ");
->>>>>>> 839dba663e1c76077746319548372ddf26b606ec
+
             String prodId = sc.nextLine().trim();
 
             String[] matchedCatalog = service.findCatalogProduct(prodId);

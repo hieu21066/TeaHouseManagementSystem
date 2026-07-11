@@ -27,7 +27,8 @@ public class ProductService {
         }
     }
 
-    // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế theo ID có sẵn từ Catalog)
+    // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế và ghi lịch sử vào Import.txt)
+    // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế và ghi lịch sử vào Import.txt)
     public void importProduct() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter Product ID to import: ");
@@ -55,9 +56,24 @@ public class ProductService {
             }
 
             if (activeItem != null) {
+                // Quy đổi giá thô từ Catalog ra giá tiền VND thực tế (Nhân với 1000)
+                double realPrice = catalogItem.getPrice() * 1000;
+                // Tính toán tổng tiền vốn nhập hàng thực tế
+                double totalCost = realPrice * amount;
+
+                // 1. Cập nhật số lượng tồn kho trên RAM và lưu vào Storage.txt
                 activeItem.setQuantity(activeItem.getQuantity() + amount);
-                ProductFile.saveStorage(activeProductList); // Lưu file Storage.txt ngay
+                ProductFile.saveStorage(activeProductList); 
+                
+                // 2. SỬA TẠI ĐÂY: Ghi nhận lịch sử vào Import.txt với giá tiền thực tế (VD: 200000)
+                ProductFile.saveImportLog(activeItem.getId(), amount, realPrice);
+                
+                System.out.println("\n----------------------------------------");
                 System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
+                System.out.printf("Đơn giá gốc: %,.0f VND / %s\n", realPrice, (catalogItem instanceof Tea) ? "Gram" : "Cái");
+                System.out.printf("TỔNG TIỀN VỐN NHẬP: %,.0f VND\n", totalCost); 
+                System.out.println("📝 Lịch sử nhập hàng đã được lưu vào Import.txt!");
+                System.out.println("----------------------------------------");
             }
         } catch (NumberFormatException e) {
             System.out.println("❌ Invalid number format.");

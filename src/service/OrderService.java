@@ -116,7 +116,7 @@ public class OrderService {
         return removed;
     }
     public void sortByTotalAmount() {
-        invoiceList.sort(Comparator.comparingDouble(inv -> inv.getItemList().stream().mapToDouble(i -> i.getPrice() * i.getQuantity()).sum()));
-        OrderFile.save(invoiceList);
-    }
+    invoiceList.sort(Comparator.comparingDouble(Invoice::getTotalAmount));
+    OrderFile.save(invoiceList);
+}
 }

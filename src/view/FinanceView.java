@@ -5,11 +5,13 @@ import service.FinanceService;
 import service.OrderService;
 import service.ProductService;
 import service.ComboService;
+import service.EmployeeService; // 1. BỔ SUNG IMPORT ĐƯỜNG DẪN ĐẾN SERVICE NHÂN VIÊN
 import java.util.Scanner;
 
 public class FinanceView {
 
-    public static void displayFinancialReport(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService) {
+    // 2. CẬP NHẬT THAM SỐ: Bổ sung EmployeeService vào cuối danh sách phương thức hiển thị
+    public static void displayFinancialReport(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService, EmployeeService employeeService) {
         financeService.setFinanceList(file.FinanceFile.load());
         
         int choose;
@@ -41,7 +43,8 @@ public class FinanceView {
                 case 3: handleAddRevenue(sc, financeService); break;
                 case 4: handleAddExpense(sc, financeService); break;
                 case 5: 
-                    handleAutoCalculate(sc, financeService, orderService, productService, comboService); 
+                    // 3. TRUYỀN THÊM employeeService VÀO HÀM TỰ ĐỘNG TÍNH TOÁN
+                    handleAutoCalculate(sc, financeService, orderService, productService, comboService, employeeService); 
                     break;
                 case 0:
                     file.FinanceFile.save(financeService.getFinanceList());
@@ -96,13 +99,15 @@ public class FinanceView {
         }
     }
 
-    private static void handleAutoCalculate(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService) {
+    // 4. CẬP NHẬT THAM SỐ: Nhận thêm EmployeeService vào hàm xử lý tính toán tự động
+    private static void handleAutoCalculate(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService, EmployeeService employeeService) {
         System.out.print("Enter Finance ID to sync: ");
         String id = sc.nextLine().trim();
 
-        System.out.println("⏳ Đang quét dữ liệu trực tiếp từ các file hệ thống (Hóa đơn, Kho hàng, Combo)...");
+        System.out.println("⏳ Đang quét dữ liệu trực tiếp từ các file hệ thống (Hóa đơn, Kho hàng, Combo, Nhân viên)...");
         
-        if (financeService.autoCalculateFinance(id, orderService, productService, comboService)) {
+        // 5. TRUYỀN ĐỦ 5 SERVICE vào hàm autoCalculateFinance của FinanceService để tính toán đúng công thức
+        if (financeService.autoCalculateFinance(id, orderService, productService, comboService, employeeService)) {
             System.out.println("✅ ĐỒNG BỘ HÓA VÀ CẬP NHẬT FILE THÀNH CÔNG!");
             
             System.out.println("\n--- BÁO CÁO TỰ ĐỘNG KỲ [" + id + "] ---");

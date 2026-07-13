@@ -175,11 +175,9 @@ public class App {
                 case 4:
                     OrderView.orderMenu(sc, orderService);
                     break;
-                case 5:
-                    FinanceView.displayFinancialReport(sc,financeService,orderService, 
-                                                       productService, 
-                                                       comboService
-                                                       );
+                 case 5:
+                    FinanceView.displayFinancialReport(sc, financeService, orderService,
+                            productService, comboService, employeeService);
                     break;
                 case 0:
                     System.out.println("Logout Successfully!");

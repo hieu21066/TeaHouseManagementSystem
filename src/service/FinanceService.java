@@ -77,8 +77,8 @@ public class FinanceService {
     // ==================== ĐỒNG BỘ & TỰ ĐỘNG TÍNH TOÁN TỪ FILE ====================
 
     /**
-     * Tự động đồng bộ số liệu: Quét hóa đơn lấy doanh thu, 
-     * Tự đọc file Import.txt lấy chi phí gốc nguyên vật liệu, và Quét lương nhân viên.
+     * Tự động đồng bộ số liệu: Quét hóa đơn & file combopay.txt (để tính Doanh thu),
+     * tự đọc file Import.txt (để tính Chi phí gốc NVL), và Quét lương nhân viên.
      */
     public boolean autoCalculateFinance(String financeId, 
                                         service.OrderService orderService, 
@@ -93,32 +93,48 @@ public class FinanceService {
 
         // --- 1. TỰ ĐỘNG TÍNH TOÁN TỔNG DOANH THU THỰC TẾ ---
         double totalRevenue = 0.0;
+        
+        // A. Cộng doanh thu từ hóa đơn lẻ thông thường
         if (orderService != null && orderService.getInvoiceList() != null) {
             for (order.Invoice invoice : orderService.getInvoiceList()) {
                 totalRevenue += invoice.getTotalAmount();
             }
         }
 
+        // B. ĐÃ CẬP NHẬT: Đọc dữ liệu từ combopay.txt để cộng dồn doanh thu bán Combo
+        // Cấu trúc mảng data nhận về: [financeId, comboId, comboName, quantity, price]
+        java.util.ArrayList<String[]> comboPayList = file.ComboFile.loadComboPay();
+        for (String[] data : comboPayList) {
+            // Chỉ tính doanh thu cho các Combo được bán thuộc đúng Kỳ tài chính (financeId) này
+            if (data[0].equalsIgnoreCase(financeId.trim())) {
+                try {
+                    int quantity = Integer.parseInt(data[3].trim());
+                    double price = Double.parseDouble(data[4].trim());
+                    
+                    // Doanh thu Combo = Số lượng * Đơn giá Combo
+                    totalRevenue += (quantity * price);
+                } catch (NumberFormatException e) {
+                    System.out.println("⚠️ Lỗi định dạng số khi tính toán doanh thu tại combopay: " + e.getMessage());
+                }
+            }
+        }
+
         // --- 2. TỰ ĐỌC VÀ TÍNH CHI PHÍ NHẬP HÀNG TRỰC TIẾP TỪ FILE IMPORT.TXT ---
         double totalCOGS = 0.0;
-        File importFile = new File("Import.txt"); // Đường dẫn tương đương vị trí lưu của ProductFile
-        
+        File importFile = new File("Import.txt");
         if (importFile.exists()) {
             try (BufferedReader br = new BufferedReader(new FileReader(importFile))) {
                 String line;
                 while ((line = br.readLine()) != null) {
                     if (line.trim().isEmpty()) continue;
-                    
-                    // Cắt chuỗi theo định dạng: ID|SốLượng|TổngTiềnVốn (Ví dụ: TE001|10|2000000)
                     String[] data = line.split("\\|");
                     if (data.length >= 3) {
-                        // Lấy trực tiếp giá trị Tổng tiền vốn ở cột thứ 3 (chỉ số index = 2)
                         double cost = Double.parseDouble(data[2].trim());
                         totalCOGS += cost;
                     }
                 }
             } catch (Exception e) {
-                System.out.println("⚠️ Lỗi đọc file dữ liệu Import ngay tại FinanceService: " + e.getMessage());
+                System.out.println("⚠️ Lỗi đọc file dữ liệu Import: " + e.getMessage());
             }
         }
 
@@ -130,7 +146,7 @@ public class FinanceService {
             }
         }
 
-        // Tổng chi phí định kỳ = Chi phí vốn đầu vào (Import) + Chi phí lương nhân viên
+        // Tổng chi phí = Chi phí hàng nhập (COGS) + Chi phí lương nhân viên
         double totalExpense = totalCOGS + totalSalary;
 
         // --- 4. CẬP NHẬT DỮ LIỆU ĐÃ ĐỒNG BỘ VÀO ĐỐI TƯỢNG ---

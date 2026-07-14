@@ -1,6 +1,7 @@
 package employee;
 
 import java.util.Scanner;
+import java.text.DecimalFormat;
 
 public abstract class Employee {
 
@@ -78,7 +79,12 @@ public abstract class Employee {
     public void setSalary(double salary) {
         this.salary = salary;
     }
-
+    
+    public String getFormattedSalary() {
+    DecimalFormat formatter = new DecimalFormat("###,###");
+    return formatter.format(salary * 1000000);
+}
+    
     public String getShift() {
         return shift;
     }
@@ -197,29 +203,24 @@ public abstract class Employee {
     }
 
     //========================== Save File ==========================
-    @Override
+   @Override
 public String toString() {
-    return employeeId + "|"
-            + getRole() + "|"
-            + fullName + "|"
-            + gender + "|"
-            + age + "|"
-            + phone + "|"
-            + salary + "|"
-            + shift + "|"
-            + hireDate;
+    // Lưu lương dưới dạng số double nguyên bản
+    return employeeId + "|" + getRole() + "|" + fullName + "|" + gender + "|" 
+           + age + "|" + phone + "|" + salary + "|" + shift + "|" + hireDate;
 }
 
     //========================== Display ==========================
     public static void displayHeader() {
-        System.out.println("======================================================================================================================");
-        System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3s | %-12s | %-10s | %-10s | %-10s |%n",
-                "ID", "Name", "Role", "Gender", "Age", "Phone", "Salary", "Shift", "Status");
-        System.out.println("======================================================================================================================");
-    }
+    System.out.println("======================================================================================================================");
+    // Tăng độ rộng cột Salary từ 10 lên 12 hoặc 14
+    System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3s | %-12s | %-12s | %-10s | %-10s |%n",
+            "ID", "Name", "Role", "Gender", "Age", "Phone", "Salary", "Shift", "Status");
+    System.out.println("======================================================================================================================");
+}
 
     public void display() {
-        System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3d | %-12s | %-10.0f | %-10s | %-10s |%n",
-                employeeId, fullName, getRole(), gender, age, phone, salary, shift, status);
-    }
+    System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3d | %-12s | %-12s | %-10s | %-10s |%n",
+            employeeId, fullName, getRole(), gender, age, phone, getFormattedSalary(), shift, status);
+}
 }

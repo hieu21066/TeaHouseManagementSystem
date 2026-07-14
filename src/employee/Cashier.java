@@ -13,7 +13,7 @@ public class Cashier extends Employee {
 
     @Override
     public String getRole() {
-        return "Cashier"; // 1 từ -> Lớp cha tự cắt ra chữ "CA"
+        return "Cashier";
     }
 
     @Override

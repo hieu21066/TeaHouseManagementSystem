@@ -29,9 +29,7 @@ public ReservationView(Scanner sc, ReservationService reservationService) {
             System.out.println("6. Search By Phone");
             System.out.println("7. Display All");
             System.out.println("8. Sort By Customer Name");
-            System.out.println("9. Sort By Table Number");
-            System.out.println("10. Confirm Reservation");
-            System.out.println("11. Cancel Reservation");
+            System.out.println("9. Sort By Table Number");       
             System.out.println("0. Back");
             System.out.print("Choose: ");
 
@@ -81,14 +79,7 @@ public ReservationView(Scanner sc, ReservationService reservationService) {
                     System.out.println("Sorted Successfully!");
                     reservationService.displayAll();
                     break;
-
-                case 10:
-                    confirmReservation();
-                    break;
-
-                case 11:
-                    cancelReservation();
-                    break;
+       
 
                 case 0:
                     System.out.println("Back...");
@@ -237,32 +228,6 @@ public ReservationView(Scanner sc, ReservationService reservationService) {
         }
     }
 
-    //====================================================
 
-    private void confirmReservation() {
-
-        System.out.print("Reservation ID: ");
-        String id = sc.nextLine();
-
-        if (reservationService.confirmReservation(id)) {
-            System.out.println("Confirmed Successfully!");
-        } else {
-            System.out.println("Reservation Not Found!");
-        }
-    }
-
-    //====================================================
-
-    private void cancelReservation() {
-
-        System.out.print("Reservation ID: ");
-        String id = sc.nextLine();
-
-        if (reservationService.cancelReservation(id)) {
-            System.out.println("Cancelled Successfully!");
-        } else {
-            System.out.println("Reservation Not Found!");
-        }
-    }
 
 }

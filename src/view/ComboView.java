@@ -276,6 +276,9 @@ public class ComboView {
     // ====================================================================
     // THÊM MỚI: Tự động xử lý Order Combo & Tự sinh mã hóa đơn bên trong hàm
     // ====================================================================
+   // ====================================================================
+    // THÊM MỚI: Tự động xử lý Order Combo & Tự sinh mã hóa đơn bên trong hàm
+    // ====================================================================
    public static void orderByComboName(Scanner sc, ComboService comboService) {
         System.out.println("\n--- ORDER COMBO THEO TÊN HOẶC MÃ TRÀ ---");
         System.out.print("Nhập tên combo hoặc mã loại trà muốn mua (Ví dụ: Green dragon, RT, GT...): ");
@@ -339,15 +342,15 @@ public class ComboView {
         }
 
         // TỰ ĐỘNG SINH MÃ HÓA ĐƠN
-        String financeId = "CB" + (System.currentTimeMillis() % 100000);
+        String financeId = "CB" + (System.currentTimeMillis() % 10000);
 
-        // GỌI LỆNH LƯU VÀO FILE
+        // GỌI LỆNH LƯU VÀO FILE (Đã nhân với 100.0 để ghi nhận đúng giá gốc chưa chia vào combopay.txt)
         file.ComboFile.saveComboPay(
             financeId, 
             selectedCombo.getComboId(), 
             selectedCombo.getComboName(), 
             quantity, 
-            selectedCombo.getPrice()
+            selectedCombo.getPrice() * 100.0
         );
 
         System.out.println("\n✅ Đã ghi nhận giao dịch mua Combo vào file combopay.txt thành công!");

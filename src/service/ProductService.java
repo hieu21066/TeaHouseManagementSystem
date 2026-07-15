@@ -45,36 +45,54 @@ public class ProductService {
         System.out.println("Name: " + catalogItem.getName());
         System.out.println("Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
         
-        String unit = (catalogItem instanceof Tea) ? "grams" : "pieces";
-        System.out.print("Enter amount to add (" + unit + "): ");
+        String unit = (catalogItem instanceof Tea) ? "packs" : "pieces";
+System.out.print("Enter amount to add (" + unit + "): ");
         
         try {
             int amount = Integer.parseInt(sc.nextLine());
+
+int storageAmount = amount;
+
+if (catalogItem instanceof Tea) {
+    Tea tea = (Tea) catalogItem;
+    storageAmount = amount * tea.getSampleWeightGrams();
+}
             if (amount <= 0) {
                 System.out.println("Invalid amount.");
                 return;
             }
+double realPrice = catalogItem.getPrice() * 1000;
+double totalCost = realPrice * amount;
 
-            if (activeItem != null) {
-                // Quy đổi giá thô từ Catalog ra giá tiền VND thực tế (Nhân với 1000)
-                double realPrice = catalogItem.getPrice() * 1000;
-                // Tính toán tổng tiền vốn nhập hàng thực tế
-                double totalCost = realPrice * amount;
+//================== IMPORT ==================
+if (activeItem == null) {
 
-                // 1. Cập nhật số lượng tồn kho trên RAM và lưu vào Storage.txt
-                activeItem.setQuantity(activeItem.getQuantity() + amount);
-                ProductFile.saveStorage(activeProductList); 
-                
-                // 2. SỬA TẠI ĐÂY: Ghi nhận lịch sử vào Import.txt với giá tiền thực tế (VD: 200000)
-                ProductFile.saveImportLog(activeItem.getId(), amount, realPrice);
-                
-                System.out.println("\n----------------------------------------");
-                System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
-                System.out.printf("Đơn giá gốc: %,.0f VND / %s\n", realPrice, (catalogItem instanceof Tea) ? "Gram" : "Cái");
-                System.out.printf("TỔNG TIỀN VỐN NHẬP: %,.0f VND\n", totalCost); 
-                System.out.println("📝 Lịch sử nhập hàng đã được lưu vào Import.txt!");
-                System.out.println("----------------------------------------");
-            }
+    // Chưa có trong Storage
+    catalogItem.setQuantity(storageAmount);
+    activeProductList.add(catalogItem);
+    activeItem = catalogItem;
+
+} else {
+
+    // Đã có trong Storage
+    activeItem.setQuantity(activeItem.getQuantity() + storageAmount);
+
+}
+
+// Lưu lại Storage
+ProductFile.saveStorage(activeProductList);
+
+// Ghi lịch sử nhập
+ProductFile.saveImportLog(activeItem.getId(), amount, realPrice);
+
+System.out.println("\n----------------------------------------");
+System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
+System.out.printf("Đơn giá gốc: %,.0f VND / %s\n",
+        realPrice,
+        (catalogItem instanceof Tea) ? "Gram" : "Cái");
+System.out.printf("TỔNG TIỀN VỐN NHẬP: %,.0f VND\n", totalCost);
+System.out.println("📝 Lịch sử nhập hàng đã được lưu vào Import.txt!");
+System.out.println("----------------------------------------");
         } catch (NumberFormatException e) {
             System.out.println("❌ Invalid number format.");
         }
@@ -95,7 +113,7 @@ public class ProductService {
         System.out.print("Are you sure you want to clear stock for " + activeItem.getName() + "? (Y/N): ");
         String confirm = sc.nextLine().trim();
         if (confirm.equalsIgnoreCase("Y")) {
-            activeItem.setQuantity(0); // Đưa số lượng về 0
+            activeProductList.remove(activeItem);
             ProductFile.saveStorage(activeProductList); // Lưu file Storage.txt
             System.out.println("✅ Successfully cleared stock for product [" + inputId + "].");
         } else {

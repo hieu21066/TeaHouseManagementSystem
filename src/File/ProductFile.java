@@ -91,20 +91,26 @@ public class ProductFile {
 
     // 3. Ghi dữ liệu số lượng thực tế trong kho vào file Storage (Chỉ lưu ID|Số_lượng)
     public static void saveStorage(ArrayList<Product> activeList) {
-        File file = new File(STORAGE_FILE);
-        if (file.getParentFile() != null && !file.getParentFile().exists()) {
-            file.getParentFile().mkdirs(); // Tự tạo thư mục DATA nếu chưa có
+    File file = new File(STORAGE_FILE);
+
+    if (file.getParentFile() != null && !file.getParentFile().exists()) {
+        file.getParentFile().mkdirs();
+    }
+
+    // Sắp xếp theo ID trước khi ghi file
+    activeList.sort((p1, p2) -> p1.getId().compareToIgnoreCase(p2.getId()));
+
+    try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+
+        for (Product p : activeList) {
+            bw.write(p.getId() + "|" + p.getQuantity());
+            bw.newLine();
         }
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            for (Product p : activeList) {
-                bw.write(p.getId() + "|" + p.getQuantity());
-                bw.newLine();
-            }
-        } catch (Exception e) {
-            System.out.println("❌ Error saving storage file: " + e.getMessage());
-        }
+    } catch (Exception e) {
+        System.out.println("❌ Error saving storage file: " + e.getMessage());
     }
+}
 // 4. Ghi lịch sử nhập hàng vào file Import.txt (Định dạng: ID_Sản_Phẩm|Số_lượng_nhập|Tổng_tiền_vốn_thực_tế)
     public static void saveImportLog(String productId, int amount, double realPrice) {
         File file = new File("Import.txt");

@@ -3,7 +3,7 @@ package product;
 public class Tea extends Product {
     private String teaType; 
     private int sampleWeightGrams; 
-
+    
     public Tea() { super(); }
 
     public Tea(String id, String name, double price, int quantity, String description, String teaType, int sampleWeightGrams) {
@@ -42,4 +42,5 @@ public class Tea extends Product {
     public void setSampleWeightGrams(int sampleWeightGrams) {
         this.sampleWeightGrams = sampleWeightGrams;
     }
+    
 }

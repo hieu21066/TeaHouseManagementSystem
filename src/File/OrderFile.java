@@ -50,7 +50,7 @@ public class OrderFile {
                         } catch (Exception e) {}
                         invoice.addItem(pId + "|" + pName, price, quantity);
                     } else if (pId.equals("SERVICE_FEE")) {
-                        invoice.addItem("SERVICE_FEE|Phí dịch vụ thưởng trà", 30000.0, quantity);
+                        invoice.addItem("SERVICE_FEE", 30000.0, quantity);
                     }
                 }
                 list.add(invoice);
@@ -96,7 +96,7 @@ public class OrderFile {
             bw.newLine();
         }
     } catch (Exception e) {
-        System.out.println("Save " + FILE_NAME+" thất bại!");
+        System.out.println("Save " + FILE_NAME+" unsuccessfully!");
     }
 }
 }

@@ -13,7 +13,7 @@ public class ProductFile {
         ArrayList<Product> catalogList = new ArrayList<>();
         File file = new File(CATALOG_FILE);
         if (!file.exists()) {
-            System.out.println("❌ Catalog file not found at: " + CATALOG_FILE);
+            System.out.println("Catalog file not found at: " + CATALOG_FILE);
             return catalogList;
         }
 
@@ -58,7 +58,7 @@ public class ProductFile {
                 }
             }
         } catch (Exception e) {
-            System.out.println("❌ Error reading catalog file: " + e.getMessage());
+            System.out.println("Error reading catalog file: " + e.getMessage());
         } 
         return catalogList;
     }
@@ -85,7 +85,7 @@ public class ProductFile {
                 }
             }
         } catch (Exception e) {
-            System.out.println("❌ Error reading storage file: " + e.getMessage());
+            System.out.println("Error reading storage file: " + e.getMessage());
         }
     }
 
@@ -108,7 +108,7 @@ public class ProductFile {
         }
 
     } catch (Exception e) {
-        System.out.println("❌ Error saving storage file: " + e.getMessage());
+        System.out.println("Error saving storage file: " + e.getMessage());
     }
 }
 // 4. Ghi lịch sử nhập hàng vào file Import.txt (Định dạng: ID_Sản_Phẩm|Số_lượng_nhập|Tổng_tiền_vốn_thực_tế)
@@ -122,7 +122,7 @@ public class ProductFile {
             bw.write(String.format("%s|%d|%.0f", productId, amount, totalCost));
             bw.newLine();
         } catch (Exception e) {
-            System.out.println("❌ Không thể ghi lịch sử vào Import.txt: " + e.getMessage());
+            System.out.println("Cannot be written into file Import.txt: " + e.getMessage());
         }
     }
 }

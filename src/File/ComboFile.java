@@ -143,7 +143,7 @@ public class ComboFile {
             bw.write(line);
             bw.newLine();
         } catch (java.io.IOException e) {
-            System.out.println("Lỗi khi ghi lịch sử mua combo vào file combopay.txt: " + e.getMessage());
+            System.out.println("Error when writing into file combopay.txt: " + e.getMessage());
         }
     }
 
@@ -175,7 +175,7 @@ public class ComboFile {
                 }
             }
         } catch (java.io.IOException e) {
-            System.out.println("Lỗi khi đọc lịch sử mua combo từ file combopay.txt: " + e.getMessage());
+            System.out.println("Error reading from file combopay.txt: " + e.getMessage());
         }
         
         return payList;

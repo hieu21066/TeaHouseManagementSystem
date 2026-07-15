@@ -3,6 +3,7 @@ package view;
 import employee.*;
 import service.EmployeeService;
 import java.util.Scanner;
+import main.SystemClock;
 
 public class EmployeeView {
 
@@ -40,30 +41,36 @@ public class EmployeeView {
                     searchEmployee();
                     break;
                 case 5:
+                    updateRealtimeStatus();
                     employeeService.displayAllWithRealtimeStatus(sc);
                     break;
                 case 6:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(Admin.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(Admin.class);
                     break;
                 case 7:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(Cashier.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(Cashier.class);
                     break;
                 case 8:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaMaster.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(TeaMaster.class);
                     break;
                 case 9:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaLady.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(TeaLady.class);
                     break;
                 case 10:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(TeaServant.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(TeaServant.class);
                     break;
                 case 11:
-                    if (updateRealtimeStatusBeforeDisplay()) employeeService.displayByType(WarehouseStaff.class);
+                     updateRealtimeStatus();
+                    employeeService.displayByType(WarehouseStaff.class);
                     break;
                 case 12:
                     employeeService.sortBySalary();
                     System.out.println("Sorted Successfully!");
-                    // In danh sách sau khi sắp xếp kèm theo trạng thái động
                     employeeService.displayAllWithRealtimeStatus(sc);
                     break;
                 case 0:
@@ -96,26 +103,14 @@ public class EmployeeView {
     }
 
     // ================== BỔ SUNG: Hàm phụ trợ hỗ trợ cập nhật trạng thái trước khi hiển thị nhóm nhân viên ==================
-    private boolean updateRealtimeStatusBeforeDisplay() {
-        if (employeeService.getEmployeeList().isEmpty()) {
-            return true; 
-        }
-        System.out.print("Enter current hour to check status (0-23): ");
-        try {
-            int hour = Integer.parseInt(sc.nextLine());
-            if (hour < 0 || hour > 23) {
-                System.out.println("Invalid hour! Must be between 0 and 23.");
-                return false;
-            }
-            for (Employee employee : employeeService.getEmployeeList()) {
-                employee.updateStatusBasedOnHour(hour);
-            }
-            return true;
-        } catch (Exception e) {
-            System.out.println("Please enter an integer number!");
-            return false;
-        }
+    private void updateRealtimeStatus() {
+
+    int hour = SystemClock.getCurrentHour();
+
+    for (Employee employee : employeeService.getEmployeeList()) {
+        employee.updateStatusBasedOnHour(hour);
     }
+}
 
     // ================== ADD EMPLOYEE ==================
     private void addEmployee() {
@@ -232,12 +227,9 @@ public class EmployeeView {
         } else {
             System.out.print("Enter current hour to check this employee's status (0-23): ");
             try {
-                int hour = Integer.parseInt(sc.nextLine());
-                if (hour >= 0 && hour <= 23) {
-                    employee.updateStatusBasedOnHour(hour);
-                }
-            } catch (Exception e) {
-            }
+              employee.updateStatusBasedOnHour(SystemClock.getCurrentHour());
+            } 
+            catch (Exception e) {}
             
             Employee.displayHeader();
             employee.display();

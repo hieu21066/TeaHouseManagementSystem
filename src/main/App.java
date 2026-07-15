@@ -2,6 +2,7 @@ package main;
 
 import java.io.File; 
 import java.util.Scanner;
+import main.SystemClock;
 import service.*;
 import view.*;
 
@@ -24,12 +25,14 @@ public class App {
 
         do {
             System.out.println("\n=================================");
-            System.out.println(" TEA HOUSE MANAGEMENT SYSTEM");
-            System.out.println("=================================");
-            System.out.println("1. Admin");
-            System.out.println("2. Order");
-            System.out.println("0. Exit");
-            System.out.print("Choose: ");
+System.out.println("      TEA HOUSE MANAGEMENT SYSTEM");
+System.out.println("=================================");
+System.out.println("Current Time : " + SystemClock.getCurrentTime());
+System.out.println("---------------------------------");
+System.out.println("1. Admin");
+System.out.println("2. Order");
+System.out.println("0. Exit");
+System.out.print("Choose: ");
             
             try {
                 choose = Integer.parseInt(sc.nextLine());

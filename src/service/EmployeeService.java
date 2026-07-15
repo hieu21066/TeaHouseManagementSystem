@@ -1,6 +1,7 @@
 package service;
 
 import employee.*;
+import main.SystemClock;
 import file.EmployeeFile;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,32 +78,23 @@ public class EmployeeService {
     }
 
     //display real-time list of employee status
-    public void displayAllWithRealtimeStatus(Scanner sc) {
-        if (employeeList.isEmpty()) {
-            System.out.println("Employee list is empty!");
-            return;
-        }
-
-        System.out.print("Enter current hour to check status (0-23): ");
-        int hour = -1;
-        try {
-            hour = Integer.parseInt(sc.nextLine());
-            if (hour < 0 || hour > 23) {
-                System.out.println("Invalid hour!");
-                return;
-            }
-        } catch (Exception e) {
-            System.out.println("Please enter an integer number!");
-            return;
-        }
-
-        System.out.println("\n--- EMPLOYEE STATUS AT " + hour + "h ---");
-        Employee.displayHeader();
-        for (Employee employee : employeeList) {
-            employee.updateStatusBasedOnHour(hour); 
-            employee.display();
-        }
+public void displayAllWithRealtimeStatus(Scanner sc) {
+    if (employeeList.isEmpty()) {
+        System.out.println("Employee list is empty!");
+        return;
     }
+
+    int hour = SystemClock.getCurrentHour();
+
+    System.out.println("\n--- EMPLOYEE STATUS AT " + hour + ":00 ---");
+
+    Employee.displayHeader();
+
+    for (Employee employee : employeeList) {
+        employee.updateStatusBasedOnHour(hour);
+        employee.display();
+    }
+}
     public void displayAll() {
         Employee.displayHeader();
         for (Employee employee : employeeList) {
@@ -126,6 +118,7 @@ public class EmployeeService {
                 return Double.compare(e1.getSalary(), e2.getSalary());
             }
         });
+        EmployeeFile.save(employeeList);
     }
 
     public void displayByType(Class<?> type) {

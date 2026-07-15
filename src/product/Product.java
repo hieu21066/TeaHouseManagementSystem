@@ -18,20 +18,28 @@ public abstract class Product {
     }
 
     public static void displayHeader() {
-        System.out.printf("%-8s | %-15s | %-25s | %-12s | %-10s | %-40s | %s\n", 
+        System.out.printf("%-8s | %-15s | %-26s | %-15s | %-11s | %-40s | %s\n", 
                 "ID", "Type", "Product Name", "Price", "Qty/Grams", "Description", "Specifications");
         System.out.println("-----------------------------------------------------------------------------------------------------------------------------------------------------");
     }
  
     public void display() {
         String typeName = this.getClass().getSimpleName();
-        System.out.printf("%-8s | %-15s | %-25s | %-12.2f | %-10d | %-40s | ", 
-                id, typeName, name, price, quantity, description);
+        System.out.printf("%-8s | %-15s | %-26s | %-15s | %-11d | %-40s | ", 
+                getId(), typeName, getName(), getRealPrice(price), getQuantity(), getDescription());
     }
 
     @Override
     public abstract String toString();
-
+    
+    public String getRealPrice(double price){
+        double realPrice = price*1000;
+        String priceText = String.format("%,.0f", realPrice);
+        priceText = priceText.replace(",", ".");
+        priceText += "VND";
+        return priceText;
+    }
+    
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
@@ -46,4 +54,6 @@ public abstract class Product {
 
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
+    
+    
 }

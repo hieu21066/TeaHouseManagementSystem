@@ -26,7 +26,6 @@ public class FinanceService {
     }
 
     // ==================== NGHIỆP VỤ CƠ BẢN (CRUD) ====================
-
     /**
      * Tìm kiếm một kỳ tài chính cụ thể dựa vào mã ID
      */
@@ -75,17 +74,17 @@ public class FinanceService {
     }
 
     // ==================== ĐỒNG BỘ & TỰ ĐỘNG TÍNH TOÁN TỪ FILE ====================
-
     /**
-     * Tự động đồng bộ số liệu: Quét hóa đơn & file combopay.txt (để tính Doanh thu),
-     * tự đọc file Import.txt (để tính Chi phí gốc NVL), và Quét lương nhân viên.
+     * Tự động đồng bộ số liệu: Quét hóa đơn & file combopay.txt (để tính Doanh
+     * thu), tự đọc file Import.txt (để tính Chi phí gốc NVL), và Quét lương
+     * nhân viên.
      */
-    public boolean autoCalculateFinance(String financeId, 
-                                        service.OrderService orderService, 
-                                        service.ProductService productService, 
-                                        service.ComboService comboService, 
-                                        service.EmployeeService employeeService) {
-        
+    public boolean autoCalculateFinance(String financeId,
+            service.OrderService orderService,
+            service.ProductService productService,
+            service.ComboService comboService,
+            service.EmployeeService employeeService) {
+
         Finance finance = searchById(financeId);
         if (finance == null) {
             return false; // Không tìm thấy mã kỳ tài chính
@@ -93,7 +92,7 @@ public class FinanceService {
 
         // --- 1. TỰ ĐỘNG TÍNH TOÁN TỔNG DOANH THU THỰC TẾ ---
         double totalRevenue = 0.0;
-        
+
         // A. Cộng doanh thu từ hóa đơn lẻ thông thường
         if (orderService != null && orderService.getInvoiceList() != null) {
             for (order.Invoice invoice : orderService.getInvoiceList()) {
@@ -110,11 +109,11 @@ public class FinanceService {
                 try {
                     int quantity = Integer.parseInt(data[3].trim());
                     double price = Double.parseDouble(data[4].trim());
-                    
+
                     // Doanh thu Combo = Số lượng * Đơn giá Combo
                     totalRevenue += (quantity * price);
                 } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Lỗi định dạng số khi tính toán doanh thu tại combopay: " + e.getMessage());
+                    System.out.println("⚠️ Number formatting error when calculating revenue at ComboPay: " + e.getMessage());
                 }
             }
         }
@@ -126,7 +125,9 @@ public class FinanceService {
             try (BufferedReader br = new BufferedReader(new FileReader(importFile))) {
                 String line;
                 while ((line = br.readLine()) != null) {
-                    if (line.trim().isEmpty()) continue;
+                    if (line.trim().isEmpty()) {
+                        continue;
+                    }
                     String[] data = line.split("\\|");
                     if (data.length >= 3) {
                         double cost = Double.parseDouble(data[2].trim());
@@ -134,7 +135,7 @@ public class FinanceService {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("⚠️ Lỗi đọc file dữ liệu Import: " + e.getMessage());
+                System.out.println("⚠️ Error reading import data file: " + e.getMessage());
             }
         }
 
@@ -152,27 +153,29 @@ public class FinanceService {
         // --- 4. CẬP NHẬT DỮ LIỆU ĐÃ ĐỒNG BỘ VÀO ĐỐI TƯỢNG ---
         finance.setTotalRevenue(totalRevenue);
         finance.setTotalExpense(totalExpense);
-        
+
         return true;
     }
 
     // ==================== HIỂN THỊ DỮ LIỆU (VIEW INTERACTION) ====================
-
     /**
-     * Hiển thị chi tiết báo cáo tài chính của 1 kỳ duy nhất (Case 5 sau khi sync)
+     * Hiển thị chi tiết báo cáo tài chính của 1 kỳ duy nhất (Case 5 sau khi
+     * sync)
      */
     public void displayById(String id) {
         Finance f = searchById(id);
         if (f != null) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();
             System.out.println("+---------------------------------------------------+");
-            System.out.printf("| Mã Kỳ Tài Chính   : %-29s |\n", f.getFinanceId());
-            System.out.printf("| Tổng Doanh Thu    : %-26.0f VND |\n", f.getTotalRevenue());
-            System.out.printf("| Tổng Chi Phí      : %-26.0f VND |\n", f.getTotalExpense());
-            System.out.printf("| Lợi Nhuận Thuần   : %-26.0f VND |\n", profit);
+            System.out.printf("| Financial Code   : %-29s |\n", f.getFinanceId());
+            System.out.printf("| Total Revenue : %-26.0f VND |\n", f.getTotalRevenue());
+
+            System.out.printf("| Total Expenses : %-26.0f VND |\n", f.getTotalExpense());
+
+            System.out.printf("| Net Profit : %-26.0f VND |\n", profit);
             System.out.println("+---------------------------------------------------+");
         } else {
-            System.out.println("❌ Không tìm thấy thông tin cho mã kỳ: " + id);
+            System.out.println("❌ No information found for the period code: " + id);
         }
     }
 
@@ -185,7 +188,7 @@ public class FinanceService {
             return;
         }
         System.out.println("=====================================================================");
-        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "ID Kỳ", "Doanh Thu", "Chi Phí", "Lợi Nhuận");
+        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "Period ID", "Revenue", "Expenses", "Profit");
         System.out.println("=====================================================================");
         for (Finance f : financeList) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();

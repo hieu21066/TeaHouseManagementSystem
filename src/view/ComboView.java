@@ -25,14 +25,14 @@ public class ComboView {
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("Vui lòng nhập một số nguyên!");
+                System.out.println("Enter an integer!");
                 choose = -1;
                 continue;
             }
 
             switch (choose) {
                 case 1:
-                    System.out.println("\n--- DANH SÁCH COMBO ---");
+                    System.out.println("\n--- COMBO Lists ---");
                     comboService.displayAll();
                     break;
                 case 2:
@@ -58,7 +58,7 @@ public class ComboView {
                     System.out.println("Returning to main menu...");
                     break;
                 default:
-                    System.out.println("❌ Lựa chọn không hợp lệ!");
+                    System.out.println("invalid choice!");
             }
         } while (choose != 0);
     }
@@ -278,7 +278,7 @@ public class ComboView {
     // ====================================================================
    public static void orderByComboName(Scanner sc, ComboService comboService) {
         System.out.println("\n--- ORDER COMBO THEO TÊN HOẶC MÃ TRÀ ---");
-        System.out.print("Nhập tên combo hoặc mã loại trà muốn mua (Ví dụ: Green dragon, RT, GT...): ");
+        System.out.print("Enter the name of combo or ID (Ví dụ: Green dragon, RT, GT...): ");
         String searchInput = sc.nextLine().trim();
         
         // Tự động tìm kiếm linh hoạt: nếu nhập 2 chữ cái viết hoa thì tìm theo Tea Type, ngược lại tìm theo Tên
@@ -290,33 +290,33 @@ public class ComboView {
         }
 
         if (matchedList.isEmpty()) {
-            System.out.println("❌ Không tìm thấy gói Combo nào phù hợp với từ khóa trên!");
+            System.out.println("Cannot find suitable combo!");
             return;
         }
 
-        System.out.println("\n--- KẾT QUẢ TÌM KIẾM ---");
+        System.out.println("\n--- Seek RESULTS ---");
         for (int i = 0; i < matchedList.size(); i++) {
             Combo c = matchedList.get(i);
-            System.out.printf("[%d] Mã: %s | Tên: %s | Giá: %,d VND\n", 
+            System.out.printf("[%d] ID: %s | Name: %s | Price: %,d VND\n", 
                 (i + 1), c.getComboId(), c.getComboName(), (int)c.getPrice());
         }
 
         int choice = -1;
         // VÒNG LẶP CHỐNG GÕ SAI: Gõ sai số thứ tự sẽ bắt nhập lại thay vì tự hủy
         while (true) {
-            System.out.print("\nChọn số thứ tự Combo khách mua (Nhập 0 để hủy): ");
+            System.out.print("\nChoose number (Enter 0 to cancel): ");
             try {
                 choice = Integer.parseInt(sc.nextLine());
                 if (choice == 0) {
-                    System.out.println("↩️ Đã hủy thao tác Order Combo.");
+                    System.out.println("Cancel performation on Order Combo.");
                     return;
                 }
                 if (choice > 0 && choice <= matchedList.size()) {
                     break; // Nhập đúng số thứ tự trong danh sách -> Thoát vòng lặp để xử lý tiếp
                 }
-                System.out.printf("❌ Số thứ tự không hợp lệ! Vui lòng chọn từ 1 đến %d.\n", matchedList.size());
+                System.out.printf("Invalid order number %d.\n", matchedList.size());
             } catch (NumberFormatException e) {
-                System.out.println("❌ Vui lòng nhập một số nguyên hợp lệ!");
+                System.out.println("Please enter an integer!");
             }
         }
 
@@ -325,16 +325,16 @@ public class ComboView {
         
         // VÒNG LẶP CHỐNG NHẬP SAI SỐ LƯỢNG
         while (true) {
-            System.out.print("Nhập số lượng gói combo: ");
+            System.out.print("Enter the number of combo: ");
             try {
                 quantity = Integer.parseInt(sc.nextLine());
                 if (quantity <= 0) {
-                    System.out.println("❌ Số lượng mua phải lớn hơn 0!");
+                    System.out.println("The quantity must be greater than 0!");
                     continue;
                 }
                 break; // Số lượng hợp lệ -> Thoát vòng lặp
             } catch (NumberFormatException e) {
-                System.out.println("❌ Số lượng phải là số nguyên!");
+                System.out.println("Please enter an integer!");
             }
         }
 
@@ -350,9 +350,9 @@ public class ComboView {
             selectedCombo.getPrice()
         );
 
-        System.out.println("\n✅ Đã ghi nhận giao dịch mua Combo vào file combopay.txt thành công!");
-        System.out.printf("👉 Mã giao dịch: %s\n", financeId);
-        System.out.printf("👉 Khách mua: %s | Số lượng: %d | Tổng tiền: %,d VND\n", 
+        System.out.println("\nSuccessfully!");
+        System.out.printf("ID: %s\n", financeId);
+        System.out.printf("Guest: %s | Số lượng: %d | Tổng tiền: %,d VND\n", 
             selectedCombo.getComboName(), quantity, (int)(selectedCombo.getPrice() * quantity));
     }
 }

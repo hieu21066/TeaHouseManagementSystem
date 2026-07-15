@@ -113,7 +113,8 @@ public class FinanceService {
                     // Doanh thu Combo = Số lượng * Đơn giá Combo
                     totalRevenue += (quantity * price);
                 } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Number formatting error when calculating revenue at ComboPay: " + e.getMessage());
+                    System.out.println("⚠️ Number formatting error when calculating revenue at ComboPay:"
+                            + " " + e.getMessage());
                 }
             }
         }
@@ -184,7 +185,7 @@ public class FinanceService {
      */
     public void displayAll() {
         if (financeList.isEmpty()) {
-            System.out.println("📭 Danh sách quản lý tài chính hiện đang trống.");
+            System.out.println("📭 The list of financial managers is currently blank.");
             return;
         }
         System.out.println("=====================================================================");

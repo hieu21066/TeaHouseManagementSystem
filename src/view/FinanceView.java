@@ -1,16 +1,11 @@
 package view;
 
 import finance.Finance;
-import service.FinanceService;
-import service.OrderService;
-import service.ProductService;
-import service.ComboService;
-import service.EmployeeService; // 1. BỔ SUNG IMPORT ĐƯỜNG DẪN ĐẾN SERVICE NHÂN VIÊN
+import service.*;
 import java.util.Scanner;
 
 public class FinanceView {
 
-    // 2. CẬP NHẬT THAM SỐ: Bổ sung EmployeeService vào cuối danh sách phương thức hiển thị
     public static void displayFinancialReport(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService, EmployeeService employeeService) {
         financeService.setFinanceList(file.FinanceFile.load());
         
@@ -21,7 +16,7 @@ public class FinanceView {
             System.out.println("2. Create New Financial Period");
             System.out.println("3. Add Revenue (Manual)");
             System.out.println("4. Add Expense (Manual)");
-            System.out.println("5. Auto Calculate Profit from Files 🔄");
+            System.out.println("5. Auto Calculate Profit");
             System.out.println("0. Back");
             System.out.println("================================");
             System.out.print("Choose: ");
@@ -29,39 +24,40 @@ public class FinanceView {
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
-                System.out.println("❌ Lỗi: Vui lòng nhập số nguyên!");
+                System.out.println("Error: Please enter a valid number!");
                 choose = -1; 
                 continue;
             }
 
             switch (choose) {
                 case 1: 
-                    System.out.println("\n--- THÔNG TIN TÀI CHÍNH ---");
+                    System.out.println("\n--- FINANCIAL REPORT LIST ---");
                     financeService.displayAll(); 
                     break;
                 case 2: handleCreateFinance(sc, financeService); break;
                 case 3: handleAddRevenue(sc, financeService); break;
                 case 4: handleAddExpense(sc, financeService); break;
                 case 5: 
-                    // 3. TRUYỀN THÊM employeeService VÀO HÀM TỰ ĐỘNG TÍNH TOÁN
                     handleAutoCalculate(sc, financeService, orderService, productService, comboService, employeeService); 
                     break;
                 case 0:
                     file.FinanceFile.save(financeService.getFinanceList());
                     System.out.println("Returning to main menu..."); 
                     break;
+                default:
+                    System.out.println("Invalid choice!");
             }
         } while (choose != 0);
     }
 
     private static void handleCreateFinance(Scanner sc, FinanceService financeService) {
-        System.out.print("Enter Finance ID (e.g. F2026_01): ");
+        System.out.print("Enter Finance ID (e.g., F2026_01): ");
         String id = sc.nextLine().trim();
         if (financeService.addFinance(new Finance(id, 0, 0))) {
-            System.out.println("✅ Tạo kỳ tài chính mới thành công!");
+            System.out.println("Success: Financial period created.");
             file.FinanceFile.save(financeService.getFinanceList());
         } else {
-            System.out.println("❌ Thất bại: ID này đã tồn tại!");
+            System.out.println("Error: Finance ID already exists!");
         }
     }
 
@@ -72,13 +68,13 @@ public class FinanceView {
         try {
             double amount = Double.parseDouble(sc.nextLine());
             if (financeService.addRevenue(id, amount)) {
-                System.out.println("✅ Cộng doanh thu thành công!");
+                System.out.println("Success: Revenue updated.");
                 file.FinanceFile.save(financeService.getFinanceList());
             } else {
-                System.out.println("❌ Không tìm thấy mã tài chính!");
+                System.out.println("Error: Finance ID not found!");
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Lỗi: Số tiền không hợp lệ!");
+            System.out.println("Error: Invalid amount input!");
         }
     }
 
@@ -89,34 +85,31 @@ public class FinanceView {
         try {
             double amount = Double.parseDouble(sc.nextLine());
             if (financeService.addExpense(id, amount)) {
-                System.out.println("✅ Cộng chi phí thành công!");
+                System.out.println("Success: Expense updated.");
                 file.FinanceFile.save(financeService.getFinanceList());
             } else {
-                System.out.println("❌ Không tìm thấy mã tài chính!");
+                System.out.println("Error: Finance ID not found!");
             }
         } catch (NumberFormatException e) {
-            System.out.println("❌ Lỗi: Số tiền không hợp lệ!");
+            System.out.println("Error: Invalid amount input!");
         }
     }
 
-    // 4. CẬP NHẬT THAM SỐ: Nhận thêm EmployeeService vào hàm xử lý tính toán tự động
     private static void handleAutoCalculate(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService, EmployeeService employeeService) {
         System.out.print("Enter Finance ID to sync: ");
         String id = sc.nextLine().trim();
 
-        System.out.println("⏳ Đang quét dữ liệu trực tiếp từ các file hệ thống (Hóa đơn, Kho hàng, Combo, Nhân viên)...");
+        System.out.println("Processing data from system files...");
         
-        // 5. TRUYỀN ĐỦ 5 SERVICE vào hàm autoCalculateFinance của FinanceService để tính toán đúng công thức
         if (financeService.autoCalculateFinance(id, orderService, productService, comboService, employeeService)) {
-            System.out.println("✅ ĐỒNG BỘ HÓA VÀ CẬP NHẬT FILE THÀNH CÔNG!");
+            System.out.println("Synchronization completed successfully!");
             
-            System.out.println("\n--- BÁO CÁO TỰ ĐỘNG KỲ [" + id + "] ---");
+            System.out.println("\n--- AUTO REPORT FOR PERIOD [" + id + "] ---");
             financeService.displayById(id);
             
-            // Lưu dữ liệu mới xuống file Finance.txt ngay tức khắc
             file.FinanceFile.save(financeService.getFinanceList());
         } else {
-            System.out.println("❌ Thất bại: Không tìm thấy mã tài chính!");
+            System.out.println("Error: Finance ID not found!");
         }
     }
 }

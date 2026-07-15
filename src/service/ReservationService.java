@@ -23,13 +23,35 @@ public class ReservationService {
     }
 
     public List<Integer> getAvailableTables(String timeSlot) {
-        List<Integer> occupied = reservationList.stream()
-                .filter(r -> r.getTimeSlot().equalsIgnoreCase(timeSlot))
-                .map(Reservation::getTableNumber).collect(Collectors.toList());
-        List<Integer> available = new ArrayList<>();
-        for (int i = 1; i <= MAX_TABLES; i++) if (!occupied.contains(i)) available.add(i);
-        return available;
+
+    String[] input = timeSlot.split("-");
+    int newStart = Integer.parseInt(input[0]);
+    int newEnd = Integer.parseInt(input[1]);
+
+    List<Integer> occupied = new ArrayList<>();
+
+    for (Reservation r : reservationList) {
+
+        String[] old = r.getTimeSlot().split("-");
+        int oldStart = Integer.parseInt(old[0]);
+        int oldEnd = Integer.parseInt(old[1]);
+
+        // Nếu hai khoảng thời gian giao nhau
+        if (newStart < oldEnd && oldStart < newEnd) {
+            occupied.add(r.getTableNumber());
+        }
     }
+
+    List<Integer> available = new ArrayList<>();
+
+    for (int i = 1; i <= MAX_TABLES; i++) {
+        if (!occupied.contains(i)) {
+            available.add(i);
+        }
+    }
+
+    return available;
+}
 
     // --- CÁC CHỨC NĂNG QUẢN LÝ ---
     public boolean addReservation(Reservation r) {

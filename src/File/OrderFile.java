@@ -57,7 +57,7 @@ public class OrderFile {
             }
         }
     } catch (Exception e) {
-        System.out.println("❌ Load Order.txt thất bại!");
+        System.out.println("Load Order.txt thất bại!");
     }
     return list;
 }
@@ -86,7 +86,6 @@ public class OrderFile {
                 itemsBuilder.append(pId).append("-").append(item.getQuantity()).append("|");
             }
 
-            // Ghi dữ liệu theo cấu trúc: MãHD|MãNV|MãSP1-SL1|MãSP2-SL2|...|TổngTiền
             String record = String.format("%s|%s|%s%.0f", 
                     invoice.getInvoiceId(), 
                     empId, 
@@ -97,7 +96,7 @@ public class OrderFile {
             bw.newLine();
         }
     } catch (Exception e) {
-        System.out.println("❌ Save Order.txt thất bại!");
+        System.out.println("Save " + FILE_NAME+" thất bại!");
     }
 }
 }

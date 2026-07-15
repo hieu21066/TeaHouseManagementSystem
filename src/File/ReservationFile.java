@@ -2,76 +2,24 @@ package file;
 
 import reservation.Reservation;
 import java.io.*;
-import java.util.ArrayList;
+import java.util.*;
 
 public class ReservationFile {
-
-    private static final String FILE_NAME = "Reservation.txt";
-
-    //==================== LOAD ====================
+    private static final String FILE = "Reservation.txt";
     public static ArrayList<Reservation> load() {
-
         ArrayList<Reservation> list = new ArrayList<>();
-
-        File file = new File(FILE_NAME);
-
-        if (!file.exists()) {
-            return list;
-        }
-
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-
+        try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
             String line;
-
             while ((line = br.readLine()) != null) {
-
-                String[] data = line.split("\\|");
-
-                if (data.length != 6) {
-                    continue; // bỏ qua dòng sai định dạng
-                }
-
-                String reservationId = data[0];
-                String customerName = data[1];
-                String phoneNumber = data[2];
-                String timeSlot = data[3];
-                int tableNumber = Integer.parseInt(data[4]);
-                String status = data[5];
-
-                Reservation reservation = new Reservation(
-                        reservationId,
-                        customerName,
-                        phoneNumber,
-                        timeSlot,
-                        tableNumber,
-                        status
-                );
-
-                list.add(reservation);
+                String[] d = line.split("\\|");
+                list.add(new Reservation(d[0], d[1], d[2], d[3], Integer.parseInt(d[4])));
             }
-
-        } catch (Exception e) {
-            System.out.println("Load Reservation.txt failed!");
-        }
-
+        } catch (Exception e) {}
         return list;
     }
-
-    //==================== SAVE ====================
     public static void save(ArrayList<Reservation> list) {
-
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {
-
-            for (Reservation reservation : list) {
-
-                bw.write(reservation.toString());
-                bw.newLine();
-
-            }
-
-        } catch (Exception e) {
-            System.out.println("Save Reservation.txt failed!");
-        }
+        try (PrintWriter pw = new PrintWriter(new FileWriter(FILE))) {
+            for (Reservation r : list) pw.println(r.toString());
+        } catch (Exception e) {}
     }
-
 }

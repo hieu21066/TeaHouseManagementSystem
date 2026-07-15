@@ -2,201 +2,81 @@ package service;
 
 import reservation.Reservation;
 import file.ReservationFile;
-import java.util.ArrayList;
-import java.util.Comparator;
-
+import java.util.*;
+import java.util.stream.Collectors;
+import main.SystemClock;
 public class ReservationService {
-
-    //==================== Attribute ====================
     private ArrayList<Reservation> reservationList;
+    private final int MAX_TABLES = 10;
 
-    //==================== Constructor ====================
     public ReservationService() {
-        reservationList = ReservationFile.load();
+        this.reservationList = ReservationFile.load();
     }
 
-    //==================== Getter & Setter ====================
-    public ArrayList<Reservation> getReservationList() {
-        return reservationList;
-    }
-
-    public void setReservationList(ArrayList<Reservation> reservationList) {
-        this.reservationList = reservationList;
-    }
-
-    //==================== ADD ====================
-    public boolean addReservation(Reservation reservation) {
-
-        if (isExist(reservation.getReservationId()))
-            return false;
-
-        reservationList.add(reservation);
-        ReservationFile.save(reservationList);
-
-        return true;
-    }
-
-    //==================== DELETE ====================
-    public boolean deleteReservation(String reservationId) {
-
-        Reservation reservation = searchById(reservationId);
-
-        if (reservation == null)
-            return false;
-
-        reservationList.remove(reservation);
-        ReservationFile.save(reservationList);
-
-        return true;
-    }
-
-    //==================== UPDATE ====================
-    public boolean updateReservation(Reservation newReservation) {
-
-        Reservation oldReservation = searchById(newReservation.getReservationId());
-
-        if (oldReservation == null)
-            return false;
-
-        oldReservation.setCustomerName(newReservation.getCustomerName());
-        oldReservation.setPhoneNumber(newReservation.getPhoneNumber());
-        oldReservation.setTimeSlot(newReservation.getTimeSlot());
-        oldReservation.setTableNumber(newReservation.getTableNumber());
-        oldReservation.setStatus(newReservation.getStatus());
-
-        ReservationFile.save(reservationList);
-
-        return true;
-    }
-
-    //==================== SEARCH ====================
-    public Reservation searchById(String reservationId) {
-
-        for (Reservation reservation : reservationList) {
-
-            if (reservation.getReservationId().equalsIgnoreCase(reservationId))
-                return reservation;
-
+    // --- LOGIC TỰ ĐỘNG ---
+    public String generateNextId() {
+        int max = 0;
+        for (Reservation r : reservationList) {
+            try { max = Math.max(max, Integer.parseInt(r.getReservationId().substring(3))); } catch (Exception e) {}
         }
-
-        return null;
+        return String.format("RES%03d", max + 1);
     }
 
-    public ArrayList<Reservation> searchByCustomerName(String name) {
+    public List<Integer> getAvailableTables(String timeSlot) {
+        List<Integer> occupied = reservationList.stream()
+                .filter(r -> r.getTimeSlot().equalsIgnoreCase(timeSlot))
+                .map(Reservation::getTableNumber).collect(Collectors.toList());
+        List<Integer> available = new ArrayList<>();
+        for (int i = 1; i <= MAX_TABLES; i++) if (!occupied.contains(i)) available.add(i);
+        return available;
+    }
 
-        ArrayList<Reservation> result = new ArrayList<>();
+    // --- CÁC CHỨC NĂNG QUẢN LÝ ---
+    public boolean addReservation(Reservation r) {
+        reservationList.add(r);
+        ReservationFile.save(reservationList);
+        return true;
+    }
 
-        for (Reservation reservation : reservationList) {
+    public boolean deleteReservation(String id) {
+        boolean removed = reservationList.removeIf(r -> r.getReservationId().equalsIgnoreCase(id));
+        if(removed) ReservationFile.save(reservationList);
+        return removed;
+    }
 
-            if (reservation.getCustomerName().toLowerCase().contains(name.toLowerCase()))
-                result.add(reservation);
+    public void updateFile() { ReservationFile.save(reservationList); }
 
-        }
+    public Reservation searchById(String id) {
+        return reservationList.stream().filter(r -> r.getReservationId().equalsIgnoreCase(id)).findFirst().orElse(null);
+    }
 
-        return result;
+    public ArrayList<Reservation> searchByName(String name) {
+        return reservationList.stream().filter(r -> r.getCustomerName().toLowerCase().contains(name.toLowerCase()))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public ArrayList<Reservation> searchByPhone(String phone) {
-
-        ArrayList<Reservation> result = new ArrayList<>();
-
-        for (Reservation reservation : reservationList) {
-
-            if (reservation.getPhoneNumber().contains(phone))
-                result.add(reservation);
-
-        }
-
-        return result;
+        return reservationList.stream().filter(r -> r.getPhoneNumber().contains(phone))
+                .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    //==================== DISPLAY ====================
-    public void displayAll() {
-
-        if (reservationList.isEmpty()) {
-            System.out.println("Reservation list is empty!");
-            return;
-        }
-
-        Reservation.displayHeader();
-
-        for (Reservation reservation : reservationList) {
-            reservation.display();
+    public void sortByCustomerName() { reservationList.sort(Comparator.comparing(Reservation::getCustomerName)); updateFile(); }
+    public void sortByTableNumber() { reservationList.sort(Comparator.comparingInt(Reservation::getTableNumber)); updateFile(); }
+    public ArrayList<Reservation> getReservationList() { return reservationList; }
+    public ArrayList<Reservation> getReservationsByCurrentStatus(boolean onlyOccupied) {
+    int currentHour = SystemClock.getCurrentHour();
+    ArrayList<Reservation> result = new ArrayList<>();
+    
+    for (Reservation r : reservationList) {
+        String[] parts = r.getTimeSlot().split("-");
+        int start = Integer.parseInt(parts[0]);
+        int end = Integer.parseInt(parts[1]);
+        boolean isOccupied = (currentHour >= start && currentHour < end);
+        
+        if (onlyOccupied == isOccupied) {
+            result.add(r);
         }
     }
-
-    public void displayById(String reservationId) {
-
-        Reservation reservation = searchById(reservationId);
-
-        if (reservation == null) {
-            System.out.println("Reservation not found!");
-            return;
-        }
-
-        Reservation.displayHeader();
-        reservation.display();
-    }
-
-    //==================== SORT ====================
-    public void sortByCustomerName() {
-
-        reservationList.sort(
-                Comparator.comparing(Reservation::getCustomerName)
-        );
-
-        ReservationFile.save(reservationList);
-    }
-
-    public void sortByTableNumber() {
-
-        reservationList.sort(
-                Comparator.comparingInt(Reservation::getTableNumber)
-        );
-
-        ReservationFile.save(reservationList);
-    }
-
-    //==================== STATUS ====================
-    public boolean confirmReservation(String reservationId) {
-
-        Reservation reservation = searchById(reservationId);
-
-        if (reservation == null)
-            return false;
-
-        reservation.setStatus("Confirmed");
-        ReservationFile.save(reservationList);
-
-        return true;
-    }
-
-    public boolean cancelReservation(String reservationId) {
-
-        Reservation reservation = searchById(reservationId);
-
-        if (reservation == null)
-            return false;
-
-        reservation.setStatus("Cancelled");
-        ReservationFile.save(reservationList);
-
-        return true;
-    }
-
-    //==================== CHECK ====================
-    public boolean isExist(String reservationId) {
-        return searchById(reservationId) != null;
-    }
-
-    public int countReservation() {
-        return reservationList.size();
-    }
-
-    //==================== CLEAR ====================
-    public void clearAll() {
-        reservationList.clear();
-        ReservationFile.save(reservationList);
-    }
-
+    return result;
+}
 }

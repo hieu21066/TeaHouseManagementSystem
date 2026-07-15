@@ -70,7 +70,7 @@ System.out.print("Choose: ");
                             break;
                         }
                     } catch (Exception e) {
-                        System.out.println("[Lỗi] Đã xảy ra lỗi khi đọc file tài khoản!");
+                        System.out.println("[Error] An error occurred while reading the account file!");
                         break;
                     }
                     // --------------------------------------------------------

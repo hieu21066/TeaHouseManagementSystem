@@ -31,7 +31,7 @@ public class OrderService {
                 String[] data = line.split("\\|");
                 if (data[0].equalsIgnoreCase(empId)) return data[2].trim();
             }
-        } catch (IOException e) { System.out.println("Lỗi đọc file Employee.txt"); }
+        } catch (IOException e) { System.out.println("File reading error Employee.txt"); }
         return null;
     }
 
@@ -42,7 +42,7 @@ public class OrderService {
                 String[] data = line.split("\\|");
                 if (data[0].equalsIgnoreCase(prodId)) return data;
             }
-        } catch (IOException e) { System.out.println("Lỗi đọc file ProductCatalog.txt"); }
+        } catch (IOException e) { System.out.println("File reading error ProductCatalog.txt"); }
         return null;
     }
 
@@ -53,7 +53,7 @@ public class OrderService {
                 String[] data = line.split("\\|");
                 if (data[0].equalsIgnoreCase(prodId)) return Integer.parseInt(data[1]);
             }
-        } catch (IOException e) { System.out.println("Lỗi đọc file ProductStorage.txt"); }
+        } catch (IOException e) { System.out.println("File reading error ProductStorage.txt"); }
         return 0;
     }
 
@@ -92,11 +92,11 @@ public class OrderService {
                     fileLines.add(prodId + "|" + (Integer.parseInt(data[1]) - amountBought));
                 } else { fileLines.add(line); }
             }
-        } catch (IOException e) { System.out.println("Lỗi cập nhật kho!"); }
+        } catch (IOException e) { System.out.println("Inventory update error!"); }
         
         try (BufferedWriter bw = new BufferedWriter(new FileWriter("ProductStorage.txt"))) {
             for (String line : fileLines) { bw.write(line); bw.newLine(); }
-        } catch (IOException e) { System.out.println("Không thể ghi file kho!"); }
+        } catch (IOException e) { System.out.println("Unable to save archive file!"); }
     }
 
     public boolean addInvoice(Invoice invoice) { invoiceList.add(invoice); OrderFile.save(invoiceList); return true; }

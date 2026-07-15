@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ProductService {
-    private ArrayList<Product> catalogList;      
-    private ArrayList<Product> activeProductList; 
+
+    private ArrayList<Product> catalogList;
+    private ArrayList<Product> activeProductList;
 
     public ProductService() {
         this.catalogList = ProductFile.loadCatalog();
@@ -44,55 +45,55 @@ public class ProductService {
         System.out.println("\n--- Product Identified ---");
         System.out.println("Name: " + catalogItem.getName());
         System.out.println("Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
-        
+
         String unit = (catalogItem instanceof Tea) ? "packs" : "pieces";
-System.out.print("Enter amount to add (" + unit + "): ");
-        
+        System.out.print("Enter amount to add (" + unit + "): ");
+
         try {
             int amount = Integer.parseInt(sc.nextLine());
 
-int storageAmount = amount;
+            int storageAmount = amount;
 
-if (catalogItem instanceof Tea) {
-    Tea tea = (Tea) catalogItem;
-    storageAmount = amount * tea.getSampleWeightGrams();
-}
+            if (catalogItem instanceof Tea) {
+                Tea tea = (Tea) catalogItem;
+                storageAmount = amount * tea.getSampleWeightGrams();
+            }
             if (amount <= 0) {
                 System.out.println("Invalid amount.");
                 return;
             }
-double realPrice = catalogItem.getPrice() * 1000;
-double totalCost = realPrice * amount;
+            double realPrice = catalogItem.getPrice() * 1000;
+            double totalCost = realPrice * amount;
 
 //================== IMPORT ==================
-if (activeItem == null) {
+            if (activeItem == null) {
 
-    // Chưa có trong Storage
-    catalogItem.setQuantity(storageAmount);
-    activeProductList.add(catalogItem);
-    activeItem = catalogItem;
+                // Chưa có trong Storage
+                catalogItem.setQuantity(storageAmount);
+                activeProductList.add(catalogItem);
+                activeItem = catalogItem;
 
-} else {
+            } else {
 
-    // Đã có trong Storage
-    activeItem.setQuantity(activeItem.getQuantity() + storageAmount);
+                // Đã có trong Storage
+                activeItem.setQuantity(activeItem.getQuantity() + storageAmount);
 
-}
+            }
 
 // Lưu lại Storage
-ProductFile.saveStorage(activeProductList);
+            ProductFile.saveStorage(activeProductList);
 
 // Ghi lịch sử nhập
-ProductFile.saveImportLog(activeItem.getId(), amount, realPrice);
+            ProductFile.saveImportLog(activeItem.getId(), amount, realPrice);
 
-System.out.println("\n----------------------------------------");
-System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
-System.out.printf("Đơn giá gốc: %,.0f VND / %s\n",
-        realPrice,
-        (catalogItem instanceof Tea) ? "Gram" : "Cái");
-System.out.printf("TỔNG TIỀN VỐN NHẬP: %,.0f VND\n", totalCost);
-System.out.println("📝 Lịch sử nhập hàng đã được lưu vào Import.txt!");
-System.out.println("----------------------------------------");
+            System.out.println("\n----------------------------------------");
+            System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
+            System.out.printf("Original price: %,.0f VND / %s\n",
+                    realPrice,
+                    (catalogItem instanceof Tea) ? "Gram" : "Cái");
+            System.out.printf("TOTAL INVESTMENT: %,.0f VND\n", totalCost);
+            System.out.println("📝 The import history has been saved Import.txt!");
+            System.out.println("----------------------------------------");
         } catch (NumberFormatException e) {
             System.out.println("❌ Invalid number format.");
         }
@@ -138,4 +139,5 @@ System.out.println("----------------------------------------");
     public void saveStorageFile() {
         ProductFile.saveStorage(activeProductList);
     }
-} 
+}
+0

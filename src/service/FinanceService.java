@@ -114,7 +114,7 @@ public class FinanceService {
                     // Doanh thu Combo = Số lượng * Đơn giá Combo
                     totalRevenue += (quantity * price);
                 } catch (NumberFormatException e) {
-                    System.out.println("⚠️ Lỗi định dạng số khi tính toán doanh thu tại combopay: " + e.getMessage());
+                    System.out.println("⚠️ Number formatting error when calculating revenue at combopay: " + e.getMessage());
                 }
             }
         }
@@ -134,7 +134,7 @@ public class FinanceService {
                     }
                 }
             } catch (Exception e) {
-                System.out.println("⚠️ Lỗi đọc file dữ liệu Import: " + e.getMessage());
+                System.out.println("⚠️ Error reading import data file: " + e.getMessage());
             }
         }
 
@@ -166,13 +166,13 @@ public class FinanceService {
         if (f != null) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();
             System.out.println("+---------------------------------------------------+");
-            System.out.printf("| Mã Kỳ Tài Chính   : %-29s |\n", f.getFinanceId());
-            System.out.printf("| Tổng Doanh Thu    : %-26.0f VND |\n", f.getTotalRevenue());
-            System.out.printf("| Tổng Chi Phí      : %-26.0f VND |\n", f.getTotalExpense());
-            System.out.printf("| Lợi Nhuận Thuần   : %-26.0f VND |\n", profit);
+            System.out.printf("| Financial Code   : %-29s |\n", f.getFinanceId());
+            System.out.printf("| Total Revenue    : %-26.0f VND |\n", f.getTotalRevenue());
+            System.out.printf("| Total Cost      : %-26.0f VND |\n", f.getTotalExpense());
+            System.out.printf("| Net Profit   : %-26.0f VND |\n", profit);
             System.out.println("+---------------------------------------------------+");
         } else {
-            System.out.println("❌ Không tìm thấy thông tin cho mã kỳ: " + id);
+            System.out.println("❌ No information found for the period code: " + id);
         }
     }
 
@@ -181,11 +181,11 @@ public class FinanceService {
      */
     public void displayAll() {
         if (financeList.isEmpty()) {
-            System.out.println("📭 Danh sách quản lý tài chính hiện đang trống.");
+            System.out.println("📭 The list of financial managers is currently blank.");
             return;
         }
         System.out.println("=====================================================================");
-        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "ID Kỳ", "Doanh Thu", "Chi Phí", "Lợi Nhuận");
+        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "Period ID", "Revenue", "Expenses", "Profit");
         System.out.println("=====================================================================");
         for (Finance f : financeList) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();

@@ -149,7 +149,12 @@ public class FinanceService {
         }
 
         // Tổng chi phí = Chi phí hàng nhập (COGS) + Chi phí lương nhân viên
-        double totalExpense = totalCOGS + totalSalary;
+        // Quy đổi từ đơn vị Triệu VND sang VND (x 1.000.000)
+        double totalExpense = (totalCOGS + totalSalary) * 1_000_000;
+        
+        // Chuyển đổi Doanh thu nếu các file hóa đơn/combo cũng đang lưu đơn vị triệu
+        // (Nếu hóa đơn đã là VND rồi thì bỏ "* 1_000_000" ở dòng dưới)
+        totalRevenue = totalRevenue * 1_000_000;
 
         // --- 4. CẬP NHẬT DỮ LIỆU ĐÃ ĐỒNG BỘ VÀO ĐỐI TƯỢNG ---
         finance.setTotalRevenue(totalRevenue);
@@ -168,12 +173,10 @@ public class FinanceService {
         if (f != null) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();
             System.out.println("+---------------------------------------------------+");
-            System.out.printf("| Financial Code   : %-29s |\n", f.getFinanceId());
-            System.out.printf("| Total Revenue : %-26.0f VND |\n", f.getTotalRevenue());
-
-            System.out.printf("| Total Expenses : %-26.0f VND |\n", f.getTotalExpense());
-
-            System.out.printf("| Net Profit : %-26.0f VND |\n", profit);
+            System.out.printf("| Financial Code   : %-31s |\n", f.getFinanceId());
+            System.out.printf("| Total Revenue    : %,24.0f VND |\n", f.getTotalRevenue());
+            System.out.printf("| Total Expenses   : %,24.0f VND |\n", f.getTotalExpense());
+            System.out.printf("| Net Profit       : %,24.0f VND |\n", profit);
             System.out.println("+---------------------------------------------------+");
         } else {
             System.out.println("❌ No information found for the period code: " + id);
@@ -188,17 +191,17 @@ public class FinanceService {
             System.out.println("📭 The list of financial managers is currently blank.");
             return;
         }
-        System.out.println("=====================================================================");
-        System.out.printf("| %-15s | %-15s | %-15s | %-13s |\n", "Period ID", "Revenue", "Expenses", "Profit");
-        System.out.println("=====================================================================");
+        System.out.println("=========================================================================================");
+        System.out.printf("| %-12s | %-22s | %-22s | %-20s |\n", "Period ID", "Revenue (VND)", "Expenses (VND)", "Profit (VND)");
+        System.out.println("=========================================================================================");
         for (Finance f : financeList) {
             double profit = f.getTotalRevenue() - f.getTotalExpense();
-            System.out.printf("| %-15s | %-15.0f | %-15.0f | %-13.0f |\n",
+            System.out.printf("| %-12s | %,22.0f | %,22.0f | %,20.0f |\n",
                     f.getFinanceId(),
                     f.getTotalRevenue(),
                     f.getTotalExpense(),
                     profit);
         }
-        System.out.println("=====================================================================");
+        System.out.println("=========================================================================================");
     }
 }

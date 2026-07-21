@@ -12,11 +12,37 @@ public class ProductService {
 
     public ProductService() {
         this.catalogList = ProductFile.loadCatalog();
+        
+        // 🛠 Chỉ nạp vào activeProductList những sản phẩm thực tế đã được lưu trong ProductStorage.txt
+        // Các sản phẩm chưa từng import sẽ KHÔNG xuất hiện trong Display All
         this.activeProductList = ProductFile.loadCatalog();
-        ProductFile.loadStorage(this.activeProductList);
+        
+        // Lọc lại: chỉ giữ lại những sản phẩm thực sự tồn tại trong file Storage.txt
+        java.io.File storageFile = new java.io.File("ProductStorage.txt");
+        if (storageFile.exists()) {
+            // Nạp dữ liệu số lượng thực tế từ Storage
+            ProductFile.loadStorage(this.activeProductList);
+            
+            // Loại bỏ khỏi activeProductList những món chưa từng có dòng dữ liệu trong Storage.txt
+            java.util.Set<String> storedIds = new java.util.HashSet<>();
+            try (java.io.BufferedReader br = new java.io.BufferedReader(new java.io.FileReader(storageFile))) {
+                String line;
+                while ((line = br.readLine()) != null) {
+                    if (line.trim().isEmpty()) continue;
+                    String[] parts = line.split("\\|");
+                    storedIds.add(parts[0].trim().toUpperCase());
+                }
+            } catch (Exception e) {
+                // ignore
+            }
+            
+            this.activeProductList.removeIf(p -> !storedIds.contains(p.getId().toUpperCase()));
+        } else {
+            // Nếu chưa có file Storage nghĩa là chưa có gì được import
+            this.activeProductList.clear();
+        }
     }
 
-    // 1. Hiển thị toàn bộ kho hàng thực tế
     public void displayAllProducts() {
         if (activeProductList.isEmpty()) {
             System.out.println("No products available in the active stock.");
@@ -28,10 +54,13 @@ public class ProductService {
         }
     }
 
-    // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế và ghi lịch sử vào Import.txt)
     public void importProduct() {
         Scanner sc = new Scanner(System.in);
-        System.out.print("Enter Product ID to import: ");
+        
+        // 🔍 In ra danh sách Catalog trước để người dùng nhìn mã nhập cho chuẩn
+        displayCatalogList();
+        
+        System.out.print("\nEnter Product ID to import: ");
         String inputId = sc.nextLine().trim().toUpperCase();
 
         Product catalogItem = findInList(catalogList, inputId);
@@ -45,38 +74,45 @@ public class ProductService {
         System.out.println("Name: " + catalogItem.getName());
         System.out.println("Current Stock: " + (activeItem != null ? activeItem.getQuantity() : 0));
 
-        String unit = (catalogItem instanceof Tea) ? "packs" : "pieces";
+        // Kiểm tra xem sản phẩm có tính theo gram không (Trà hoặc Đồ ăn kèm mã AC)
+        // Kiểm tra xem sản phẩm có tính theo gram không (Trà hoặc Đồ ăn kèm)
+        boolean isGramItem = (catalogItem instanceof Tea) || (catalogItem instanceof Accompaniment);
+        
+        String unit = isGramItem ? "packs/items" : "pieces";
         System.out.print("Enter amount to add (" + unit + "): ");
 
         try {
             int amount = Integer.parseInt(sc.nextLine());
-
             int storageAmount = amount;
 
-            if (catalogItem instanceof Tea) {
-                Tea tea = (Tea) catalogItem;
-                storageAmount = amount * tea.getSampleWeightGrams();
-            }
             if (amount <= 0) {
                 System.out.println("Invalid amount.");
                 return;
             }
+
+            // Xử lý quy đổi số lượng gram thực tế đưa vào kho
+            if (catalogItem instanceof Tea) {
+                Tea tea = (Tea) catalogItem;
+                storageAmount = amount * tea.getSampleWeightGrams();
+            } else if (catalogItem instanceof Accompaniment) {
+                Accompaniment acc = (Accompaniment) catalogItem;
+                storageAmount = amount * acc.getGramPerServing();
+            }
+
             double realPrice = catalogItem.getPrice() * 1000;
             double totalCost = realPrice * amount;
 
 //================== IMPORT ==================
             if (activeItem == null) {
-
-                // Chưa có trong Storage
-                catalogItem.setQuantity(storageAmount);
-                activeProductList.add(catalogItem);
-                activeItem = catalogItem;
-
+                // Chưa có trong Storage -> Tạo mới bản sao từ catalog, gán số lượng và đưa vào active
+                // Dùng phương thức clone hoặc khởi tạo lại từ catalogItem để không bị dính tham chiếu
+                Product newItem = findInList(catalogList, inputId);
+                newItem.setQuantity(storageAmount);
+                activeProductList.add(newItem);
+                activeItem = newItem;
             } else {
-
-                // Đã có trong Storage
+                // Đã có trong Storage, cộng dồn số lượng/gram
                 activeItem.setQuantity(activeItem.getQuantity() + storageAmount);
-
             }
 
 // Lưu lại Storage
@@ -87,9 +123,10 @@ public class ProductService {
 
             System.out.println("\n----------------------------------------");
             System.out.println("✅ Successfully updated stock for [" + catalogItem.getName() + "].");
-            System.out.printf("Original price: %,.0f VND / %s\n",
-                    realPrice,
-                    (catalogItem instanceof Tea) ? "Gram" : "Cái");
+            System.out.printf("Original price: %,.0f VND\n", realPrice);
+            if (isGramItem) {
+                System.out.printf("Added to stock: +%d grams\n", storageAmount);
+            }
             System.out.printf("TOTAL INVESTMENT: %,.0f VND\n", totalCost);
             System.out.println("📝 The import history has been saved Import.txt!");
             System.out.println("----------------------------------------");
@@ -98,7 +135,6 @@ public class ProductService {
         }
     }
 
-    // 3. XÓA SẢN PHẨM KHỎI KHO (Đưa số lượng tồn kho thực tế về 0)
     public void deleteProductFromStock() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter Product ID to clear from active stock: ");
@@ -114,14 +150,13 @@ public class ProductService {
         String confirm = sc.nextLine().trim();
         if (confirm.equalsIgnoreCase("Y")) {
             activeProductList.remove(activeItem);
-            ProductFile.saveStorage(activeProductList); // Lưu file Storage.txt
+            ProductFile.saveStorage(activeProductList);
             System.out.println("✅ Successfully cleared stock for product [" + inputId + "].");
         } else {
             System.out.println("Operation canceled.");
         }
     }
 
-    // Hàm tiện ích tìm kiếm sản phẩm theo ID dùng chung
     public Product findProductById(String id) {
         return findInList(activeProductList, id);
     }
@@ -133,6 +168,20 @@ public class ProductService {
             }
         }
         return null;
+    }
+
+public void displayCatalogList() {
+        if (activeProductList.isEmpty()) {
+            System.out.println("No active stock available.");
+            return;
+        }
+        System.out.println("\n--- AVAILABLE PRODUCTS IN STOCK ---");
+        Product.displayHeader();
+        
+        // Hiển thị danh sách dựa trên activeProductList (giống hệt Display All, có sẵn số lượng thực tế)
+        for (Product p : activeProductList) {
+            p.display();
+        }
     }
 
     public void saveStorageFile() {

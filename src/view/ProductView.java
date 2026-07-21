@@ -2,12 +2,12 @@ package view;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-import product.*;          // Import các lớp Tea, Teapot, TeaCup...
-import service.ProductService; // Import chính xác từ package service của bạn
+import product.*; 
+import service.ProductService; 
 
 public class ProductView {
 
-    private ProductService productService; // Hết sạch lỗi đỏ!
+    private ProductService productService;
     private Scanner sc;
 
     public ProductView(ProductService productService) {
@@ -62,12 +62,16 @@ public class ProductView {
                     displayFilteredProducts("TeaAccessories");
                     break;
 
+                case 9:
+                    displayFilteredProducts("Accompaniment"); // Lọc riêng đồ ăn kèm
+                    break;
+
                 case 0:
                     System.out.println("Returning to Main Menu...");
                     break;
 
                 default:
-                    System.out.println("❌ Invalid choice! Please select from 0 to 8.");
+                    System.out.println("❌ Invalid choice! Please select from 0 to 9.");
             }
 
         } while (choice != 0);
@@ -84,6 +88,7 @@ public class ProductView {
         System.out.println("6. Display Only Teapots (Ấm trà)");
         System.out.println("7. Display Only TeaCups (Chén trà)");
         System.out.println("8. Display Only Accessories (Trà cụ / Phụ kiện)");
+        System.out.println("9. Display Only Accompaniments (Đồ ăn kèm)");
         System.out.println("0. Back");
         System.out.println("========================================");
     }
@@ -107,21 +112,25 @@ public class ProductView {
         productService.displayAllProducts();
     }
 
-    private void displayFilteredProducts(String className) {
-        System.out.println("\n--- " + className.toUpperCase() + " INVENTORY LIST ---");
+    private void displayFilteredProducts(String categoryFilter) {
+        System.out.println("\n--- " + categoryFilter.toUpperCase() + " INVENTORY LIST ---");
 
         boolean hasItems = false;
         boolean headerPrinted = false;
 
         for (Product p : getActiveListFromService()) {
             boolean match = false;
-            if (className.equals("Tea") && p instanceof Tea) {
+            
+            // Phân loại dựa trên tiền tố của ID hoặc lớp đối tượng thực tế
+            if (categoryFilter.equals("Tea") && p instanceof Tea) {
                 match = true;
-            } else if (className.equals("Teapot") && p instanceof Teapot) {
+            } else if (categoryFilter.equals("Teapot") && p instanceof Teapot) {
                 match = true;
-            } else if (className.equals("TeaCup") && p instanceof TeaCup) {
+            } else if (categoryFilter.equals("TeaCup") && p instanceof TeaCup) {
                 match = true;
-            } else if (className.equals("TeaAccessories") && p instanceof TeaAccessories) {
+            } else if (categoryFilter.equals("TeaAccessories") && p instanceof TeaAccessories) {
+                match = true;
+            } else if (categoryFilter.equals("Accompaniment") && p.getId().startsWith("AC")) {
                 match = true;
             }
 
@@ -136,17 +145,17 @@ public class ProductView {
         }
 
         if (!hasItems) {
-            System.out.println("📭 No products available for category: " + className);
+            System.out.println("📭 No products available for category: " + categoryFilter);
         }
     }
 
     private ArrayList<Product> getActiveListFromService() {
         ArrayList<Product> list = new ArrayList<>();
-        // Quét dải ID mẫu từ 001 đến 020 để lấy dữ liệu từ service hiển thị lên view
-        String[] types = {"E", "P", "C", "A"};
+        // Mở rộng quét các mã ID thủ công bao gồm cả TE, TP, TC, TA và AC từ 001 đến 020
+        String[] types = {"TE", "TP", "TC", "TA", "AC"};
         for (int i = 1; i <= 20; i++) {
             for (String t : types) {
-                String id = "T" + t + String.format("%03d", i);
+                String id = t + String.format("%03d", i);
                 Product p = productService.findProductById(id);
                 if (p != null) {
                     list.add(p);

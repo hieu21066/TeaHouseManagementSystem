@@ -9,7 +9,7 @@ public class ProductFile {
     private static final String CATALOG_FILE = "ProductCatalog.txt";
     private static final String STORAGE_FILE = "ProductStorage.txt";
 
-    // 1. Đọc danh mục sản phẩm chuẩn từ Catalog (Mặc định quantity = 0)
+    // 1. Đọc danh mục sản phẩm chuẩn từ Catalog
     public static ArrayList<Product> loadCatalog() {
         ArrayList<Product> catalogList = new ArrayList<>();
         File file = new File(CATALOG_FILE);
@@ -34,7 +34,6 @@ public class ProductFile {
                 String desc = data[5].trim();
 
                 Product p = null;
-                // Khởi tạo đối tượng trực tiếp bằng ID lấy từ file, quantity mặc định gán bằng 0
                 switch (className) {
                     case "Tea":
                         int weight = Integer.parseInt(data[6].trim());
@@ -55,6 +54,10 @@ public class ProductFile {
                         String accType = data[6].trim();
                         p = new TeaAccessories(id, name, price, 0, desc, accType);
                         break;
+                    case "Accompaniment":
+                        int accGram = Integer.parseInt(data[6].trim()); 
+                        p = new Accompaniment(id, name, price, 0, desc, accGram);
+                        break;
                 }
                 if (p != null) {
                     catalogList.add(p);
@@ -66,11 +69,11 @@ public class ProductFile {
         return catalogList;
     }
 
-    // 2. Nạp số lượng/số gram tồn kho thực tế từ file Storage (Khắc phục hoàn toàn lỗi gạch đỏ)
+    // 2. Nạp số lượng tồn kho thực tế từ file Storage
     public static void loadStorage(ArrayList<Product> activeList) {
         File file = new File(STORAGE_FILE);
         if (!file.exists()) {
-            return; // Nếu lần đầu chạy chưa có kho thực tế thì bỏ qua
+            return;
         }
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             String line;
@@ -82,7 +85,6 @@ public class ProductFile {
                 String id = data[0].trim();
                 int qty = Integer.parseInt(data[1].trim());
 
-                // Tìm sản phẩm khớp ID để cập nhật số lượng tồn kho
                 for (Product p : activeList) {
                     if (p.getId().equalsIgnoreCase(id)) {
                         p.setQuantity(qty);
@@ -95,7 +97,7 @@ public class ProductFile {
         }
     }
 
-    // 3. Ghi dữ liệu số lượng thực tế trong kho vào file Storage (Chỉ lưu ID|Số_lượng)
+    // 3. Ghi dữ liệu số lượng thực tế trong kho vào file Storage
     public static void saveStorage(ArrayList<Product> activeList) {
         File file = new File(STORAGE_FILE);
 
@@ -103,29 +105,23 @@ public class ProductFile {
             file.getParentFile().mkdirs();
         }
 
-        // Sắp xếp theo ID trước khi ghi file
         activeList.sort((p1, p2) -> p1.getId().compareToIgnoreCase(p2.getId()));
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-
             for (Product p : activeList) {
                 bw.write(p.getId() + "|" + p.getQuantity());
                 bw.newLine();
             }
-
         } catch (Exception e) {
             System.out.println("Error saving storage file: " + e.getMessage());
         }
     }
-// 4. Ghi lịch sử nhập hàng vào file Import.txt (Định dạng: ID_Sản_Phẩm|Số_lượng_nhập|Tổng_tiền_vốn_thực_tế)
 
+    // 4. Ghi lịch sử nhập hàng vào file Import.txt
     public static void saveImportLog(String productId, int amount, double realPrice) {
         File file = new File("Import.txt");
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file, true))) {
-            // TÍNH TỔNG TIỀN: Lấy giá thực tế (đã nhân 1000) nhân với số lượng nhập
             double totalCost = realPrice * amount;
-
-            // Ghi vào file: ID|SốLượng|TổngTiềnVốn (Ví dụ: TE001|10|2000000)
             bw.write(String.format("%s|%d|%.0f", productId, amount, totalCost));
             bw.newLine();
         } catch (Exception e) {

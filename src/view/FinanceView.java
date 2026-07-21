@@ -8,7 +8,7 @@ public class FinanceView {
 
     public static void displayFinancialReport(Scanner sc, FinanceService financeService, OrderService orderService, ProductService productService, ComboService comboService, EmployeeService employeeService) {
         financeService.setFinanceList(file.FinanceFile.load());
-        
+
         int choose;
         do {
             System.out.println("\n====== FINANCE MANAGEMENT ======");
@@ -20,29 +20,35 @@ public class FinanceView {
             System.out.println("0. Back");
             System.out.println("================================");
             System.out.print("Choose: ");
-            
+
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (NumberFormatException e) {
                 System.out.println("Error: Please enter a valid number!");
-                choose = -1; 
+                choose = -1;
                 continue;
             }
 
             switch (choose) {
-                case 1: 
+                case 1:
                     System.out.println("\n--- FINANCIAL REPORT LIST ---");
-                    financeService.displayAll(); 
+                    financeService.displayAll();
                     break;
-                case 2: handleCreateFinance(sc, financeService); break;
-                case 3: handleAddRevenue(sc, financeService); break;
-                case 4: handleAddExpense(sc, financeService); break;
-                case 5: 
-                    handleAutoCalculate(sc, financeService, orderService, productService, comboService, employeeService); 
+                case 2:
+                    handleCreateFinance(sc, financeService);
+                    break;
+                case 3:
+                    handleAddRevenue(sc, financeService);
+                    break;
+                case 4:
+                    handleAddExpense(sc, financeService);
+                    break;
+                case 5:
+                    handleAutoCalculate(sc, financeService, orderService, productService, comboService, employeeService);
                     break;
                 case 0:
                     file.FinanceFile.save(financeService.getFinanceList());
-                    System.out.println("Returning to main menu..."); 
+                    System.out.println("Returning to main menu...");
                     break;
                 default:
                     System.out.println("Invalid choice!");
@@ -100,13 +106,13 @@ public class FinanceView {
         String id = sc.nextLine().trim();
 
         System.out.println("Processing data from system files...");
-        
+
         if (financeService.autoCalculateFinance(id, orderService, productService, comboService, employeeService)) {
             System.out.println("Synchronization completed successfully!");
-            
+
             System.out.println("\n--- AUTO REPORT FOR PERIOD [" + id + "] ---");
             financeService.displayById(id);
-            
+
             file.FinanceFile.save(financeService.getFinanceList());
         } else {
             System.out.println("Error: Finance ID not found!");

@@ -5,7 +5,9 @@ import java.io.*;
 import java.util.*;
 
 public class ReservationFile {
+
     private static final String FILE = "Reservation.txt";
+
     public static ArrayList<Reservation> load() {
         ArrayList<Reservation> list = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(FILE))) {
@@ -14,12 +16,17 @@ public class ReservationFile {
                 String[] d = line.split("\\|");
                 list.add(new Reservation(d[0], d[1], d[2], d[3], Integer.parseInt(d[4])));
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
         return list;
     }
+
     public static void save(ArrayList<Reservation> list) {
         try (PrintWriter pw = new PrintWriter(new FileWriter(FILE))) {
-            for (Reservation r : list) pw.println(r.toString());
-        } catch (Exception e) {}
+            for (Reservation r : list) {
+                pw.println(r.toString());
+            }
+        } catch (Exception e) {
+        }
     }
 }

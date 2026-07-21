@@ -10,7 +10,6 @@ public class FinanceFile {
     private static final String FILE_NAME = "Finance.txt";
 
     //================ LOAD =================
-
     public static ArrayList<Finance> load() {
 
         ArrayList<Finance> list = new ArrayList<>();
@@ -50,7 +49,6 @@ public class FinanceFile {
     }
 
     //================ SAVE =================
-
     public static void save(ArrayList<Finance> list) {
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(FILE_NAME))) {

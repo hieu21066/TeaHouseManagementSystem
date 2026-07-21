@@ -32,7 +32,7 @@ public class EmployeeFile {
                 String[] data = line.split("\\|");
 
                 if (data.length < 9) {
-                    System.out.println("Warning: The line " + lineNumber + " in file "+ FILE_NAME +" lack of data column! Skip.");
+                    System.out.println("Warning: The line " + lineNumber + " in file " + FILE_NAME + " lack of data column! Skip.");
                     continue;
                 }
 
@@ -44,9 +44,9 @@ public class EmployeeFile {
                     String gender = data[3].trim();
                     int age = Integer.parseInt(data[4].trim());
                     String phone = data[5].trim();
-                    double salary = Double.parseDouble(data[6].trim()); 
-                    String shift = data[7].trim();     
-                    String hireDate = data[8].trim();  
+                    double salary = Double.parseDouble(data[6].trim());
+                    String shift = data[7].trim();
+                    String hireDate = data[8].trim();
 
                     Employee employee = null;
 
@@ -80,7 +80,7 @@ public class EmployeeFile {
                         case "warehousestaff":
                             employee = new WarehouseStaff(id, name, gender, age, phone, salary, shift, hireDate);
                             break;
-                        
+
                         default:
                             System.out.println("cannot be recognized the role: " + role + " at line " + lineNumber);
                     }
@@ -115,4 +115,4 @@ public class EmployeeFile {
             System.out.println("Save Employee.txt failed! Detail: " + e.getMessage());
         }
     }
-} 
+}

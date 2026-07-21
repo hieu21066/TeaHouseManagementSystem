@@ -100,7 +100,7 @@ public class ProductView {
             Product.displayHeader();
             found.display();
         }
-    } 
+    }
 
     private void displayAllProducts() {
         System.out.println("\n--- ACTIVE INVENTORY STOCK ---");
@@ -109,16 +109,21 @@ public class ProductView {
 
     private void displayFilteredProducts(String className) {
         System.out.println("\n--- " + className.toUpperCase() + " INVENTORY LIST ---");
-        
+
         boolean hasItems = false;
         boolean headerPrinted = false;
 
         for (Product p : getActiveListFromService()) {
             boolean match = false;
-            if (className.equals("Tea") && p instanceof Tea) match = true;
-            else if (className.equals("Teapot") && p instanceof Teapot) match = true;
-            else if (className.equals("TeaCup") && p instanceof TeaCup) match = true;
-            else if (className.equals("TeaAccessories") && p instanceof TeaAccessories) match = true;
+            if (className.equals("Tea") && p instanceof Tea) {
+                match = true;
+            } else if (className.equals("Teapot") && p instanceof Teapot) {
+                match = true;
+            } else if (className.equals("TeaCup") && p instanceof TeaCup) {
+                match = true;
+            } else if (className.equals("TeaAccessories") && p instanceof TeaAccessories) {
+                match = true;
+            }
 
             if (match) {
                 if (!headerPrinted) {
@@ -139,11 +144,13 @@ public class ProductView {
         ArrayList<Product> list = new ArrayList<>();
         // Quét dải ID mẫu từ 001 đến 020 để lấy dữ liệu từ service hiển thị lên view
         String[] types = {"E", "P", "C", "A"};
-        for (int i = 1; i <= 20; i++) { 
-            for(String t : types) {
+        for (int i = 1; i <= 20; i++) {
+            for (String t : types) {
                 String id = "T" + t + String.format("%03d", i);
                 Product p = productService.findProductById(id);
-                if (p != null) list.add(p);
+                if (p != null) {
+                    list.add(p);
+                }
             }
         }
         return list;

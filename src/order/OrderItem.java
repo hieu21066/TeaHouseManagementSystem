@@ -21,7 +21,6 @@ public class OrderItem {
     }
 
     //==================== Getter ====================
-
     public String getProductName() {
         return productName;
     }
@@ -35,7 +34,6 @@ public class OrderItem {
     }
 
     //==================== Setter ====================
-
     public void setProductName(String productName) {
         this.productName = productName;
     }
@@ -49,23 +47,20 @@ public class OrderItem {
     }
 
     //==================== Business ====================
-
     public double getSubTotal() {
         return price * quantity;
     }
 
     //==================== Display ====================
-
     public void display() {
         System.out.printf("| %-25s | %-10.0f | %-5d | %-10.0f |\n",
                 productName,
                 price,
                 quantity,
                 getSubTotal());
-    } 
+    }
 
     //==================== Save File ====================
-
     @Override
     public String toString() {
         return productName + "|" + price + "|" + quantity;

@@ -6,8 +6,8 @@ public class WarehouseStaff extends Employee {
         super();
     }
 
-    public WarehouseStaff(String employeeId, String fullName, String gender, int age, 
-                          String phone, double salary, String shift, String hireDate) {
+    public WarehouseStaff(String employeeId, String fullName, String gender, int age,
+            String phone, double salary, String shift, String hireDate) {
         super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
     }
 

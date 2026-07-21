@@ -6,14 +6,14 @@ public class TeaServant extends Employee {
         super();
     }
 
-    public TeaServant(String employeeId, String fullName, String gender, int age, 
-                      String phone, double salary, String shift, String hireDate) {
+    public TeaServant(String employeeId, String fullName, String gender, int age,
+            String phone, double salary, String shift, String hireDate) {
         super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
     }
 
     @Override
     public String getRole() {
-        return "TeaServant"; 
+        return "TeaServant";
     }
 
     @Override

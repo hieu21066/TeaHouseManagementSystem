@@ -1,10 +1,11 @@
 package product;
 
 public class TeaAccessories extends Product {
-    private String accessoryType; 
 
-    public TeaAccessories() { 
-        super(); 
+    private String accessoryType;
+
+    public TeaAccessories() {
+        super();
     }
 
     public TeaAccessories(String id, String name, double price, int quantity, String description, String accessoryType) {
@@ -16,12 +17,12 @@ public class TeaAccessories extends Product {
     public void display() {
         super.display();
         System.out.printf("Accessory Type: %s\n", accessoryType);
-    } 
+    }
 
     @Override
     public String toString() {
         // Sử dụng các hàm getter public từ lớp cha Product
-        return String.format("%s|TeaAccessories|TeaAccessories|%s|%.2f|%s|%s", 
+        return String.format("%s|TeaAccessories|TeaAccessories|%s|%.2f|%s|%s",
                 getId(), getName(), getPrice(), getDescription(), this.accessoryType);
     }
 

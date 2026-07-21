@@ -1,6 +1,6 @@
 package main;
 
-import java.io.File; 
+import java.io.File;
 import java.util.Scanner;
 import main.SystemClock;
 import service.*;
@@ -8,7 +8,7 @@ import view.*;
 
 public class App {
 
-    private static final String FILE_NAME = "admin.txt"; 
+    private static final String FILE_NAME = "admin.txt";
 
     public static void main(String[] args) {
 
@@ -20,20 +20,20 @@ public class App {
         OrderService orderService = new OrderService();
         ReservationService reservationService = new ReservationService();
         FinanceService financeService = new FinanceService();
-         
+
         int choose = -1;
 
         do {
             System.out.println("\n=================================");
-System.out.println("      TEA HOUSE MANAGEMENT SYSTEM");
-System.out.println("=================================");
-System.out.println("Current Time : " + SystemClock.getCurrentTime());
-System.out.println("---------------------------------");
-System.out.println("1. Admin");
-System.out.println("2. Order");
-System.out.println("0. Exit");
-System.out.print("Choose: ");
-            
+            System.out.println("      TEA HOUSE MANAGEMENT SYSTEM");
+            System.out.println("=================================");
+            System.out.println("Current Time : " + SystemClock.getCurrentTime());
+            System.out.println("---------------------------------");
+            System.out.println("1. Admin");
+            System.out.println("2. Order");
+            System.out.println("0. Exit");
+            System.out.print("Choose: ");
+
             try {
                 choose = Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
@@ -49,10 +49,10 @@ System.out.print("Choose: ");
                     String inputUsername = sc.nextLine();
                     System.out.print("Password: ");
                     String inputPassword = sc.nextLine();
-                    
+
                     boolean isLoginSuccess = false;
                     try {
-                        File file = new File(FILE_NAME); 
+                        File file = new File(FILE_NAME);
                         if (file.exists()) {
                             Scanner fileReader = new Scanner(file);
                             if (fileReader.hasNextLine()) {
@@ -83,7 +83,6 @@ System.out.print("Choose: ");
 
                     System.out.println("Login Successfully!");
 
-                    
                     adminMenu(sc,
                             employeeService,
                             productService,
@@ -98,14 +97,14 @@ System.out.print("Choose: ");
                 case 2:
                     System.out.println("\n====== ORDER MODE ======");
                     int choice = -1;
-                    do{
+                    do {
                         System.out.println("1. Order");
                         System.out.println("2. Order by combo");
                         System.out.println("3. Reservation");
                         System.out.println("0. Exit");
                         System.out.print("Enter your choice:");
                         choice = Integer.parseInt(sc.nextLine());
-                        switch(choice){
+                        switch (choice) {
                             case 1:
                                 OrderView.orderMenu(sc, orderService);
                                 break;
@@ -116,10 +115,9 @@ System.out.print("Choose: ");
                                 new ReservationView(sc, reservationService).menu();
                                 break;
                         }
-                        
-                    }
-                    while(choice!=0);
-                    
+
+                    } while (choice != 0);
+
                     break;
 
                 case 0:
@@ -157,7 +155,6 @@ System.out.print("Choose: ");
             System.out.println("0. Logout");
             System.out.print("Choose: ");
 
-            
             try {
                 menu = Integer.parseInt(sc.nextLine());
             } catch (Exception e) {
@@ -178,7 +175,7 @@ System.out.print("Choose: ");
                 case 4:
                     OrderView.orderMenu(sc, orderService);
                     break;
-                 case 5:
+                case 5:
                     FinanceView.displayFinancialReport(sc, financeService, orderService,
                             productService, comboService, employeeService);
                     break;
@@ -192,4 +189,3 @@ System.out.print("Choose: ");
         } while (menu != 0);
     }
 }
-

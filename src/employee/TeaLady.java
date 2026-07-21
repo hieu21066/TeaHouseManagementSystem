@@ -6,8 +6,8 @@ public class TeaLady extends Employee {
         super();
     }
 
-    public TeaLady(String employeeId, String fullName, String gender, int age, 
-                   String phone, double salary, String shift, String hireDate) {
+    public TeaLady(String employeeId, String fullName, String gender, int age,
+            String phone, double salary, String shift, String hireDate) {
         super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
     }
 

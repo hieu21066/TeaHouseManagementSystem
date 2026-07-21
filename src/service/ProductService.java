@@ -29,7 +29,6 @@ public class ProductService {
     }
 
     // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế và ghi lịch sử vào Import.txt)
-    // 2. NHẬP SẢN PHẨM (Cộng dồn số lượng vào kho thực tế và ghi lịch sử vào Import.txt)
     public void importProduct() {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter Product ID to import: ");

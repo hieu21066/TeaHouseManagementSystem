@@ -96,7 +96,11 @@ public class OrderView {
                 System.out.println("Employee ID not found! Please try again.");
             }
         }
-        Invoice invoice = new Invoice(autoInvoiceId, matchedEmpName + " - " + empId);
+        
+        String fullEmployeeInfo = matchedEmpName + " - " + empId;
+        System.out.println("Employee: " + fullEmployeeInfo);
+
+        Invoice invoice = new Invoice(autoInvoiceId, fullEmployeeInfo);
         boolean hasItemBought = false;
 
         while (true) {
@@ -152,7 +156,7 @@ public class OrderView {
         }
 
         if (hasItemBought) {
-            invoice.addItem("SERVICE_FEE|Service Fee", service.getServiceFee(), 1);
+            invoice.addItem("SERVICE_FEE", service.getServiceFee(), 1);
             if (service.addInvoice(invoice)) {
                 System.out.println("\nInvoice created successfully!");
                 printInvoiceTable(invoice, service.getServiceFee());

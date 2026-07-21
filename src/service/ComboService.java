@@ -26,7 +26,6 @@ public class ComboService {
     }
 
     //==================== GENERATE ID ====================
-
     public String generateComboId(String teaType) {
 
         teaType = teaType.toUpperCase();
@@ -59,7 +58,6 @@ public class ComboService {
     }
 
     //==================== ADD ====================
-
     public boolean addCombo(Combo combo) {
 
         if (isExist(combo.getComboId())) {
@@ -75,7 +73,6 @@ public class ComboService {
     }
 
     //==================== DELETE ====================
-
     public boolean deleteCombo(String comboId) {
 
         Combo combo = searchById(comboId);
@@ -93,7 +90,6 @@ public class ComboService {
     }
 
     //==================== UPDATE ====================
-
     public boolean updateCombo(Combo newCombo) {
 
         Combo oldCombo = searchById(newCombo.getComboId());
@@ -114,7 +110,6 @@ public class ComboService {
     }
 
     //==================== SEARCH BY ID ====================
-
     public Combo searchById(String comboId) {
 
         for (Combo combo : comboList) {
@@ -130,7 +125,6 @@ public class ComboService {
     }
 
     //==================== SEARCH BY NAME ====================
-
     public ArrayList<Combo> searchByName(String comboName) {
 
         ArrayList<Combo> result = new ArrayList<>();
@@ -152,7 +146,6 @@ public class ComboService {
     }
 
     //==================== SEARCH BY TEA TYPE ====================
-
     public ArrayList<Combo> searchByTeaType(String teaType) {
 
         ArrayList<Combo> result = new ArrayList<>();
@@ -172,7 +165,6 @@ public class ComboService {
     }
 
     //==================== DISPLAY ====================
-
     public void displayAll() {
 
         if (comboList.isEmpty()) {
@@ -212,7 +204,6 @@ public class ComboService {
     }
 
     //==================== SORT ====================
-
     public void sortByPriceAscending() {
 
         comboList.sort(Comparator.comparingDouble(Combo::getPrice));
@@ -233,7 +224,6 @@ public class ComboService {
     }
 
     //==================== CHECK ====================
-
     public boolean isExist(String comboId) {
 
         return searchById(comboId) != null;
@@ -241,7 +231,6 @@ public class ComboService {
     }
 
     //==================== SAVE ====================
-
     public void save() {
 
         ComboFile.save(comboList);
@@ -249,7 +238,6 @@ public class ComboService {
     }
 
     //==================== COUNT ====================
-
     public int countCombo() {
 
         return comboList.size();
@@ -257,7 +245,6 @@ public class ComboService {
     }
 
     //==================== CLEAR ====================
-
     public void clearAll() {
 
         comboList.clear();

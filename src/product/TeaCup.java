@@ -1,11 +1,12 @@
 package product;
 
 public class TeaCup extends Product {
-    private String cupRole;   
-    private int capacityMl;   
+
+    private String cupRole;
+    private int capacityMl;
 
     public TeaCup() {
-        super(); 
+        super();
     }
 
     public TeaCup(String id, String name, double price, int quantity, String description, String cupRole, int capacityMl) {
@@ -19,10 +20,10 @@ public class TeaCup extends Product {
         super.display();
         System.out.printf("Role: %s, Capacity: %dml\n", cupRole, capacityMl);
     }
- 
-   @Override
+
+    @Override
     public String toString() {
-        return String.format("%s|TeaCup|TeaCup|%s|%.2f|%s|%s|%d", 
+        return String.format("%s|TeaCup|TeaCup|%s|%.2f|%s|%s|%d",
                 getId(), getName(), getPrice(), getDescription(), this.cupRole, this.capacityMl);
     }
 

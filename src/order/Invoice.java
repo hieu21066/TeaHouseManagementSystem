@@ -5,14 +5,12 @@ import java.util.ArrayList;
 public class Invoice {
 
     //==================== Attributes ====================
-
     private String invoiceId;
     private String employeeName;
     private ArrayList<OrderItem> itemList;
     private double totalAmount;
 
     //==================== Constructor ====================
-
     public Invoice() {
         invoiceId = "";
         employeeName = "";
@@ -28,7 +26,6 @@ public class Invoice {
     }
 
     //==================== Getter ====================
-
     public String getInvoiceId() {
         return invoiceId;
     }
@@ -47,7 +44,6 @@ public class Invoice {
     }
 
     //==================== Setter ====================
-
     public void setInvoiceId(String invoiceId) {
         this.invoiceId = invoiceId;
     }
@@ -62,24 +58,23 @@ public class Invoice {
     }
 
     //==================== Business ====================
-
     private void updateTotalAmount() {
-    totalAmount = 0;
+        totalAmount = 0;
 
-    for (OrderItem item : itemList) {
-        String rawName = item.getProductName();
-        double rowTotal = item.getSubTotal(); // subTotal = price * quantity
+        for (OrderItem item : itemList) {
+            String rawName = item.getProductName();
+            double rowTotal = item.getSubTotal(); // subTotal = price * quantity
 
-        // Kiểm tra xem đây có phải là sản phẩm Trà hay không (chứa mã TE)
-        if (rawName.startsWith("TE") || rawName.contains("|TE")) {
-            // Nếu là Trà: Tự quy đổi sang VND bằng cách nhân 10 và làm tròn triệt để
-            totalAmount += Math.round(rowTotal * 10);
-        } else {
-            // Nếu là dịch vụ thưởng trà hoặc "Doanh thu tích lũy" từ file đọc lên: Giữ nguyên
-            totalAmount += rowTotal;
+            // Kiểm tra xem đây có phải là sản phẩm Trà hay không (chứa mã TE)
+            if (rawName.startsWith("TE") || rawName.contains("|TE")) {
+                // Nếu là Trà: Tự quy đổi sang VND bằng cách nhân 10 và làm tròn triệt để
+                totalAmount += Math.round(rowTotal * 10);
+            } else {
+                // Nếu là dịch vụ thưởng trà hoặc "Doanh thu tích lũy" từ file đọc lên: Giữ nguyên
+                totalAmount += rowTotal;
+            }
         }
     }
-}
 
     public void addItem(String name, double price, int qty) {
         OrderItem item = new OrderItem(name, price, qty);
@@ -92,10 +87,9 @@ public class Invoice {
             itemList.remove(index);
             updateTotalAmount();
         }
-    } 
+    }
 
     //==================== Display ====================
-
     public void printInvoice() {
 
         updateTotalAmount();
@@ -119,7 +113,6 @@ public class Invoice {
     }
 
     //==================== Save File ====================
-
     @Override
     public String toString() {
         return invoiceId + "|"

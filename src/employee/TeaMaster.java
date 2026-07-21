@@ -13,10 +13,10 @@ public class TeaMaster extends Employee {
         super();
     }
 
-    public TeaMaster(String employeeId, String fullName, String gender, int age, 
-                     String phone, double salary, String shift, 
-                     String hireDate, int yearsOfExperience) {
-        super(employeeId, fullName, gender, age, phone, salary, shift,hireDate);
+    public TeaMaster(String employeeId, String fullName, String gender, int age,
+            String phone, double salary, String shift,
+            String hireDate, int yearsOfExperience) {
+        super(employeeId, fullName, gender, age, phone, salary, shift, hireDate);
         this.yearsOfExperience = yearsOfExperience;
         this.title = determineTitle(yearsOfExperience);
     }

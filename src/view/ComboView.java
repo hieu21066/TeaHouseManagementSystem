@@ -64,7 +64,6 @@ public class ComboView {
     }
 
     // ==================== HÀM BỔ TRỢ NHẬP XUẤT (HELPER METHODS) ====================
-
     private static void handleAddCombo(Scanner sc, ComboService service) {
         System.out.println("\n===== ADD NEW COMBO =====");
         String teaType = chooseTeaType(sc);
@@ -258,15 +257,24 @@ public class ComboView {
             System.out.print("Choose: ");
 
             switch (sc.nextLine()) {
-                case "1": return "GT";
-                case "2": return "RT";
-                case "3": return "BT";
-                case "4": return "YT";
-                case "5": return "OT";
-                case "6": return "OM";
-                case "7": return "TQ";
-                case "8": return "PS";
-                case "9": return "PR";
+                case "1":
+                    return "GT";
+                case "2":
+                    return "RT";
+                case "3":
+                    return "BT";
+                case "4":
+                    return "YT";
+                case "5":
+                    return "OT";
+                case "6":
+                    return "OM";
+                case "7":
+                    return "TQ";
+                case "8":
+                    return "PS";
+                case "9":
+                    return "PR";
                 default:
                     System.out.println("Invalid choice!");
             }
@@ -276,11 +284,11 @@ public class ComboView {
     // ====================================================================
     // THÊM MỚI: Tự động xử lý Order Combo & Tự sinh mã hóa đơn bên trong hàm
     // ====================================================================
-   public static void orderByComboName(Scanner sc, ComboService comboService) {
+    public static void orderByComboName(Scanner sc, ComboService comboService) {
         System.out.println("\n--- ORDER COMBO THEO TÊN HOẶC MÃ TRÀ ---");
         System.out.print("Enter the name of combo or ID (Ví dụ: Green dragon, RT, GT...): ");
         String searchInput = sc.nextLine().trim();
-        
+
         // Tự động tìm kiếm linh hoạt: nếu nhập 2 chữ cái viết hoa thì tìm theo Tea Type, ngược lại tìm theo Tên
         ArrayList<Combo> matchedList;
         if (searchInput.length() == 2 && searchInput.equals(searchInput.toUpperCase())) {
@@ -297,8 +305,8 @@ public class ComboView {
         System.out.println("\n--- Seek RESULTS ---");
         for (int i = 0; i < matchedList.size(); i++) {
             Combo c = matchedList.get(i);
-            System.out.printf("[%d] ID: %s | Name: %s | Price: %,d VND\n", 
-                (i + 1), c.getComboId(), c.getComboName(), (int)c.getPrice());
+            System.out.printf("[%d] ID: %s | Name: %s | Price: %,d VND\n",
+                    (i + 1), c.getComboId(), c.getComboName(), (int) c.getPrice());
         }
 
         int choice = -1;
@@ -322,7 +330,7 @@ public class ComboView {
 
         Combo selectedCombo = matchedList.get(choice - 1);
         int quantity = 0;
-        
+
         // VÒNG LẶP CHỐNG NHẬP SAI SỐ LƯỢNG
         while (true) {
             System.out.print("Enter the number of combo: ");
@@ -343,16 +351,16 @@ public class ComboView {
 
         // GỌI LỆNH LƯU VÀO FILE
         file.ComboFile.saveComboPay(
-            financeId, 
-            selectedCombo.getComboId(), 
-            selectedCombo.getComboName(), 
-            quantity, 
-            selectedCombo.getPrice()
+                financeId,
+                selectedCombo.getComboId(),
+                selectedCombo.getComboName(),
+                quantity,
+                selectedCombo.getPrice()
         );
 
         System.out.println("\nSuccessfully!");
         System.out.printf("ID: %s\n", financeId);
-        System.out.printf("Guest: %s | Số lượng: %d | Tổng tiền: %,d VND\n", 
-            selectedCombo.getComboName(), quantity, (int)(selectedCombo.getPrice() * quantity));
+        System.out.printf("Guest: %s | Số lượng: %d | Tổng tiền: %,d VND\n",
+                selectedCombo.getComboName(), quantity, (int) (selectedCombo.getPrice() * quantity));
     }
 }

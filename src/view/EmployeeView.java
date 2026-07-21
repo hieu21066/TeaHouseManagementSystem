@@ -45,27 +45,27 @@ public class EmployeeView {
                     employeeService.displayAllWithRealtimeStatus(sc);
                     break;
                 case 6:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(Admin.class);
                     break;
                 case 7:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(Cashier.class);
                     break;
                 case 8:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(TeaMaster.class);
                     break;
                 case 9:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(TeaLady.class);
                     break;
                 case 10:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(TeaServant.class);
                     break;
                 case 11:
-                     updateRealtimeStatus();
+                    updateRealtimeStatus();
                     employeeService.displayByType(WarehouseStaff.class);
                     break;
                 case 12:
@@ -105,12 +105,12 @@ public class EmployeeView {
     // ================== BỔ SUNG: Hàm phụ trợ hỗ trợ cập nhật trạng thái trước khi hiển thị nhóm nhân viên ==================
     private void updateRealtimeStatus() {
 
-    int hour = SystemClock.getCurrentHour();
+        int hour = SystemClock.getCurrentHour();
 
-    for (Employee employee : employeeService.getEmployeeList()) {
-        employee.updateStatusBasedOnHour(hour);
+        for (Employee employee : employeeService.getEmployeeList()) {
+            employee.updateStatusBasedOnHour(hour);
+        }
     }
-}
 
     // ================== ADD EMPLOYEE ==================
     private void addEmployee() {
@@ -122,7 +122,7 @@ public class EmployeeView {
         System.out.println("5. Tea Servant");
         System.out.println("6. Warehouse Staff");
         System.out.print("Choose: ");
-        
+
         int type;
         try {
             type = Integer.parseInt(sc.nextLine());
@@ -137,23 +137,35 @@ public class EmployeeView {
 
         Employee newEmp = null;
         switch (type) {
-            case 1: newEmp = new Admin(); break;
-            case 2: newEmp = new Cashier(); break;
-            case 3: newEmp = new TeaMaster(); break;
-            case 4: newEmp = new TeaLady(); break;
-            case 5: newEmp = new TeaServant(); break;
-            case 6: newEmp = new WarehouseStaff(); break;
+            case 1:
+                newEmp = new Admin();
+                break;
+            case 2:
+                newEmp = new Cashier();
+                break;
+            case 3:
+                newEmp = new TeaMaster();
+                break;
+            case 4:
+                newEmp = new TeaLady();
+                break;
+            case 5:
+                newEmp = new TeaServant();
+                break;
+            case 6:
+                newEmp = new WarehouseStaff();
+                break;
         }
 
         if (newEmp != null) {
-            newEmp.input(); 
+            newEmp.input();
 
             int maxOrder = 0;
-            String currentRole = newEmp.getRole(); 
-            
+            String currentRole = newEmp.getRole();
+
             for (Employee e : employeeService.getEmployeeList()) {
                 if (e.getRole().equalsIgnoreCase(currentRole)) {
-                    String oldId = e.getEmployeeId(); 
+                    String oldId = e.getEmployeeId();
                     try {
                         String numberPart = oldId.substring(oldId.length() - 3);
                         int order = Integer.parseInt(numberPart);
@@ -164,7 +176,7 @@ public class EmployeeView {
                     }
                 }
             }
-            
+
             int nextOrder = maxOrder + 1;
             newEmp.generateId(nextOrder);
             employeeService.addEmployee(newEmp);
@@ -177,10 +189,11 @@ public class EmployeeView {
         System.out.print("Enter Employee ID: ");
         String id = sc.nextLine();
 
-        if (employeeService.deleteEmployee(id))
+        if (employeeService.deleteEmployee(id)) {
             System.out.println("Delete Successfully!");
-        else
+        } else {
             System.out.println("Employee Not Found!");
+        }
     }
 
     // ================== UPDATE EMPLOYEE ==================
@@ -193,16 +206,23 @@ public class EmployeeView {
             System.out.println("Employee Not Found!");
             return;
         }
- 
+
         System.out.println("\n--- Enter New Information for Employee: " + oldEmp.getFullName() + " (" + oldEmp.getRole() + ") ---");
-        
+
         Employee tempEmp = null;
-        if (oldEmp instanceof Admin) tempEmp = new Admin();
-        else if (oldEmp instanceof Cashier) tempEmp = new Cashier();
-        else if (oldEmp instanceof TeaMaster) tempEmp = new TeaMaster();
-        else if (oldEmp instanceof TeaLady) tempEmp = new TeaLady();
-        else if (oldEmp instanceof TeaServant) tempEmp = new TeaServant();
-        else if (oldEmp instanceof WarehouseStaff) tempEmp = new WarehouseStaff();
+        if (oldEmp instanceof Admin) {
+            tempEmp = new Admin();
+        } else if (oldEmp instanceof Cashier) {
+            tempEmp = new Cashier();
+        } else if (oldEmp instanceof TeaMaster) {
+            tempEmp = new TeaMaster();
+        } else if (oldEmp instanceof TeaLady) {
+            tempEmp = new TeaLady();
+        } else if (oldEmp instanceof TeaServant) {
+            tempEmp = new TeaServant();
+        } else if (oldEmp instanceof WarehouseStaff) {
+            tempEmp = new WarehouseStaff();
+        }
 
         if (tempEmp != null) {
             tempEmp.setEmployeeId(oldEmp.getEmployeeId());
@@ -227,10 +247,10 @@ public class EmployeeView {
         } else {
             System.out.print("Enter current hour to check this employee's status (0-23): ");
             try {
-              employee.updateStatusBasedOnHour(SystemClock.getCurrentHour());
-            } 
-            catch (Exception e) {}
-            
+                employee.updateStatusBasedOnHour(SystemClock.getCurrentHour());
+            } catch (Exception e) {
+            }
+
             Employee.displayHeader();
             employee.display();
         }

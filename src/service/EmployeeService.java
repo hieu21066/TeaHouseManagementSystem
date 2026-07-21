@@ -78,23 +78,24 @@ public class EmployeeService {
     }
 
     //display real-time list of employee status
-public void displayAllWithRealtimeStatus(Scanner sc) {
-    if (employeeList.isEmpty()) {
-        System.out.println("Employee list is empty!");
-        return;
+    public void displayAllWithRealtimeStatus(Scanner sc) {
+        if (employeeList.isEmpty()) {
+            System.out.println("Employee list is empty!");
+            return;
+        }
+
+        int hour = SystemClock.getCurrentHour();
+
+        System.out.println("\n--- EMPLOYEE STATUS AT " + hour + ":00 ---");
+
+        Employee.displayHeader();
+
+        for (Employee employee : employeeList) {
+            employee.updateStatusBasedOnHour(hour);
+            employee.display();
+        }
     }
 
-    int hour = SystemClock.getCurrentHour();
-
-    System.out.println("\n--- EMPLOYEE STATUS AT " + hour + ":00 ---");
-
-    Employee.displayHeader();
-
-    for (Employee employee : employeeList) {
-        employee.updateStatusBasedOnHour(hour);
-        employee.display();
-    }
-}
     public void displayAll() {
         Employee.displayHeader();
         for (Employee employee : employeeList) {
@@ -141,4 +142,4 @@ public void displayAllWithRealtimeStatus(Scanner sc) {
             System.out.println("No employee found!");
         }
     }
-} 
+}

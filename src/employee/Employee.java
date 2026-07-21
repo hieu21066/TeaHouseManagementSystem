@@ -21,7 +21,7 @@ public abstract class Employee {
     }
 
     public Employee(String employeeId, String fullName, String gender,
-                    int age, String phone, double salary, String shift, String hireDate) {
+            int age, String phone, double salary, String shift, String hireDate) {
         this.employeeId = employeeId;
         this.fullName = fullName;
         this.gender = gender;
@@ -79,12 +79,12 @@ public abstract class Employee {
     public void setSalary(double salary) {
         this.salary = salary;
     }
-    
+
     public String getFormattedSalary() {
-    DecimalFormat formatter = new DecimalFormat("###,###");
-    return formatter.format(salary * 1000000);
-}
-    
+        DecimalFormat formatter = new DecimalFormat("###,###");
+        return formatter.format(salary * 1000000);
+    }
+
     public String getShift() {
         return shift;
     }
@@ -113,7 +113,7 @@ public abstract class Employee {
     public abstract String getRole();
 
     public void generateId(int nextOrder) {
-        String role = getRole(); 
+        String role = getRole();
         String prefix = "";
 
         java.util.ArrayList<Character> upperCases = new java.util.ArrayList<>();
@@ -171,7 +171,7 @@ public abstract class Employee {
         System.out.print("Hire Date (dd/mm/yyyy): ");
         hireDate = sc.nextLine();
     }
-    
+
     public void updateStatusBasedOnHour(int currentHour) {
         try {
             String[] hours = this.shift.split("-");
@@ -185,9 +185,8 @@ public abstract class Employee {
                     } else {
                         this.status = "Off";
                     }
-                } 
-                // Trường hợp ca làm qua đêm (Ví dụ: ca từ 22h đêm đến 6h sáng hôm sau)
-                else { 
+                } // Trường hợp ca làm qua đêm (Ví dụ: ca từ 22h đêm đến 6h sáng hôm sau)
+                else {
                     if (currentHour >= startHour || currentHour < endHour) {
                         this.status = "Working";
                     } else {
@@ -203,24 +202,24 @@ public abstract class Employee {
     }
 
     //========================== Save File ==========================
-   @Override
-public String toString() {
-    // Lưu lương dưới dạng số double nguyên bản
-    return employeeId + "|" + getRole() + "|" + fullName + "|" + gender + "|" 
-           + age + "|" + phone + "|" + salary + "|" + shift + "|" + hireDate;
-}
+    @Override
+    public String toString() {
+        // Lưu lương dưới dạng số double nguyên bản
+        return employeeId + "|" + getRole() + "|" + fullName + "|" + gender + "|"
+                + age + "|" + phone + "|" + salary + "|" + shift + "|" + hireDate;
+    }
 
     //========================== Display ==========================
     public static void displayHeader() {
-    System.out.println("======================================================================================================================");
-    // Tăng độ rộng cột Salary từ 10 lên 12 hoặc 14
-    System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3s | %-12s | %-12s | %-10s | %-10s |%n",
-            "ID", "Name", "Role", "Gender", "Age", "Phone", "Salary", "Shift", "Status");
-    System.out.println("======================================================================================================================");
-}
+        System.out.println("======================================================================================================================");
+        // Tăng độ rộng cột Salary từ 10 lên 12 hoặc 14
+        System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3s | %-12s | %-12s | %-10s | %-10s |%n",
+                "ID", "Name", "Role", "Gender", "Age", "Phone", "Salary", "Shift", "Status");
+        System.out.println("======================================================================================================================");
+    }
 
     public void display() {
-    System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3d | %-12s | %-12s | %-10s | %-10s |%n",
-            employeeId, fullName, getRole(), gender, age, phone, getFormattedSalary(), shift, status);
-}
+        System.out.printf("| %-6s | %-20s | %-16s | %-6s | %-3d | %-12s | %-12s | %-10s | %-10s |%n",
+                employeeId, fullName, getRole(), gender, age, phone, getFormattedSalary(), shift, status);
+    }
 }

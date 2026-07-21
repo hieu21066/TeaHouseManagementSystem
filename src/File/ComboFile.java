@@ -132,10 +132,11 @@ public class ComboFile {
     }
 
     /**
-      Ghi nối tiếp (Append) một giao dịch mua combo của khách hàng xuống file combopay.txt
-      Định dạng lưu trữ: financeId|comboId|comboName|quantity|price
+     * Ghi nối tiếp (Append) một giao dịch mua combo của khách hàng xuống file
+     * combopay.txt Định dạng lưu trữ:
+     * financeId|comboId|comboName|quantity|price
      */
-   public static void saveComboPay(String financeId, String comboId, String comboName, int quantity, double price) {
+    public static void saveComboPay(String financeId, String comboId, String comboName, int quantity, double price) {
         createComboPayFileIfNotExists();
         try (java.io.BufferedWriter bw = new java.io.BufferedWriter(
                 new java.io.OutputStreamWriter(new java.io.FileOutputStream("combopay.txt", true), java.nio.charset.StandardCharsets.UTF_8))) {
@@ -147,11 +148,10 @@ public class ComboFile {
         }
     }
 
-    
     public static java.util.ArrayList<String[]> loadComboPay() {
         java.util.ArrayList<String[]> payList = new java.util.ArrayList<>();
         java.io.File file = new java.io.File("combopay.txt");
-        
+
         // Nếu file chưa tồn tại (chưa có ai mua combo nào), trả về danh sách rỗng luôn
         if (!file.exists()) {
             return payList;
@@ -160,14 +160,14 @@ public class ComboFile {
         // Ép kiểu đọc bằng UTF_8 để không bị lỗi font tiếng Việt có dấu
         try (java.io.BufferedReader br = new java.io.BufferedReader(
                 new java.io.InputStreamReader(new java.io.FileInputStream(file), java.nio.charset.StandardCharsets.UTF_8))) {
-            
+
             String line;
             while ((line = br.readLine()) != null) {
                 // Bỏ qua dòng trống nếu có
                 if (line.trim().isEmpty()) {
                     continue;
                 }
-                
+
                 // Tách chuỗi dựa trên ký tự gạch đứng |
                 String[] data = line.split("\\|");
                 if (data.length == 5) {
@@ -177,7 +177,7 @@ public class ComboFile {
         } catch (java.io.IOException e) {
             System.out.println("Error reading from file combopay.txt: " + e.getMessage());
         }
-        
+
         return payList;
     }
 }

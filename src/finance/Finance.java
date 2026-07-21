@@ -3,13 +3,11 @@ package finance;
 public class Finance {
 
     //==================== Attributes ====================
-
     private String financeId;
     private double totalRevenue;
     private double totalExpense;
 
     //==================== Constructor ====================
-
     public Finance() {
     }
 
@@ -20,7 +18,6 @@ public class Finance {
     }
 
     //==================== Getter & Setter ====================
-
     public String getFinanceId() {
         return financeId;
     }
@@ -46,7 +43,6 @@ public class Finance {
     }
 
     //==================== Save File ====================
-
     @Override
     public String toString() {
         return financeId + "|"
@@ -55,7 +51,6 @@ public class Finance {
     }
 
     //==================== Display ====================
-
     public static void displayHeader() {
 
         System.out.println("======================================================================");

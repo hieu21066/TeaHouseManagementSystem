@@ -3,7 +3,6 @@ package combo;
 public class Combo {
 
     //==================== Attributes ====================
-
     private String comboId;
     private String teaType;
     private String comboName;
@@ -11,14 +10,13 @@ public class Combo {
     private String description;
 
     //==================== Constructor ====================
-
     public Combo() {
     }
 
     public Combo(String comboId, String teaType,
-                 String comboName,
-                 double price,
-                 String description) {
+            String comboName,
+            double price,
+            String description) {
 
         this.comboId = comboId;
         this.teaType = teaType;
@@ -26,7 +24,6 @@ public class Combo {
         this.price = price;
         this.description = description;
     }
-
 
     public String getComboId() {
         return comboId;
@@ -58,8 +55,9 @@ public class Combo {
 
     public void setPrice(double price) {
 
-        if (price < 0)
+        if (price < 0) {
             throw new IllegalArgumentException("Price must be >= 0");
+        }
 
         this.price = price;
     }
@@ -73,7 +71,6 @@ public class Combo {
     }
 
     //==================== Tea Type Name ====================
-
     public String getTeaTypeName() {
 
         switch (teaType) {
@@ -113,7 +110,6 @@ public class Combo {
     }
 
     //==================== Save File ====================
-
     @Override
     public String toString() {
 
@@ -126,7 +122,6 @@ public class Combo {
     }
 
     //==================== Display ====================
-
     public static void displayHeader() {
 
         System.out.println("========================================================================================================");

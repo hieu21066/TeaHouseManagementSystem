@@ -75,9 +75,8 @@ public class FinanceService {
 
     // ==================== ĐỒNG BỘ & TỰ ĐỘNG TÍNH TOÁN TỪ FILE ====================
     /**
-     * Tự động đồng bộ số liệu: Quét hóa đơn & file combopay.txt (để tính Doanh
-     * thu), tự đọc file Import.txt (để tính Chi phí gốc NVL), và Quét lương
-     * nhân viên.
+     * Tự động đồng bộ số liệu: Quét hóa đơn & file combopay.txt (để tính Doanh thu)
+     * và tự đọc file Import.txt (để tính Chi phí gốc NVL).
      */
     public boolean autoCalculateFinance(String financeId,
             service.OrderService orderService,
@@ -100,7 +99,7 @@ public class FinanceService {
             }
         }
 
-        // B. ĐÃ CẬP NHẬT: Đọc dữ liệu từ combopay.txt để cộng dồn doanh thu bán Combo
+        // B. Đọc dữ liệu từ combopay.txt để cộng dồn doanh thu bán Combo
         // Cấu trúc mảng data nhận về: [financeId, comboId, comboName, quantity, price]
         java.util.ArrayList<String[]> comboPayList = file.ComboFile.loadComboPay();
         for (String[] data : comboPayList) {
@@ -140,16 +139,9 @@ public class FinanceService {
             }
         }
 
-        // --- 3. TỰ ĐỘNG TÍNH CHI PHÍ LƯƠNG NHÂN VIÊN ---
-        double totalSalary = 0.0;
-        if (employeeService != null && employeeService.getEmployeeList() != null) {
-            for (employee.Employee emp : employeeService.getEmployeeList()) {
-                totalSalary += emp.getSalary();
-            }
-        }
-
-        // Tổng chi phí = Chi phí hàng nhập (COGS) + Chi phí lương nhân viên
-        double totalExpense = totalCOGS + totalSalary;
+        // --- 3. ĐÃ BỎ TÍNH CHI PHÍ LƯƠNG NHÂN VIÊN ---
+        // Tổng chi phí hiện tại chỉ tính theo Chi phí hàng nhập (COGS)
+        double totalExpense = totalCOGS;
 
         // --- 4. CẬP NHẬT DỮ LIỆU ĐÃ ĐỒNG BỘ VÀO ĐỐI TƯỢNG ---
         finance.setTotalRevenue(totalRevenue);
@@ -160,8 +152,7 @@ public class FinanceService {
 
     // ==================== HIỂN THỊ DỮ LIỆU (VIEW INTERACTION) ====================
     /**
-     * Hiển thị chi tiết báo cáo tài chính của 1 kỳ duy nhất (Case 5 sau khi
-     * sync)
+     * Hiển thị chi tiết báo cáo tài chính của 1 kỳ duy nhất (Case 5 sau khi sync)
      */
     public void displayById(String id) {
         Finance f = searchById(id);
@@ -169,11 +160,9 @@ public class FinanceService {
             double profit = f.getTotalRevenue() - f.getTotalExpense();
             System.out.println("+---------------------------------------------------+");
             System.out.printf("| Financial Code   : %-29s |\n", f.getFinanceId());
-            System.out.printf("| Total Revenue : %-26.0f VND |\n", f.getTotalRevenue());
-
-            System.out.printf("| Total Expenses : %-26.0f VND |\n", f.getTotalExpense());
-
-            System.out.printf("| Net Profit : %-26.0f VND |\n", profit);
+            System.out.printf("| Total Revenue    : %-26.0f VND |\n", f.getTotalRevenue());
+            System.out.printf("| Total Expenses   : %-26.0f VND |\n", f.getTotalExpense());
+            System.out.printf("| Net Profit       : %-26.0f VND |\n", profit);
             System.out.println("+---------------------------------------------------+");
         } else {
             System.out.println("❌ No information found for the period code: " + id);

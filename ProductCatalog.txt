@@ -1,0 +1,19 @@
+TE001|Tea|Green Tea|Longjing Tea|200.0|Premium green tea with a fresh nutty aroma|100
+TE002|Tea|Oolong|Da Hong Pao|200.0|Wuyi cliff tea belonging to the Oolong family|100
+TE003|Tea|White Tea|Bai Hao Yin Zhen|200.0|Pure white tea consisting only of silver needles|100
+TE004|Tea|Black Tea|Dian Hong Gongfu|200.0|Rich black tea with a sweet and deep aftertaste|100
+TE005|Tea|Yellow Tea|Jun Shan Yin Zhen|200.0|Rare lightly fermented yellow tea|100
+TE006|Tea|Oolong|Oriental Beauty|200.0|Highly oxidized royal Oolong with honey notes|100
+TE007|Tea|Oolong|Tie Guan Yin|200.0|Semi-fermented Oolong tea with an orchid fragrance|100
+TE008|Tea|Raw Pu-erh|Ancient Raw Pu-erh|200.0|Naturally fermented vintage Pu-erh tea cake|100
+TE009|Tea|Ripe Pu-erh|Yunnan Ripe Pu-erh|200.0|Microbially fermented Pu-erh with a woody aroma|100
+TP001|Teapot|Teapot|Zisha Xishi Teapot|1200.0|Yixing clay teapot in classic Xishi shape|Zi Ne|Xishi|150
+TP002|Teapot|Teapot|Zisha Shipiao Teapot|1500.0|Yixing clay teapot in elegant Shipiao shape|Duan Ne|Shipiao|100
+TP003|Teapot|Teapot|Zisha Zhouqi Teapot|1800.0|Yixing clay teapot in traditional Zhouqi shape|Lu Ne|Zhouqi|200
+TP004|Teapot|Teapot|Zisha Chuanlu Teapot|2500.0|Premium Yixing clay teapot in Chuanlu shape|Dahongpao Clay|Chuanlu|120
+TC001|TeaCup|TeaCup|White Jade Host Cup|500.0|Exclusive large cup dedicated for the host|Host Cup|50
+TC002|TeaCup|TeaCup|Zisha Guest Cup|80.0|Standard sized uniform cups for the guests|Guest Cup|30
+TA001|TeaAccessories|TeaAccessories|Gaiwan Steeper|250.0|Lidded bowl with a saucer used for brewing tea|Gaiwan
+TA002|TeaAccessories|TeaAccessories|Glass Pitcher|120.0|Serving pitcher to balance tea flavor before pouring|Pitcher
+TA003|TeaAccessories|TeaAccessories|Cha He Presentation Vessel|180.0|Vessel for inspecting and appreciating dry tea leaves|Cha He
+TA004|TeaAccessories|TeaAccessories|Pixiu Tea Pet|300.0|Yixing clay mythical creature nourished by tea liquor|Tea Pet

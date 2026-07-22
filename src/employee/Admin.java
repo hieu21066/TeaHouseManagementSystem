@@ -1,13 +1,31 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package employee;
 
-/**
- *
- * @author MINH HIEU
- */
-public class Admin {
-    
+public class Admin extends Employee {
+
+    //========================== Constructor ==========================
+    public Admin() {
+        super();
+    }
+
+    public Admin(String employeeId,
+            String fullName,
+            String gender,
+            int age,
+            String phone,
+            double salary,
+            String shift,
+            String hireDate) {
+        super(employeeId, fullName, gender, age, phone,
+                salary, shift, hireDate);
+    }
+
+    @Override
+    public String getRole() {
+        return "Admin";
+    }
+
+    @Override
+    public void input() {
+        super.input();
+    }
 }

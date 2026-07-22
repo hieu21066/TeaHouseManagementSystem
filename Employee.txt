@@ -12,9 +12,9 @@ WS002|WarehouseStaff|Tran Duc Bach|male|28|0326127439|10.5|14-22|22/08/2025
 WS001|WarehouseStaff|Nguyen Duc Thang|male|30|0978393522|11.3|6-14|13/05/2024
 TL001|TeaLady|Pham Thanh Nhung|female|31|0325992955|11.3|14-22|27/04/2025
 WS003|WarehouseStaff|Huynh Quang Long|male|33|0359201847|12.0|22-6|11/10/2024
+CA005|Cashier|Nguyen Van C|female|21|06958944333|15.0|12-15|22/7/2026
 TM001|TeaMaster|Hoang Van Hai|male|34|0961845187|15.8|14-22|18/12/2024|4|Experienced
 TM002|TeaMaster|Le Xuan Tung|male|29|0984128475|19.1|6-14|30/03/2025|5|Experienced
-WS004|WarehouseStaff|Vu Minh Hieu|male|20|0898283480|20.0|2-20|2/2/2026
 TM003|TeaMaster|Nguyen Thanh Thang|male|41|0918472930|21.4|18-22|15/01/2024|9|Professional
 AD001|Admin|Pham Van Hoang|male|30|0771804245|23.7|18-22|06/10/2024
 AD002|Admin|Phan Manh Kien|male|35|0903847291|24.5|6-14|19/07/2024

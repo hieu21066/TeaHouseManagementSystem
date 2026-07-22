@@ -1,21 +1,22 @@
-RT001|RT|Hồng Trà Chanh|40000.0|1 ấm hồng trà chanh + Kẹo lạc + Bánh quy
-GT001|GT|Trà Sen Tây Hồ|45000.0|1 ấm trà sen + Kẹo lạc + Bánh quy bơ
-GT002|GT|Trà Lài Cao Cấp|50000.0|1 ấm trà lài + Kẹo lạc + Mứt gừng
-RT002|RT|Hồng Trà Sữa|55000.0|1 ấm hồng trà sữa + Kẹo lạc + Bánh bơ
-GT003|GT|Long Tỉnh|65000.0|1 ấm Long Tỉnh + Kẹo lạc + Bánh hạnh nhân
-BT001|BT|Bạch Trà Bạc Hà|65000.0|1 ấm bạch trà + Kẹo lạc + Bánh quy bơ
-BT002|BT|Bạch Trà Mật Ong|70000.0|1 ấm bạch trà + Mật ong + Bánh hạnh nhân
-OT001|OT|Oolong Sữa|70000.0|1 ấm Oolong sữa + Kẹo lạc + Bánh bơ
-OT002|OT|Oolong Rang|75000.0|1 ấm Oolong rang + Hạt điều + Bánh hạnh nhân
-YT002|YT|Hoàng Trà Hoa Cúc|80000.0|1 ấm hoàng trà hoa cúc + Mứt sen + Bánh quy
-YT001|YT|Hoàng Trà Cổ Thụ|85000.0|1 ấm hoàng trà + Kẹo lạc + Hạt điều rang
-OT003|OT|Oolong Đài Loan|85000.0|1 ấm Oolong Đài Loan + Mứt gừng + Kẹo lạc
-TQ001|TQ|Thiết Quan Âm Truyền Thống|95000.0|1 ấm Thiết Quan Âm + Kẹo lạc + Bánh quy
-PS001|PS|Phổ Nhĩ Sống 5 Năm|100000.0|1 ấm Phổ Nhĩ sống + Mứt gừng + Hạt điều
+PR002|PR|Phổ Nhĩ Chín 10 Năm|220000.0|1 ấm Phổ Nhĩ chín + Mắc ca + Bánh quy cao cấp
+PS002|PS|Phổ Nhĩ Sống 10 Năm|180000.0|1 ấm Phổ Nhĩ sống + Mắc ca + Bánh cao cấp
+OM002|OM|Đông Phương Mỹ Nhân Thượng Hạng|150000.0|1 ấm trà + Mắc ca + Bánh hạnh nhân + Mứt sen
+TQ002|TQ|Thiết Quan Âm Thượng Hạng|130000.0|1 ấm Thiết Quan Âm + Hạt điều + Bánh hạnh nhân
 OM001|OM|Đông Phương Mỹ Nhân|120000.0|1 ấm Đông Phương Mỹ Nhân + Hạt mắc ca + Bánh quy cao cấp
 PR001|PR|Phổ Nhĩ Chín 5 Năm|120000.0|1 ấm Phổ Nhĩ chín + Mứt sen + Kẹo lạc
-TQ002|TQ|Thiết Quan Âm Thượng Hạng|130000.0|1 ấm Thiết Quan Âm + Hạt điều + Bánh hạnh nhân
-OM002|OM|Đông Phương Mỹ Nhân Thượng Hạng|150000.0|1 ấm trà + Mắc ca + Bánh hạnh nhân + Mứt sen
-PS002|PS|Phổ Nhĩ Sống 10 Năm|180000.0|1 ấm Phổ Nhĩ sống + Mắc ca + Bánh cao cấp
-PR002|PR|Phổ Nhĩ Chín 10 Năm|220000.0|1 ấm Phổ Nhĩ chín + Mắc ca + Bánh quy cao cấp
+PS001|PS|Phổ Nhĩ Sống 5 Năm|100000.0|1 ấm Phổ Nhĩ sống + Mứt gừng + Hạt điều
+TQ001|TQ|Thiết Quan Âm Truyền Thống|95000.0|1 ấm Thiết Quan Âm + Kẹo lạc + Bánh quy
+YT001|YT|Hoàng Trà Cổ Thụ|85000.0|1 ấm hoàng trà + Kẹo lạc + Hạt điều rang
+OT003|OT|Oolong Đài Loan|85000.0|1 ấm Oolong Đài Loan + Mứt gừng + Kẹo lạc
+YT002|YT|Hoàng Trà Hoa Cúc|80000.0|1 ấm hoàng trà hoa cúc + Mứt sen + Bánh quy
+OT002|OT|Oolong Rang|75000.0|1 ấm Oolong rang + Hạt điều + Bánh hạnh nhân
+BT002|BT|Bạch Trà Mật Ong|70000.0|1 ấm bạch trà + Mật ong + Bánh hạnh nhân
+OT001|OT|Oolong Sữa|70000.0|1 ấm Oolong sữa + Kẹo lạc + Bánh bơ
+GT003|GT|Long Tỉnh|65000.0|1 ấm Long Tỉnh + Kẹo lạc + Bánh hạnh nhân
+BT001|BT|Bạch Trà Bạc Hà|65000.0|1 ấm bạch trà + Kẹo lạc + Bánh quy bơ
+RT002|RT|Hồng Trà Sữa|55000.0|1 ấm hồng trà sữa + Kẹo lạc + Bánh bơ
+GT002|GT|Trà Lài Cao Cấp|50000.0|1 ấm trà lài + Kẹo lạc + Mứt gừng
+GT001|GT|Trà Sen Tây Hồ|45000.0|1 ấm trà sen + Kẹo lạc + Bánh quy bơ
+RT001|RT|Hồng Trà Chanh|40000.0|1 ấm hồng trà chanh + Kẹo lạc + Bánh quy
 GT004|GT|Green dragon|12000.0|1 ?m tr� + m?t ??a hoa qu? nhi?t ??i + 1 g�i k?o l?c th??ng h?ng
+GT005|GT|thai lo|1000.0|ngon ngot
